@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- 每个class对应一个持久化对象 -->
+<hibernate-mapping>
+	<class name="com.user.model.UserBasic" table="userbasic">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="username" column="username"></property>
+		<property name="password" column="password"></property>
+		<property name="usertype" column="usertype"></property>
+		<property name="createtime" column="createtime"></property>
+		<property name="userstatus" column="userstatus"></property>
+	</class>
+</hibernate-mapping>
