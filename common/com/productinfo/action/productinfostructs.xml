@@ -7,7 +7,6 @@
 		<action name="productinfo" class="com.productinfo.action.ProductInfoAction"
 			method="getProductInfo">
 			<result name="success" type="json" />
-			<result name="error" />
 		</action>
 	</package>
 </struts>

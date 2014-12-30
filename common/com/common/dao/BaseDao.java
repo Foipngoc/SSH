@@ -2,124 +2,106 @@ package com.common.dao;
 
 import java.util.List;
 
+/**
+ * BaseDao定义一些常用的接口，此类接口不应与数据持久层是何种而不同
+ * 
+ * @author DongJun
+ * 
+ * @param <E>
+ */
 public interface BaseDao<E> {
-	/****************** 增 *****************/
 	/**
 	 * 保存一个对象
 	 * 
 	 * @param o
 	 * @return
 	 */
-	public E saveObj(E o);
+	public void save(E o);
 
-	/****************** 删 *******************/
 	/**
 	 * 删除一个对象
 	 * 
 	 * @param o
 	 */
-	public void deleteObj(E o);
-
-	/**
-	 * 使用SQL语句删除
-	 * 
-	 * @param hql
-	 * @return 响应数目
-	 */
-	public Integer deleteSql(SQL sql);
-
-	/**
-	 * 使用HQL语句删除
-	 * 
-	 * @param hql
-	 * @return 响应数目
-	 */
-	public Integer deleteHql(HQL hql);
-
-	/************************ 修改 ************************/
+	public void delete(E o);
 
 	/**
 	 * 更新一个对象
 	 * 
 	 * @param o
 	 */
-	public E updateObj(E o);
+	public void update(E o);
 
 	/**
 	 * 保存或更新对象
 	 * 
 	 * @param o
 	 */
-	public E saveOrUpdateObj(E o);
+	public void saveOrUpdate(E o);
 
 	/**
-	 * 使用SQL语句更新
+	 * 查找所有对象
 	 * 
-	 * @param hql
-	 * @return 响应数目
-	 */
-	public Integer updateSql(SQL sql);
-
-	/**
-	 * 使用HQL语句更新
-	 * 
-	 * @param hql
-	 * @return 响应数目
-	 */
-	public Integer updateHql(HQL hql);
-
-	/********************** 查 ***************************/
-	/**
-	 * 查询
-	 * 
-	 * @param hql
+	 * @param o
 	 * @return
 	 */
-	public List<?> findHql(HQL hql);
+	public List<E> find(E o);
 
 	/**
-	 * 查询集合(带分页)
+	 * 查找所有对象 带分页
 	 * 
-	 * @param hql
-	 * @param param
+	 * @param o
 	 * @param page
 	 * @param rows
 	 * @return
 	 */
-	public List<?> findHql(HQL hql, Integer page, Integer rows);
+	public List<E> find(E o, Integer page, Integer rows);
 
 	/**
-	 * 查询
+	 * 查找满足某一条件的所有对象
 	 * 
-	 * @param hql
+	 * @param o
+	 * @param key
+	 * @param value
 	 * @return
 	 */
-	public List<?> findSql(SQL sql);
+	public List<E> find(E o, String key, Object value);
 
 	/**
-	 * 查询集合(带分页)
+	 * 查找满足某一条件的所有对象 带分布
 	 * 
-	 * @param hql
-	 * @param param
+	 * @param o
+	 * @param key
+	 * @param value
 	 * @param page
 	 * @param rows
 	 * @return
 	 */
-	public List<?> findSql(SQL sql, Integer page, Integer rows);
+	public List<E> find(E o, String key, Object value, Integer page,
+			Integer rows);
+
+	/**
+	 * 查找唯一对象，如果对象不存在，返回NULL
+	 * @param o
+	 * @param key
+	 * @param Value
+	 * @return
+	 */
+	public E findUnique(E o,String key,Object value);
+	
+	/**
+	 * 获得记录数
+	 * 
+	 * @param o
+	 * @return
+	 */
+	public Long count(E o);
 
 	/**
 	 * 获得记录数
 	 * 
-	 * @param hql
+	 * @param o
 	 * @return
 	 */
-	public Long countHql(HQL hql);
-
-	/**
-	 * 获得记录数
-	 * 
-	 * @param hql
-	 * @return
-	 */
-	public Long countSql(SQL sql);
+	public Long count(E o, String key, Object value);
 }

@@ -1,4 +1,4 @@
-package com.exception;
+package com.common.exception;
 
 /**
  * 网络异常

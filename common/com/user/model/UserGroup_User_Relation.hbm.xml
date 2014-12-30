@@ -3,11 +3,13 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- 每个class对应一个持久化对象 -->
 <hibernate-mapping>
-	<class name="com.user.model.Group_Relation" table="Group">
-		<id name="id" column="id">
+	<class name="com.user.model.UserGroup_User_Relation" table="UserGroup_User_Relation">
+		<id name="id" column="id" type="integer">
 			<generator class="native" />
 		</id>
-		<property name="groupid" column="groupid"></property>
-		<property name="subgroupid" column="subgroupid"></property>
+		<many-to-one name="groupid" column="groupid"
+			class="com.user.model.UserGroup" />
+		<many-to-one name="userid" column="userid"
+			class="com.user.model.User" />
 	</class>
 </hibernate-mapping>

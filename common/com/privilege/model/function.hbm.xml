@@ -4,10 +4,12 @@
 <!-- 每个class对应一个持久化对象 -->
 <hibernate-mapping>
 	<class name="com.privilege.model.Function" table="function">
-		<id name="id" column="id">
+		<id name="id" column="id" type="integer">
 			<generator class="native" />
 		</id>
-		<property name="funcname" column="funcname"></property>
-		<property name="funcdesc" column="funcdesc"></property>
+		<property name="funcname" column="funcname" type="string"
+			length="20" not-null="true"></property>
+		<property name="funcdesc" column="funcdesc" type="string"
+			length="255"></property>
 	</class>
 </hibernate-mapping>

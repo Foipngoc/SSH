@@ -11,8 +11,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
-import com.exception.InvalidParameterException;
-import com.exception.NetWorkException;
+import com.common.exception.InvalidParameterException;
+import com.common.exception.NetWorkException;
 
 /**
  * HttpPost工具类

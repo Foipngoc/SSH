@@ -4,10 +4,12 @@
 <!-- 每个class对应一个持久化对象 -->
 <hibernate-mapping>
 	<class name="com.privilege.model.Permission_relation" table="permission_relation">
-		<id name="id" column="id">
+		<id name="id" column="id" type="integer">
 			<generator class="native" />
 		</id>
-		<property name="permid" column="permid"></property>
-		<property name="subpermid" column="subpermid"></property>
+		<many-to-one name="permid" column="permid" not-null="true"
+			class="com.privilege.model.Permission"></many-to-one>
+			<many-to-one name="subpermid" column="subpermid" not-null="true"
+			class="com.privilege.model.Permission"></many-to-one>
 	</class>
 </hibernate-mapping>

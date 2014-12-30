@@ -1,6 +1,5 @@
 package com.privilege.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +21,9 @@ import com.privilege.model.Permission_function_relation;
 import com.privilege.model.Permission_relation;
 import com.privilege.model.User_permission_relation;
 import com.privilege.service.PrivilegeService;
+import com.user.model.User;
 
+@Transactional
 @Service("privilegeService")
 public class PrivilegeServiceImpl implements PrivilegeService {
 	@Resource
@@ -35,156 +36,169 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 	private Permission_function_relationDao permission_function_relationDao;
 	@Resource
 	private User_permission_relationDao user_permission_relationDao;
-	
-	private static PrivilegeServiceImpl instance;
+
+	/******************** 权限相关接口 ***********************/
 
 	/**
-	 * @return the instance
-	 */
-	public static PrivilegeServiceImpl getInstance() {
-		if (instance == null) {
-			synchronized (PrivilegeServiceImpl.class) {
-				instance = new PrivilegeServiceImpl();
-			}
-		}
-		return instance;
-	}
-
-	public PrivilegeServiceImpl() {
-		if (instance != null) {
-			throw new IllegalStateException("PrivilegeService 不能创建多实例");
-		}
-		instance = this;
-	}
-
-	public void setPermissionDao(PermissionDao permissionDao) {
-		this.permissionDao = permissionDao;
-	}
-
-	public void setFunctionDao(FunctionDao functionDao) {
-		this.functionDao = functionDao;
-	}
-
-	public void setPermission_function_relationDao(
-			Permission_function_relationDao permission_function_relationDao) {
-		this.permission_function_relationDao = permission_function_relationDao;
-	}
-
-	public void setUser_permission_relationDao(
-			User_permission_relationDao user_permission_relationDao) {
-		this.user_permission_relationDao = user_permission_relationDao;
-	}
-
-	public void setPermission_relationDao(
-			Permission_relationDao permission_relationDao) {
-		this.permission_relationDao = permission_relationDao;
-	}
-
-	/**
-	 * 新增权限
+	 * 添加权限
 	 */
 	public Permission addPerm(String permname, int permtype, String permdesc)
 			throws Exception {
-		Permission perm = new Permission();
-		perm.setPermdesc(permdesc);
-		perm.setPermname(permname);
-		perm.setPermtype(permtype);
-		return this.permissionDao.saveObj(perm);
+		Permission permission = new Permission();
+		permission.setPermname(permname);
+		permission.setPermtype(permtype);
+		permission.setPermdesc(permdesc);
+		permissionDao.save(permission);
+		return permission;
 	}
 
 	/**
-	 * 新增权限关联
+	 * 添加子权限
 	 */
-	public Permission_relation addPermRelation(int parentpermid, int subpermid)
-			throws Exception {
-		if (parentpermid == subpermid)
+	public Permission addBindSubPerm(int parentpermid, String permname,
+			int permtype, String permdesc) throws Exception {
+		Permission permission = addPerm(permname, permtype, permdesc);
+		bindSubPerm(parentpermid, permission.getId());
+		return permission;
+	}
+
+	/**
+	 * 添加父权限
+	 */
+	public Permission addBindParentPerm(int subpermid, String permname,
+			int permtype, String permdesc) throws Exception {
+		Permission permission = addPerm(permname, permtype, permdesc);
+		bindParentPerm(subpermid, permission.getId());
+		return permission;
+	}
+
+	/**
+	 * 绑定子权限
+	 */
+	public void bindSubPerm(int permid, int subpermid) throws Exception {
+		if (permid == subpermid)
 			throw new Exception("不能添加自己为子权限");
 		// 防止权限回路,检查子权限的子权限列表中是否有父权限
-		List<Permission> subpermsubs = this.queryPermSubPermsAll(subpermid);
+		List<Permission> subpermsubs = this.findSubPerms_Recursion(subpermid);
 		for (int i = 0; i < subpermsubs.size(); i++) {
-			if (subpermsubs.get(i).getId() == parentpermid) {
+			if (subpermsubs.get(i).getId() == permid) {
 				throw new Exception("权限不能存在回路");
 			}
 		}
 		// 是否已有关联
-		List<Permission_relation> list = this.permission_relationDao
-				.queryPermission_relation(parentpermid, subpermid);
-		if (list.size() > 1) {
-			throw new Exception("数据库权限关联表出现异常");
-		}
-		// 已有关联，则返回此关联
-		if (list.size() == 1) {
-			return list.get(0);
-		}
+		Permission_relation permission_relation = this.permission_relationDao
+				.findPerm_relation(permid, subpermid);
 
-		// 否则添加关联
-		Permission_relation permission_relation = new Permission_relation();
-		permission_relation.setPermid(parentpermid);
-		permission_relation.setSubpermid(subpermid);
-		return this.permission_relationDao.saveObj(permission_relation);
+		// 如果没有关联
+		if (permission_relation == null) {
+			Permission_relation newpermission_relation = new Permission_relation();
+			newpermission_relation.setPermid(permid);
+			newpermission_relation.setSubpermid(subpermid);
+			this.permission_relationDao.save(newpermission_relation);
+		}
 	}
 
 	/**
-	 * 删除权限关联
+	 * 绑定父权限
 	 */
-	public void delPermRelation(int parentpermid, int subpermid)
-			throws Exception {
-		this.permission_relationDao.delPermission_relation(parentpermid,
-				subpermid);
+	public void bindParentPerm(int permid, int parentpermid) throws Exception {
+		bindSubPerm(parentpermid, permid);
 	}
 
 	/**
-	 * 删除权限,删除权限后， 该权限与功能的关联关系会取消 该权限与父子权限之间的关系取消
+	 * 解绑子权限
 	 */
-	@Transactional
+	public void delBindSubPerm(int permid, int subpermid) throws Exception {
+		Permission_relation permission_relation = this.permission_relationDao
+				.findPerm_relation(permid, subpermid);
+		if (permission_relation != null)
+			this.permission_relationDao.delete(permission_relation);
+	}
+
+	/**
+	 * 解绑父权限
+	 */
+	public void delBindParentPerm(int permid, int parentid) throws Exception {
+		delBindSubPerm(parentid, permid);
+	}
+
+	/**
+	 * 解绑所有子权限
+	 */
+	public void delBindSubPerms(int permid) throws Exception {
+		this.permission_relationDao.delSubPermissions(permid);
+	}
+
+	/**
+	 * 解绑所有父权限
+	 */
+	public void delBindParentPerms(int permid) throws Exception {
+		this.permission_relationDao.delParentPermissions(permid);
+	}
+
+	/**
+	 * 解绑所有父子权限
+	 */
+	public void delBindPerms(int permid) throws Exception {
+		delBindParentPerms(permid);
+		delBindSubPerms(permid);
+	}
+
+	/**
+	 * 删除权限
+	 */
 	public void delPerm(int permid) throws Exception {
 		// 删除该权限的与功能的关联
-		delPermFuncAll(permid);
+		delBindFuncs(permid);
 
 		// 删除此权限的父子关联权限关系
-		this.permission_relationDao.delPermission_relation(permid);
+		delBindPerms(permid);
 
 		// 删除此权限
 		this.permissionDao.delPerm(permid);
 	}
 
 	/**
-	 * 查询某权限的子权限列表，不包括子权限下的子权限
+	 * 查询权限
 	 */
-	public List<Permission> queryPermSubPerms(int permid) throws Exception {
-		return this.permissionDao.queryPermSubPerms(permid);
+	public Permission findPerm(int permid) throws Exception {
+		return this.permissionDao.findPerm(permid);
 	}
 
 	/**
-	 * 查询某权限的类型为permtype的子权限列表，不包括子权限下的子权限
+	 * 查询子权限列表，不包括子权限下的子权限
 	 */
-	public List<Permission> queryPermSubPerms(int permid, int permtype)
+	public List<Permission> findSubPerms(int permid) throws Exception {
+		return this.permission_relationDao.findSubPerms(permid);
+	}
+
+	/**
+	 * 查询类型为permtype的子权限列表，不包括子权限下的子权限
+	 */
+	public List<Permission> findSubPerms(int permid, int permtype)
 			throws Exception {
-		return this.permissionDao.queryPermSubPerms(permid, permtype);
+		return this.permission_relationDao.findSubPerms(permid, permtype);
+	}
+
+	private List<Permission> _findSubPerms_Recursion(int permid) throws Exception {
+		// 查询自己的子权限
+		List<Permission> lists = this.findSubPerms(permid);
+
+		// 查询子权限的所有子权限
+		for (int i = 0; i < lists.size(); i++) {
+			lists.addAll(_findSubPerms_Recursion(lists.get(i).getId()));
+		}
+		return lists;
 	}
 
 	/**
-	 * 查询某权限的子权限列表，包括所有子权限下的子权限 递归
+	 * 查询子权限列表，包括所有子权限下的子权限
 	 */
-	public List<Permission> queryPermSubPermsAll(int permid) throws Exception {
-		List<Permission> list = new ArrayList<Permission>();
-
-		List<Permission> subs = this.permissionDao.queryPermSubPerms(permid);
-		list.addAll(subs);
-
-		// 查询子权限的子权限
-		for (int i = 0; i < subs.size(); i++) {
-			Permission p = subs.get(i);
-
-			List<Permission> subsubs = this.permissionDao.queryPermSubPerms(p
-					.getId());
-			list.addAll(subsubs);
-		}
-
+	public List<Permission> findSubPerms_Recursion(int permid) throws Exception {
+		List<Permission> lists = _findSubPerms_Recursion(permid);
 		// 去重复
 		Map<String, Object> map = new HashMap<String, Object>();
-
-		Iterator<Permission> it = list.iterator();
+		Iterator<Permission> it = lists.iterator();
 		while (it.hasNext()) {
 			Permission permission = it.next();
 
@@ -194,33 +208,30 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 				map.put("" + permission.getId(), permission);
 			}
 		}
-		return list;
+		return lists;
+	}
+
+	private List<Permission> _findSubPerms_Recursion(int permid, int permtype)
+			throws Exception {
+		// 查询自己的子权限
+		List<Permission> lists = this.findSubPerms(permid, permtype);
+
+		// 查询子权限的所有子权限
+		for (int i = 0; i < lists.size(); i++) {
+			lists.addAll(_findSubPerms_Recursion(lists.get(i).getId(), permtype));
+		}
+		return lists;
 	}
 
 	/**
 	 * 查询某权限的类型为permtype的子权限列表，包括所有子权限下的子权限
 	 */
-	public List<Permission> queryPermSubPermsAll(int permid, int permtype)
+	public List<Permission> findSubPerms_Recursion(int permid, int permtype)
 			throws Exception {
-		List<Permission> list = new ArrayList<Permission>();
-
-		List<Permission> subs = this.permissionDao.queryPermSubPerms(permid,
-				permtype);
-		list.addAll(subs);
-
-		// 查询子权限的子权限
-		for (int i = 0; i < subs.size(); i++) {
-			Permission p = subs.get(i);
-
-			List<Permission> subsubs = this.permissionDao.queryPermSubPerms(
-					p.getId(), permtype);
-			list.addAll(subsubs);
-		}
-
+		List<Permission> lists = _findSubPerms_Recursion(permid, permtype);
 		// 去重复
 		Map<String, Object> map = new HashMap<String, Object>();
-
-		Iterator<Permission> it = list.iterator();
+		Iterator<Permission> it = lists.iterator();
 		while (it.hasNext()) {
 			Permission permission = it.next();
 
@@ -230,229 +241,159 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 				map.put("" + permission.getId(), permission);
 			}
 		}
-		return list;
+		return lists;
 	}
 
 	/**
 	 * 查询所有根权限列表 ,即该权限不是任何权限的子权限
 	 */
-	public List<Permission> queryPermRoot() throws Exception {
-
-		return this.permissionDao.queryPermRoot();
+	public List<Permission> findPermRoot() throws Exception {
+		return this.permission_relationDao.findPermRoot();
 	}
 
 	/**
 	 * 查询所有类型为permtype的根权限列表 ,即该权限不是任何权限的子权限
 	 */
-	public List<Permission> queryPermRoot(int permtype) throws Exception {
-		return this.permissionDao.queryPermRoot(permtype);
+	public List<Permission> findPermRoot(int permtype) throws Exception {
+		return this.permission_relationDao.findPermRoot(permtype);
 	}
 
 	/**
 	 * 查询所有叶子节点，既该权限没有子权限
 	 */
-	public List<Permission> queryPermLeaf() throws Exception {
-		return this.permissionDao.queryPermLeaf();
+	public List<Permission> findPermLeaf() throws Exception {
+		return this.permission_relationDao.findPermLeaf();
 	}
 
 	/**
 	 * 查询所有类型为permtype的叶子节点，既该权限没有子权限
 	 */
-	public List<Permission> queryPermLeaf(int permtype) throws Exception {
-		return this.permissionDao.queryPermLeaf(permtype);
+	public List<Permission> findPermLeaf(int permtype) throws Exception {
+		return this.permission_relationDao.findPermLeaf(permtype);
 	}
 
 	/**
 	 * 查询系统所有权限
 	 */
-	public List<Permission> queryPermAll() throws Exception {
-		return this.permissionDao.queryAll();
+	public List<Permission> findPerms() throws Exception {
+		return this.permissionDao.find(new Permission());
 	}
 
 	/**
 	 * 查询系统所有类型为permtype的权限
 	 */
-	public List<Permission> queryPermAll(int permtype) throws Exception {
-		return this.permissionDao.queryAll(permtype);
+	public List<Permission> findPerms(int permtype) throws Exception {
+		return this.permissionDao.findByType(permtype);
 	}
 
 	/**
-	 * 添加权限功能
+	 * 绑定功能到权限
 	 */
-	public Permission_function_relation addPermFunc(int permid, int funcid)
-			throws Exception {
-		// 查看是否已存在
-		List<Permission_function_relation> list = this.permission_function_relationDao
-				.queryPermFuncs_relation(permid, funcid);
-		if (list.size() > 1) {
-			throw new Exception("数据库权限功能关系出现异常");
-		}
-		if (list.size() == 1) {
-			return list.get(0);
-		}
-		return this.permission_function_relationDao.addPermFunc(permid, funcid);
+	public void bindFunc(int permid, int funcid) throws Exception {
+		Permission_function_relation temp = this.permission_function_relationDao
+				.findPerm_func_relation(permid, funcid);
+		if (temp != null)
+			return;
+		Permission_function_relation permission_function_relation = new Permission_function_relation();
+		permission_function_relation.setPermid(permid);
+		permission_function_relation.setFuncid(funcid);
+		this.permission_function_relationDao.save(permission_function_relation);
 	}
 
 	/**
-	 * 删除某权限某功能
+	 * 删除某权限与某功能的绑定
 	 */
-	@Transactional
-	public void delPermFunc(int permid, int funcid) throws Exception {
-		this.permission_function_relationDao.delPermFunc(permid, funcid);
+	public void delBindFunc(int permid, int funcid) throws Exception {
+		this.permission_function_relationDao.delPerm_Func(permid, funcid);
 	}
 
 	/**
-	 * 删除权限所有功能
+	 * 删除权限与所有功能的绑定
 	 */
-	@Transactional
-	public void delPermFuncAll(int permid) throws Exception {
-		this.permission_function_relationDao.delPermFuncsAll(permid);
+	public void delBindFuncs(int permid) throws Exception {
+		this.permission_function_relationDao.delPerm_Funcs(permid);
 	}
 
 	/**
 	 * 查询某权限功能列表，不包括子权限的功能列表
 	 */
-	public List<Function> queryPermFuncs(int permid) throws Exception {
-		return this.functionDao.queryPermFuncs(permid);
+	public List<Function> findFuncs(int permid) throws Exception {
+		return this.permission_function_relationDao.findPerm_Funcs(permid);
+	}
+
+	public List<Function> _findFuncs_Recursion(int permid) throws Exception {
+		// 查找该权限的功能
+		List<Function> lists = findFuncs(permid);
+
+		// 查找该权限的子权限
+		List<Permission> perms = findSubPerms(permid);
+		// 查找子权限的所有功能
+		for (int i = 0; i < perms.size(); i++) {
+			lists.addAll(_findFuncs_Recursion(perms.get(i).getId()));
+		}
+		return lists;
 	}
 
 	/**
 	 * 查询某权限功能列表，包括子权限的功能列表
 	 */
-	public List<Function> queryPermFuncsAll(int permid) throws Exception {
-		List<Function> list = new ArrayList<Function>();
-		// 查询自己的功能
-		List<Function> funcs = this.queryPermFuncs(permid);
-		list.addAll(funcs);
+	public List<Function> findFuncs_Recursion(int permid) throws Exception {
+		List<Function> lists = _findFuncs_Recursion(permid);
 
-		List<Permission> subperms = this.queryPermSubPermsAll(permid);
-		for (int i = 0; i < subperms.size(); i++) {
-			List<Function> subfuncs = this.queryPermFuncs(subperms.get(i)
-					.getId());
-			list.addAll(subfuncs);
-		}
-
-		Map<String, Function> map = new HashMap<String, Function>();
-		Iterator<Function> it = list.iterator();
+		// 去重
+		Map<String, Object> map = new HashMap<String, Object>();
+		Iterator<Function> it = lists.iterator();
 		while (it.hasNext()) {
 			Function function = it.next();
-
 			if (map.containsKey("" + function.getId())) {
 				it.remove();
 			} else {
 				map.put("" + function.getId(), function);
 			}
 		}
-
-		return list;
+		return lists;
 	}
 
+	/***************************** 用户相关接口 *******************/
 	/**
-	 * 添加某用户某权限
+	 * 绑定用户
 	 */
-	public User_permission_relation addUserPerm(int userid, int permid)
-			throws Exception {
-		List<User_permission_relation> list = this.user_permission_relationDao
-				.queryUserPerm_relation(userid, permid);
-		if (list.size() > 1) {
-			throw new Exception("数据库出现不一致");
+	public void bindUser(int permid, int userid) throws Exception{
+		User_permission_relation user_permission_relation = this.user_permission_relationDao
+				.findUser_Perm_relation(userid, permid);
+		if (user_permission_relation == null) {
+			User_permission_relation user_permission_relation2 = new User_permission_relation();
+			user_permission_relation2.setPermid(permid);
+			user_permission_relation2.setUserid(userid);
+			this.user_permission_relationDao.save(user_permission_relation2);
 		}
-		if (list.size() == 1)
-			return list.get(0);
-
-		User_permission_relation user_permission_relation = new User_permission_relation();
-		user_permission_relation.setPermid(permid);
-		user_permission_relation.setUserid(userid);
-		return this.user_permission_relationDao
-				.saveObj(user_permission_relation);
 	}
 
 	/**
-	 * 删除某用户某权限
+	 * 解绑用户
 	 */
-	@Transactional
-	public void delUserPerm(int userid, int permid) throws Exception {
-		this.user_permission_relationDao.delUserPerm(userid, permid);
+	public void delBindUser(int permid, int userid) throws Exception{
+		this.user_permission_relationDao.delUser_Perm(userid, permid);
 	}
 
 	/**
-	 * 删除某用户所有权限
+	 * 解绑所有用户
 	 */
-	@Transactional
-	public void delUserPermAll(int userid) throws Exception {
-		this.user_permission_relationDao.delUserPermAll(userid);
+	public void delBindUsers(int permid) throws Exception{
+		this.user_permission_relationDao.delUser_Perms(permid);
 	}
-
+	
 	/**
-	 * 查询某用户的所有权限，不包括权限的子权限。
+	 * 查看权限所绑定的用户
 	 */
-	public List<Permission> queryUserPerm(int userid) throws Exception {
-		return this.user_permission_relationDao.queryUserPerm(userid);
+	public List<User> findUsers(int permid) throws Exception{
+		return this.user_permission_relationDao.findPerm_Users(permid);
 	}
-
+	
 	/**
-	 * 查询某用户的所有权限，包括权限的子权限。
+	 * 查看权限所绑定的用户
 	 */
-	public List<Permission> queryUserPermAll(int userid) throws Exception {
-		List<Permission> list = new ArrayList<Permission>();
-
-		// 查询该用户的权限
-		List<Permission> perms = this.queryUserPerm(userid);
-		list.addAll(perms);
-
-		// 查询子权限的所有权限
-		for (int i = 0; i < perms.size(); i++) {
-			List<Permission> subperms = this.queryPermSubPermsAll(perms.get(i)
-					.getId());
-			list.addAll(subperms);
-		}
-		return list;
+	public List<User> findUsers(int permid,int page,int rows) throws Exception{
+		return this.user_permission_relationDao.findPerm_Users(permid,page,rows);
 	}
-
-	/**
-	 * 查询某用户的所有类型为permtype的权限，不包括权限的子权限。
-	 */
-	public List<Permission> queryUserPerm(int userid, int permtype)
-			throws Exception {
-		return this.user_permission_relationDao.queryUserPerm(userid, permtype);
-	}
-
-	/**
-	 * 查询某用户的所有类型为permtype的权限，包括权限的子权限。
-	 */
-	public List<Permission> queryUserPermAll(int userid, int permtype)
-			throws Exception {
-		List<Permission> list = new ArrayList<Permission>();
-
-		// 查询该用户的权限
-		List<Permission> perms = this.queryUserPerm(userid, permtype);
-		list.addAll(perms);
-
-		// 查询子权限的所有权限
-		for (int i = 0; i < perms.size(); i++) {
-			List<Permission> subperms = this.queryPermSubPermsAll(perms.get(i)
-					.getId(), permtype);
-			list.addAll(subperms);
-		}
-		return list;
-	}
-
-	/**
-	 * 查询用户所拥有的所有功能列表
-	 */
-	public List<Function> queryUserFuncAll(int userid) throws Exception {
-		List<Function> list = new ArrayList<Function>();
-
-		// 查询该用户的权限
-		List<Permission> perms = this.queryUserPerm(userid);
-		// 查询这些权限的功能列表
-
-		// 查询子权限的所有权限
-		for (int i = 0; i < perms.size(); i++) {
-			List<Function> funcs = this.queryPermFuncsAll(perms.get(i).getId());
-			list.addAll(funcs);
-		}
-		return list;
-	}
-
 }

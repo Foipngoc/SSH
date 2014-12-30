@@ -1,216 +1,138 @@
 package com.user.service.impl;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.privilege.dao.User_permission_relationDao;
+import com.privilege.model.Permission;
+import com.privilege.model.User_permission_relation;
+import com.privilege.service.PrivilegeService;
 import com.user.dao.GroupDao;
 import com.user.dao.Group_RelationDao;
 import com.user.dao.Group_User_RelationDao;
-import com.user.dao.UserBasicDao;
-import com.user.dao.UserExtensionDao;
-import com.user.model.Group;
-import com.user.model.Group_Relation;
-import com.user.model.Group_User_Relation;
+import com.user.dao.UserDao;
 import com.user.model.User;
-import com.user.model.UserExtension;
+import com.user.model.UserGroup;
+import com.user.model.UserGroup_User_Relation;
 import com.user.service.UserService;
 
-@Service("userService")
 @Transactional
+@Service("userService")
 public class UserServiceImpl implements UserService {
 	@Resource
-	private UserBasicDao userBasicDao;
-	@Resource
-	private UserExtensionDao userExtensionDao;
-	@Resource
-	private Group_RelationDao group_RelationDao;
+	private GroupDao groupDao;
 	@Resource
 	private Group_User_RelationDao group_User_RelationDao;
 	@Resource
-	private GroupDao groupDao;
+	private Group_RelationDao group_RelationDao;
+	@Resource
+	private UserDao userDao;
+	@Resource
+	private User_permission_relationDao user_permission_relationDao;
+
+	@Resource(name = "privilegeService")
+	private PrivilegeService privilegeService;
 
 	@Override
-	public Group addGroup(Group group) {
-		return groupDao.saveObj(group);
+	public void addUser(User user) throws Exception {
+		this.userDao.save(user);
 	}
 
 	@Override
-	public void delGroup(int groupid) {
-		groupDao.delGroup(groupid);
+	public void delUser(int userid) throws Exception {
+		this.userDao.delUser(userid);
 	}
 
 	@Override
-	public Group modifyGroup(Group group) {
-		return groupDao.updateObj(group);
+	public void modifyUser(User user) throws Exception {
+		this.userDao.update(user);
 	}
 
 	@Override
-	public List<Group> queryLeafGroup() {
-		return groupDao.queryLeafGroup();
+	public User findUser(int userid) throws Exception {
+		return this.userDao.findUnique(new User(), "id", userid);
 	}
 
 	@Override
-	public List<Group> queryLeafGroup(int grouptype) {
-		return groupDao.queryLeafGroup(grouptype);
-	}
-
-	@Override
-	public List<Group> queryRootGroup() {
-		return groupDao.queryRootGroup();
-	}
-
-	@Override
-	public List<Group> queryRootGroup(int grouptype) {
-		return groupDao.queryRootGroup(grouptype);
-	}
-
-	@Override
-	public Group queryGroup(int groupid) {
-		return groupDao.queryGroup(groupid);
-	}
-
-	@Override
-	public List<Group> querySubGroup(int groupid) {
-		return groupDao.querySubGroup(groupid);
-	}
-
-	@Override
-	public List<Group> querySubGroup(int groupid, int grouptype) {
-		return groupDao.querySubGroup(groupid, grouptype);
-	}
-
-	@Override
-	public List<Group> querySubGroupAll(int groupid) {
-		List<Group> groups = new ArrayList<Group>();
-
-		List<Group> subGroups = groupDao.querySubGroup(groupid);
-
-		groups.addAll(subGroups);
-
-		for (int i = 0; i < subGroups.size(); i++) {
-			Group group = subGroups.get(i);
-
-			List<Group> subsubGroups = querySubGroupAll(group.getId());
-			groups.addAll(subsubGroups);
+	public void bindUserGroup(int userid, int groupid) throws Exception {
+		UserGroup_User_Relation userGroup_User_Relation = this.group_User_RelationDao
+				.findUserGroup_User_Relation(groupid, userid);
+		if (userGroup_User_Relation == null) {
+			UserGroup_User_Relation newuserGroup_User_Relation = new UserGroup_User_Relation();
+			newuserGroup_User_Relation.setGroupid(groupid);
+			newuserGroup_User_Relation.setUserid(userid);
+			this.group_User_RelationDao.save(newuserGroup_User_Relation);
 		}
-		return groups;
 	}
 
 	@Override
-	public List<Group> querySubGroupAll(int groupid, int grouptype) {
-		List<Group> groups = new ArrayList<Group>();
+	public void delBindUserGroup(int userid, int groupid) throws Exception {
+		this.group_User_RelationDao.delGroup_User_Relation(groupid, userid);
+	}
 
-		List<Group> subGroups = groupDao.querySubGroup(groupid, grouptype);
+	@Override
+	public void delBindUserGroups(int userid) throws Exception {
+		this.group_User_RelationDao.delGroup_User_Relations(userid);
+	}
 
-		groups.addAll(subGroups);
+	@Override
+	public List<UserGroup> findUserGroups(int userid) throws Exception {
+		return this.group_User_RelationDao.findUserGroups(userid);
+	}
 
-		for (int i = 0; i < subGroups.size(); i++) {
-			Group group = subGroups.get(i);
-
-			List<Group> subsubGroups = querySubGroupAll(group.getId(),
-					grouptype);
-			groups.addAll(subsubGroups);
+	@Override
+	public void bindPermission(int userid, int permid) throws Exception {
+		if (this.user_permission_relationDao.findUser_Perm_relation(userid,
+				permid) == null) {
+			User_permission_relation user_permission_relation = new User_permission_relation();
+			user_permission_relation.setPermid(permid);
+			user_permission_relation.setUserid(userid);
+			this.user_permission_relationDao.save(user_permission_relation);
 		}
-		return groups;
 	}
 
 	@Override
-	public List<Group> queryGroups() {
-		return groupDao.queryGroups();
+	public void delBindPermission(int userid, int permid) throws Exception {
+		this.user_permission_relationDao.delUser_Perm(userid, permid);
 	}
 
 	@Override
-	public List<Group> queryGroups(int grouptype) {
-		return groupDao.queryGroups(grouptype);
+	public void delBindPermissions(int userid) throws Exception {
+		this.user_permission_relationDao.delUser_Perms(userid);
 	}
 
 	@Override
-	public Group_Relation addGroup_Relation(int groupid, int subgroupid) {
-		Group_Relation group_Relation = new Group_Relation();
-
-		group_Relation.setGroupid(groupid);
-		group_Relation.setSubgroupid(subgroupid);
-		return group_RelationDao.saveObj(group_Relation);
+	public List<Permission> findPermissoins(int userid) throws Exception {
+		return this.user_permission_relationDao.findUser_Perms(userid);
 	}
 
 	@Override
-	public void delGroup_Relation(int groupid, int subgroupid) {
-		group_RelationDao.delGroup_Relation(groupid, subgroupid);
-	}
+	public List<Permission> findPermissoins_Recursion(int userid)
+			throws Exception {
+		// 查找用户的权限
+		List<Permission> permissions = this.findPermissoins(userid);
 
-	@Override
-	public Group_User_Relation addGroup_User_Relation(int groupid, int userid) {
-		Group_User_Relation group_User_Relation = new Group_User_Relation();
-		group_User_Relation.setUserid(userid);
-		group_User_Relation.setGroupid(groupid);
-		return group_User_RelationDao.saveObj(group_User_Relation);
-	}
-
-	@Override
-	public void delGroup_User_Relation(int groupid, int userid) {
-		group_User_RelationDao.delGroup_User_Relation(groupid, userid);
-	}
-
-	@Override
-	public List<User> queryGroupUsers(int groupid) {
-		List<Group_User_Relation> group_User_Relations = group_User_RelationDao
-				.queryGroupUsers(groupid);
-
-		List<User> users = new ArrayList<User>();
-		for (int i = 0; i < group_User_Relations.size(); i++) {
-			users.add(queryUser(group_User_Relations.get(i).getUserid()));
+		for (int i = 0; i < permissions.size(); i++) {
+			permissions.addAll(privilegeService
+					.findSubPerms_Recursion(permissions.get(i).getId()));
 		}
-		return users;
-	}
-
-	@Override
-	public List<User> queryGroupUsersAll(int groupid) {
-		List<User> users = new ArrayList<User>();
-		//查询本组下的用户
-		users.addAll(queryGroupUsers(groupid));
-		
-		//查找子组
-		List<Group> groups = querySubGroup(groupid);
-		for (int i = 0; i < groups.size(); i++) {
-			users.addAll(queryGroupUsersAll(groups.get(i).getId()));
+		Map<String, Object> map = new HashMap<String, Object>();
+		Iterator<Permission> it = permissions.iterator();
+		while (it.hasNext()) {
+			Permission permission = it.next();
+			if (map.containsKey("" + permission.getId())) {
+				it.remove();
+			} else {
+				map.put("" + permission.getId(), permission);
+			}
 		}
-		return users;
-	}
-
-	@Override
-	public User addUser(User user) {
-		userBasicDao.saveObj(user.getUserBasic());
-		
-		for (int i = 0; i < user.getUserExtensions().size(); i++) {
-			UserExtension userExtension = user.getUserExtensions().get(i);
-			
-			userExtension.setUserid(user.getUserBasic().getId());
-			userExtensionDao.saveObj(userExtension);
-		}
-		return user;
-	}
-
-	@Override
-	public int delUser(int userid) {
-		userExtensionDao.delUser(userid);
-		userBasicDao.delUser(userid);
-		return 0;
-	}
-
-	@Override
-	public void modifyUser(User user) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public User queryUser(int userid) {
-		// TODO Auto-generated method stub
-		return null;
+		return permissions;
 	}
 }

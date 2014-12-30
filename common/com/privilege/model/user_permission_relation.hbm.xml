@@ -3,12 +3,13 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- 每个class对应一个持久化对象 -->
 <hibernate-mapping>
-	<class name="com.privilege.model.User_permission_relation"
-		table="user_permission_relation">
-		<id name="id" column="id">
+	<class name="com.privilege.model.User_permission_relation" table="user_permission_relation">
+		<id name="id" column="id" type="integer">
 			<generator class="native" />
 		</id>
-		<property name="userid" column="userid"></property>
-		<property name="permid" column="permid" not-null="false"></property>
+		<many-to-one name="userid" column="userid"
+			class="com.user.model.User" />
+		<many-to-one name="permid" column="permid"
+			class="com.privilege.model.Permission" />
 	</class>
 </hibernate-mapping>

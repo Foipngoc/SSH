@@ -1,43 +1,64 @@
 package com.user.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * 用户表
+ * 
+ * @author DongJun
+ * 
+ */
 public class User {
-	private UserBasic userBasic;
-	private List<UserExtension> userExtensions = null;
+	private int id;// 自增ID
+	private String username;// 用户名
+	private String password;// 密码
+	private int usertype;//用户类型
+	private String createtime;//创建时间
+	private int userstatus;//用户状态
 
-	public UserBasic getUserBasic() {
-		return userBasic;
+	public int getId() {
+		return id;
 	}
 
-	public void setUserBasic(UserBasic userBasic) {
-		this.userBasic = userBasic;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public List<UserExtension> getUserExtensions() {
-		return userExtensions;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUserExtensions(List<UserExtension> userExtensions) {
-		this.userExtensions = userExtensions;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-	public void addUserExtension(UserExtension userExtension) {
-		if (userExtensions == null)
-			userExtensions = new ArrayList<UserExtension>();
-
-		userExtensions.add(userExtension);
+	public String getPassword() {
+		return password;
 	}
 
-	public UserExtension getUserExtension(String extValue) {
-		if (userExtensions != null) {
-			for (int i = 0; i < userExtensions.size(); i++) {
-				if (userExtensions.get(i).getExtkey().equals(extValue)) {
-					return userExtensions.get(i);
-				}
-			}
-		}
-		return null;
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public int getUsertype() {
+		return usertype;
+	}
+
+	public void setUsertype(int usertype) {
+		this.usertype = usertype;
+	}
+
+	public String getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(String createtime) {
+		this.createtime = createtime;
+	}
+
+	public int getUserstatus() {
+		return userstatus;
+	}
+
+	public void setUserstatus(int userstatus) {
+		this.userstatus = userstatus;
 	}
 }

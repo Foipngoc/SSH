@@ -18,7 +18,7 @@ public class ExampleService {
 		Example e = new Example();
 		e.setAge(111);
 		e.setName("asd12212fasdf");
-		exampleDao.saveObj(e);
+		exampleDao.save(e);
 	}
 
 	public void setExampleDao(ExampleDao exampleDao) {

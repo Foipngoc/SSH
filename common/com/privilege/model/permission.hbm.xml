@@ -4,11 +4,14 @@
 <!-- 每个class对应一个持久化对象 -->
 <hibernate-mapping>
 	<class name="com.privilege.model.Permission" table="permission">
-		<id name="id" column="id">
+		<id name="id" column="id" type="integer">
 			<generator class="native" />
 		</id>
-		<property name="permname" column="permname"></property>
-		<property name="permtype" column="permtype"></property>
-		<property name="permdesc" column="permdesc"></property>
+		<property name="permname" column="permname" type="string"
+			length="20" not-null="true"></property>
+		<property name="permtype" column="permtype" type="int"
+			not-null="true"></property>
+		<property name="permdesc" column="permdesc" type="string"
+			length="255"></property>
 	</class>
 </hibernate-mapping>

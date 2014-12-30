@@ -1,7 +1,9 @@
-package com.common.dao;
+package com.common.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.common.dao.BaseExpression;
 
 /**
  * SQL适配器

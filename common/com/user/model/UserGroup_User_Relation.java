@@ -1,6 +1,6 @@
 package com.user.model;
 
-public class Group_User_Relation {
+public class UserGroup_User_Relation {
 	private int id;//组用户ID
 	private int groupid;//组ID
 	private int userid;//用户ID

@@ -25,5 +25,6 @@
 	
 	<!-- 示例 -->
 	<include file="com/example/action/examplestructs.xml"></include>
+	
 </struts>
 

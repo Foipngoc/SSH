@@ -3,14 +3,14 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- 每个class对应一个持久化对象 -->
 <hibernate-mapping>
-	<class name="com.privilege.model.Permission_function_relation"
-		table="permission_function_relation">
+	<class name="com.user.model.UserGroup" table="UserGroup">
 		<id name="id" column="id" type="integer">
 			<generator class="native" />
 		</id>
-		<many-to-one name="permid" column="permid" not-null="true"
-			class="com.privilege.model.Permission" />
-		<many-to-one name="funcid" column="funcid" not-null="true"
-			class="com.privilege.model.Function" />
+		<property name="groupname" column="groupname" type="string"
+			length="64"></property>
+		<property name="grouptype" column="grouptype" type="integer"></property>
+		<property name="groupdesc" column="groupdesc" type="string"
+			length="255"></property>
 	</class>
 </hibernate-mapping>

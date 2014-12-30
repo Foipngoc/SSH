@@ -1,6 +1,6 @@
 package com.user.model;
 
-public class Group {
+public class UserGroup {
 	private int id;// 分组ID
 	private String groupname;//分组名
 	private int grouptype;//分组类型
