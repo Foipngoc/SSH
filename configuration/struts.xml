@@ -20,8 +20,6 @@
 		</global-exception-mappings>
 	</package>
 	
-	<!-- 示例 -->
-	<include file="com/example/action/examplestructs.xml"></include>
 	
 </struts>
 
