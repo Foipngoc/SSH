@@ -20,9 +20,6 @@
 		</global-exception-mappings>
 	</package>
 	
-	<!-- 产品信息接口 -->
-	<include file="com/productinfo/action/productinfostructs.xml"></include>
-	
 	<!-- 示例 -->
 	<include file="com/example/action/examplestructs.xml"></include>
 	

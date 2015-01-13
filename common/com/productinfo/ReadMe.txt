@@ -1,0 +1,5 @@
+本服务接口提供产品信息查询
+
+产品信息定义在configuration中productinfo.properties文档中。
+
+您可以修改productinfo.properties文档来自定义产品信息，如app信息，pc后台信息，pc前台信息等。

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- 每个class对应一个持久化对象 -->
+<hibernate-mapping>
+	<class name="com.userprivilege.model.user.UserGroup" table="UserGroup">
+		<id name="id" column="id" type="integer">
+			<generator class="native" />
+		</id>
+		<property name="groupname" column="groupname" type="string"
+			length="64" />
+		<property name="grouptype" column="grouptype" type="integer" />
+		<property name="groupdesc" column="groupdesc" type="string"
+			length="255" />
+	</class>
+</hibernate-mapping>
