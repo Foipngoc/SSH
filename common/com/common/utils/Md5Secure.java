@@ -4,6 +4,11 @@ import java.security.MessageDigest;
 
 
 public class Md5Secure{
+	/**
+	 * 将plaintext转化为md5值
+	 * @param plaintext
+	 * @return
+	 */
 	public static String encode(String plaintext) {
 		if (plaintext != null) {
 			try {

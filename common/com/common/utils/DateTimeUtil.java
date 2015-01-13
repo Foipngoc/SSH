@@ -53,6 +53,10 @@ public class DateTimeUtil {
 		return date;
 	}
 
+	/**
+	 * 获得当前时间
+	 * @return
+	 */
 	public static Date getCurrDate() {
 		return new Date();
 	}
