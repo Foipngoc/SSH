@@ -485,9 +485,9 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 */
 	protected BaseQueryRecords find(HQL hql, Integer page, Integer rows) {
 		try {
-			if (page < 1)
+			if (page == null || page < 1)
 				page = 1;
-			if (rows < 1)
+			if (rows == null || rows < 1)
 				rows = 1;
 			Query q = getCurrentSession().createQuery(hql.toString());
 			int total = q.list().size();
@@ -543,9 +543,9 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 */
 	protected BaseQueryRecords find(SQL sql, Integer page, Integer rows) {
 		try {
-			if (page < 1)
+			if (page == null || page < 1)
 				page = 1;
-			if (rows < 1)
+			if (rows == null || rows < 1)
 				rows = 1;
 			Query q = getCurrentSession().createSQLQuery(sql.toString());
 			int total = q.list().size();
