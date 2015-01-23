@@ -153,5 +153,6 @@
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/cxf-xjc-runtime-3.0.2.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/cxf-xjc-ts-3.0.2.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/joda-time-2.2.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/struts2-convention-plugin-2.3.20.jar"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>
