@@ -25,7 +25,7 @@ public class BaseAction extends ActionSupport implements SessionAware,
 	protected Map<String, Object> request; // request对象
 	protected Map<String, Object> session; // session对象
 	protected Map<String, Object> application; // application对象
-	protected BaseResult result; //通用结果返回
+	protected BaseResult baseResult; //通用结果返回
 
 	@Override
 	public void setApplication(Map<String, Object> application) {
@@ -42,12 +42,12 @@ public class BaseAction extends ActionSupport implements SessionAware,
 		this.session = session;
 	}
 
-	public BaseResult getResult() {
-		return result;
+	public BaseResult getBaseResult() {
+		return baseResult;
 	}
-
-	public void setResult(BaseResult result) {
-		this.result = result;
+	
+	public void setBaseResult(BaseResult baseResult) {
+		this.baseResult = baseResult;
 	}
 
 	/**
