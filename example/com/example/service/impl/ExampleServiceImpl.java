@@ -1,17 +1,16 @@
 package com.example.service.impl;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
 import com.common.dao.BaseQueryRecords;
+import com.common.service.BaseService;
 import com.example.dao.ExampleDao;
 import com.example.service.ExampleService;
 
 @Service("exampleservice")
-@Transactional
-public class ExampleServiceImpl implements ExampleService{
+public class ExampleServiceImpl extends BaseService implements ExampleService {
 
 	@Resource(name="exampledao")
 	private ExampleDao exampleDao;
