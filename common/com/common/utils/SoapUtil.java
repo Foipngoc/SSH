@@ -1,14 +1,11 @@
 package com.common.utils;
 
-import java.io.IOException;
 import java.util.Map;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
-import org.ksoap2.transport.ServiceConnection;
-import org.ksoap2.transport.ServiceConnectionSE;
 
 /**
  * webservice请求
@@ -50,7 +47,7 @@ public class SoapUtil {
 		envelope.dotNet = true;
 
 		envelope.setOutputSoapObject(request);
-		HttpTransportSE transport = new MyHttpTransport(url, 5000);// 5s超时
+		HttpTransportSE transport = new HttpTransportSE(url, 5000);// 5s超时
 
 		Object result = null;
 
@@ -89,25 +86,4 @@ public class SoapUtil {
 		}
 		return "";
 	}
-
-	public static class MyHttpTransport extends HttpTransportSE {
-		private int timeout = 5000;// 默认超时
-
-		public MyHttpTransport(String url) {
-			super(url);
-		}
-
-		public MyHttpTransport(String url, int timeout) {
-			super(url);
-			this.timeout = timeout;
-		}
-
-		@Override
-		protected ServiceConnection getServiceConnection() throws IOException {
-			ServiceConnectionSE serviceConnectionSE = new ServiceConnectionSE(
-					url, timeout);
-			return serviceConnectionSE;
-		}
-	}
-
 }
