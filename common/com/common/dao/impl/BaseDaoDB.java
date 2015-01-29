@@ -114,15 +114,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 */
 	@Override
 	public BaseQueryRecords find(E o) {
-		try {
-			Criteria criteria = getCurrentSession()
-					.createCriteria(o.getClass());
-			List<?> list = criteria.list();
-			return new BaseQueryRecords(list);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
+		return this.find(o, -1, -1);
 	}
 
 	/**
@@ -137,21 +129,20 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return: 对象集
 	 */
 	@Override
-	public BaseQueryRecords find(E o, Integer page, Integer rows) {
+	public BaseQueryRecords find(E o, int page, int rows) {
 		try {
-			if (page == null || page < 1)
-				page = 1;
-			if (rows == null || rows < 1)
-				rows = 1;
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());
-			int total = criteria.list().size();
 
-			criteria.setFirstResult((page - 1) * rows);
-			criteria.setMaxResults(rows);
-			List<?> list = criteria.list();
-
-			return new BaseQueryRecords(list, total, page, rows);
+			// page和rows 都 >0 时返回分页数据
+			if (page > 0 && rows > 0) {
+				int total = criteria.list().size();
+				criteria.setFirstResult((page - 1) * rows);
+				criteria.setMaxResults(rows);
+				return new BaseQueryRecords(criteria.list(), total, page, rows);
+			} else {
+				return new BaseQueryRecords(criteria.list());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -190,12 +181,8 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return： 对象集
 	 */
 	@Override
-	public BaseQueryRecords find(E o, String key, Object value, Integer page,
-			Integer rows) {
-		if (page == null || page < 1)
-			page = 1;
-		if (page == null || rows < 1)
-			rows = 1;
+	public BaseQueryRecords find(E o, String key, Object value, int page,
+			int rows) {
 		return this.find(o, page, rows, Restrictions.eq(key, value));
 	}
 
@@ -212,7 +199,8 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 */
 	@Override
 	public E findUnique(E o, String key, Object value) {
-		List<E> lists = (List<E>) find(o, key, value).getList();
+		List<E> lists = (List<E>) this.find(o, 1, 1,
+				Restrictions.eq(key, value)).getList();
 		if (lists.size() > 0) {
 			return lists.get(0);
 		}
@@ -288,13 +276,9 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : 查询条件
 	 * @return: 对象集
 	 */
-	protected BaseQueryRecords find(E o, Integer page, Integer rows,
+	protected BaseQueryRecords find(E o, int page, int rows,
 			Criterion... contidions) {
 		try {
-			if (page == null || page < 1)
-				page = 1;
-			if (rows == null || rows < 1)
-				rows = 1;
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());
 
@@ -302,14 +286,14 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 				criteria.add(contidions[i]);
 			}
 
-			int total = criteria.list().size();
-
-			criteria.setFirstResult((page - 1) * rows);
-			criteria.setMaxResults(rows);
-
-			List<?> list = criteria.list();
-
-			return new BaseQueryRecords(list, total, page, rows);
+			if (page > 0 && rows > 0) {
+				int total = criteria.list().size();
+				criteria.setFirstResult((page - 1) * rows);
+				criteria.setMaxResults(rows);
+				return new BaseQueryRecords(criteria.list(), total, page, rows);
+			} else {
+				return new BaseQueryRecords(criteria.list());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -326,19 +310,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return: 对象集
 	 */
 	protected BaseQueryRecords find(E o, Criterion... conditions) {
-		try {
-			Criteria criteria = getCurrentSession()
-					.createCriteria(o.getClass());
-
-			for (int i = 0; i < conditions.length; i++) {
-				criteria.add(conditions[i]);
-			}
-			List<?> list = criteria.list();
-			return new BaseQueryRecords(list);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
+		return this.find(o, -1, -1, conditions);
 	}
 
 	/**
@@ -351,7 +323,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return: 查到到的对象，没有查到找返回 null
 	 */
 	protected E findUnique(E o, Criterion... conditions) {
-		List<E> lists = (List<E>) find(o, conditions).getList();
+		List<E> lists = (List<E>) find(o, 1, 1, conditions).getList();
 		if (lists.size() > 0) {
 			return lists.get(0);
 		}
@@ -465,7 +437,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return： 记录
 	 */
 	protected Object findUnique(HQL hql) {
-		List<?> lists = find(hql).getList();
+		List<?> lists = find(hql, 1, 1).getList();
 		if (lists.size() > 0) {
 			return lists.get(0);
 		}
@@ -483,21 +455,19 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            ： 每页行数
 	 * @return： 数据集
 	 */
-	protected BaseQueryRecords find(HQL hql, Integer page, Integer rows) {
+	protected BaseQueryRecords find(HQL hql, int page, int rows) {
 		try {
-			if (page == null || page < 1)
-				page = 1;
-			if (rows == null || rows < 1)
-				rows = 1;
 			Query q = getCurrentSession().createQuery(hql.toString());
-			int total = q.list().size();
 
-			if (page != -1 && rows != -1) {
+			// page和rows 都 >0 时返回分页数据
+			if (page > 0 && rows > 0) {
+				int total = q.list().size();
 				q.setFirstResult((page - 1) * rows);
 				q.setMaxResults(rows);
+				return new BaseQueryRecords(q.list(), total, page, rows);
+			} else {
+				return new BaseQueryRecords(q.list());
 			}
-			List<?> list = q.list();
-			return new BaseQueryRecords(list, total, page, rows);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -523,7 +493,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return: 数据
 	 */
 	protected Object findUnique(SQL sql) {
-		List<?> lists = find(sql).getList();
+		List<?> lists = find(sql, 1, 1).getList();
 		if (lists.size() > 0) {
 			return lists.get(0);
 		}
@@ -541,20 +511,19 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            ： 每页行数
 	 * @return: 数据集
 	 */
-	protected BaseQueryRecords find(SQL sql, Integer page, Integer rows) {
+	protected BaseQueryRecords find(SQL sql, int page, int rows) {
 		try {
-			if (page == null || page < 1)
-				page = 1;
-			if (rows == null || rows < 1)
-				rows = 1;
 			Query q = getCurrentSession().createSQLQuery(sql.toString());
-			int total = q.list().size();
-			if (page != -1 && rows != -1) {
+
+			// page和rows 都 >0 时返回分页数据
+			if (page > 0 && rows > 0) {
+				int total = q.list().size();
 				q.setFirstResult((page - 1) * rows);
 				q.setMaxResults(rows);
+				return new BaseQueryRecords(q.list(), total, page, rows);
+			} else {
+				return new BaseQueryRecords(q.list());
 			}
-			List<?> list = q.list();
-			return new BaseQueryRecords(list, total, page, rows);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
