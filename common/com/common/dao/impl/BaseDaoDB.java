@@ -200,7 +200,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	@Override
 	public E findUnique(E o, String key, Object value) {
 		List<E> lists = (List<E>) this.find(o, 1, 1,
-				Restrictions.eq(key, value)).getList();
+				Restrictions.eq(key, value)).getData();
 		if (lists.size() > 0) {
 			return lists.get(0);
 		}
@@ -323,7 +323,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return: 查到到的对象，没有查到找返回 null
 	 */
 	protected E findUnique(E o, Criterion... conditions) {
-		List<E> lists = (List<E>) find(o, 1, 1, conditions).getList();
+		List<E> lists = (List<E>) find(o, 1, 1, conditions).getData();
 		if (lists.size() > 0) {
 			return lists.get(0);
 		}
@@ -437,7 +437,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return： 记录
 	 */
 	protected Object findUnique(HQL hql) {
-		List<?> lists = find(hql, 1, 1).getList();
+		List<?> lists = find(hql, 1, 1).getData();
 		if (lists.size() > 0) {
 			return lists.get(0);
 		}
@@ -493,7 +493,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return: 数据
 	 */
 	protected Object findUnique(SQL sql) {
-		List<?> lists = find(sql, 1, 1).getList();
+		List<?> lists = find(sql, 1, 1).getData();
 		if (lists.size() > 0) {
 			return lists.get(0);
 		}

@@ -9,7 +9,7 @@ import java.util.List;
  * 
  */
 public class BaseQueryRecords {
-	private List<?> list;// 返回数据
+	private List<?> data;// 返回数据
 	private int total;// 记录总数
 	private int page;// 页码
 	private int rows;// 每页记录行数
@@ -19,28 +19,20 @@ public class BaseQueryRecords {
 
 	}
 
-	public BaseQueryRecords(List<?> list, int total, int page, int rows) {
-		this.list = list;
+	public BaseQueryRecords(List<?> data, int total, int page, int rows) {
+		this.data = data;
 		this.total = total;
 		this.page = page;
 		this.rows = rows;
 		this.pages = generatePages(this.total, this.rows);
 	}
 
-	public BaseQueryRecords(List<?> list) {
-		this.list = list;
-		this.total = list.size();
+	public BaseQueryRecords(List<?> data) {
+		this.data = data;
+		this.total = data.size();
 		this.page = 1;
 		this.rows = this.total;
 		this.pages = generatePages(this.total, this.rows);
-	}
-
-	public List<?> getList() {
-		return list;
-	}
-
-	public void setList(List<?> list) {
-		this.list = list;
 	}
 
 	public int getTotal() {
@@ -75,18 +67,19 @@ public class BaseQueryRecords {
 		this.pages = pages;
 	}
 
-	/**
-	 * 根据
-	 * 
-	 * @param total
-	 * @param rows
-	 * @return
-	 */
-	public static int generatePages(int total, int rows) {
+	private int generatePages(int total, int rows) {
 		int pages = total / rows;
 		if (total % rows != 0) {
 			pages++;
 		}
 		return pages;
+	}
+
+	public List<?> getData() {
+		return data;
+	}
+
+	public void setData(List<?> data) {
+		this.data = data;
 	}
 }
