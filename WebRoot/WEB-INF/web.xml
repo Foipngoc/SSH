@@ -5,6 +5,10 @@
 	id="WebApp_ID" version="3.0">
 	<display-name>SSH</display-name>
 	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>SSH</param-value>
+	</context-param>
+	<context-param>
 		<param-name>log4jConfigLocation</param-name>
 		<param-value>classpath:log4j.properties</param-value>
 	</context-param>
