@@ -1,0 +1,16 @@
+﻿@charset "utf-8";
+
+.Wdate {
+	padding: 0 5px;
+	width: 202px;
+	height: 27px;
+	line-height:27px;
+	vertical-align:middle;
+	border: solid 1px #d8d8d8;
+	background: #fff url(datePicker.gif) no-repeat right;
+}
+
+.WdateFmtErr {
+	font-weight: bold;
+	color: red;
+}

@@ -1,0 +1,43 @@
+@CHARSET "UTF-8";
+
+/*table列表*/
+.listTable {
+	margin: 0;
+	padding: 0;
+	table-layout: fixed;
+	width: 100%;
+	text-align: center;
+}
+
+.listTable  th {
+	font-size: 12px;
+	height: 36px;
+	line-height: 36px;
+	vertical-align: middle;
+	padding: 0;
+	background-color: #eeedfc;
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+	overflow: hidden; /* 超出的部分隐藏起来 */
+	white-space: nowrap; /* 不显示的地方用省略号...代替 */
+	text-overflow: ellipsis; /* 支持 IE */
+	-o-text-overflow: ellipsis;
+	color: #5c5c5c;
+}
+
+
+.listTable td {
+	padding: 0;
+	height: 36px;
+	line-height: 36px;
+	vertical-align: middle;
+	border-style: solid;
+	border-width: 0 0 1px 0;
+	border-color: #cccccc;
+	overflow: hidden; /* 超出的部分隐藏起来 */
+	white-space: nowrap; /* 不显示的地方用省略号...代替 */
+	text-overflow: ellipsis; /* 支持 IE */
+	-o-text-overflow: ellipsis;
+	color: #333
+}
+

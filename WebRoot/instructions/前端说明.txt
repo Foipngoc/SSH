@@ -1,0 +1,13 @@
+css：
+1.css\common\loadingDiv.css    弹出框样式
+2.css\common\table.css      表格样式
+3.css\common\style.css      通用样式
+
+
+js：
+1.js\common\cookie.js   cookie的操作
+2.js\common\jquery-1.10.2.min.js jquery
+3.js\common\jquery-ui-1.8.16.custom.css、js\common\jquery-ui-1.8.16.custom.min.js自动匹配的样式和功能
+4.js\common\json2.js 定义JSON
+5.js\common\paging.js   分页
+6.js\common\ScreenSize.js 屏幕尺寸
