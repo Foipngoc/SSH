@@ -17,11 +17,11 @@ import com.example.service.ExampleService;
 @Namespace("/example")
 public class ExampleAction extends BaseAction {
 
-	@Resource(name="exampleservice")
+	@Resource(name = "exampleservice")
 	private ExampleService exampleService;
 	private int page;
 	private int rows;
-	
+
 	/**
 	 * 
 	 */
@@ -29,14 +29,11 @@ public class ExampleAction extends BaseAction {
 	private String input;
 	private BaseResult result;
 
-	@Action(value = "doaction", results = { 
-			@Result(name = "json", type = "json", params = {
-			"ignoreHierarchy", "false" })//用于返回父类的属性
-			})
+	@Action(value = "doaction", results = { @Result(name = "json", type = "json")})
 	public String doAction() {
 		if (input != null && input != "") {
 			this.baseResult = new BaseResult(1, "example");
-			this.result = new BaseResult(1,"examples");
+			this.result = new BaseResult(1, "examples");
 			this.result.setObj(this.exampleService.getExamples(page, rows));
 		}
 		return "json";
@@ -45,27 +42,27 @@ public class ExampleAction extends BaseAction {
 	public void setInput(String input) {
 		this.input = input;
 	}
-	
+
 	public BaseResult getResult() {
 		return result;
 	}
-	
+
 	public void setResult(BaseResult result) {
 		this.result = result;
 	}
-	
+
 	public int getPage() {
 		return page;
 	}
-	
+
 	public void setPage(int page) {
 		this.page = page;
 	}
-	
+
 	public int getRows() {
 		return rows;
 	}
-	
+
 	public void setRows(int rows) {
 		this.rows = rows;
 	}
