@@ -2,6 +2,10 @@ package com.common.action;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ApplicationAware;
 import org.apache.struts2.interceptor.RequestAware;
 import org.apache.struts2.interceptor.SessionAware;
@@ -29,7 +33,7 @@ public class BaseAction extends ActionSupport implements SessionAware,
 	protected Map<String, Object> request; // request对象
 	protected Map<String, Object> session; // session对象
 	protected Map<String, Object> application; // application对象
-	protected BaseResult baseResult; //通用结果返回
+	protected BaseResult baseResult; // 通用结果返回
 
 	@Override
 	public void setApplication(Map<String, Object> application) {
@@ -49,9 +53,40 @@ public class BaseAction extends ActionSupport implements SessionAware,
 	public BaseResult getBaseResult() {
 		return baseResult;
 	}
-	
+
 	public void setBaseResult(BaseResult baseResult) {
 		this.baseResult = baseResult;
+	}
+
+	public Map<String, Object> getSession() {
+		return session;
+	}
+
+	/**
+	 * 获得HttpServletRequest
+	 * 
+	 * @return HttpServletRequest
+	 */
+	public HttpServletRequest getHttpServletRequest() {
+		return ServletActionContext.getRequest();
+	}
+
+	/**
+	 * 获得HttpSession
+	 * 
+	 * @return HttpSession
+	 */
+	public HttpSession getHttpSession() {
+		return getHttpServletRequest().getSession();
+	}
+
+	/**
+	 * 获得sessionID
+	 * 
+	 * @return
+	 */
+	public String getSessionID() {
+		return getHttpSession().getId();
 	}
 
 	/**
