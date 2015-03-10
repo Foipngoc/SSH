@@ -69,13 +69,43 @@ public class ValidateCode {
 	 * @return
 	 */
 	public static String genValidateCode(int length) {
+		return genValidateCode(randomString, length);
+	}
+
+	/**
+	 * 生成验证码
+	 * 
+	 * @param seedstring
+	 *            验证码种子
+	 * @param length
+	 * @return
+	 */
+	public static String genValidateCode(String seedstring, int length) {
 		String code = "";
 		Random random = new Random(new Date().getTime());
 		for (int i = 0; i < length; i++) {
-			code += String.valueOf(randomString.charAt(random
-					.nextInt(randomString.length())));
+			code += String.valueOf(seedstring.charAt(random.nextInt(seedstring
+					.length())));
 		}
 		return code;
+	}
+
+	/**
+	 * 生成验证码图片缓存
+	 * 
+	 * @param seedstring
+	 *            验证码种子
+	 * @param length
+	 *            验证码长度
+	 * @param imgwidth
+	 *            图片宽度
+	 * @param imgheight
+	 *            图片长度
+	 * @return
+	 */
+	public static ValidatecodeImage genValidateCodeImage(int length,
+			int imgwidth, int imgheight) {
+		return genValidateCodeImage(randomString, length, imgwidth, imgheight);
 	}
 
 	/**
@@ -89,8 +119,8 @@ public class ValidateCode {
 	 *            图片长度
 	 * @return
 	 */
-	public static ValidatecodeImage genValidateCodeImage(int length,
-			int imgwidth, int imgheight) {
+	public static ValidatecodeImage genValidateCodeImage(String seedstring,
+			int length, int imgwidth, int imgheight) {
 		BufferedImage image = new BufferedImage(imgwidth, imgheight,
 				BufferedImage.TYPE_INT_RGB);// 在内存中创建图象
 		Graphics2D raphics = (Graphics2D) image.getGraphics();// 获取图形上下文
@@ -108,7 +138,7 @@ public class ValidateCode {
 			raphics.drawLine(x, y, x, y);
 		}
 
-		String validcode = genValidateCode(length);
+		String validcode = genValidateCode(seedstring, length);
 		// 取随机产生的认证码(length位数字)
 		for (int i = 0; i < length; i++) {
 			char code = validcode.charAt(i);
@@ -136,9 +166,28 @@ public class ValidateCode {
 	 */
 	public static ValidatecodeInputstream genValidateCodeInputStream(
 			int length, int imgwidth, int imgheight) {
-		InputStream inputStream = null;
-		ValidatecodeImage img = genValidateCodeImage(length, imgwidth,
+		return genValidateCodeInputStream(randomString, length, imgwidth,
 				imgheight);
+	}
+
+	/**
+	 * 生成验证码图片输入流
+	 * 
+	 * @param seedstring
+	 *            验证码种子
+	 * @param length
+	 *            验证码长度
+	 * @param imgwidth
+	 *            图片宽度
+	 * @param imgheight
+	 *            图片长度
+	 * @return
+	 */
+	public static ValidatecodeInputstream genValidateCodeInputStream(
+			String seedstring, int length, int imgwidth, int imgheight) {
+		InputStream inputStream = null;
+		ValidatecodeImage img = genValidateCodeImage(seedstring, length,
+				imgwidth, imgheight);
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
 			ImageOutputStream ios = ImageIO.createImageOutputStream(bos);
