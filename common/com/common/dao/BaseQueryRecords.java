@@ -31,7 +31,11 @@ public class BaseQueryRecords {
 		this.data = data;
 		this.total = data.size();
 		this.page = 1;
-		this.rows = this.total;
+		//解決  当数据为空的时候，  出现除0错误
+		if (this.total == 0)
+			this.rows = 1;
+		else
+			this.rows = this.total;
 		this.pages = generatePages(this.total, this.rows);
 	}
 
