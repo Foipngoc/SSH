@@ -2,7 +2,10 @@ package com.common.service;
 
 import javax.transaction.Transactional;
 
+import org.junit.runner.RunWith;
 import org.springframework.stereotype.Service;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.common.utils.CXFFilter;
 
@@ -14,6 +17,8 @@ import com.common.utils.CXFFilter;
  */
 @Service("baseService")
 @Transactional
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath:applicationContext.xml")
 public class BaseService {
 	/**
 	 * 获得当前项目上下文路径
