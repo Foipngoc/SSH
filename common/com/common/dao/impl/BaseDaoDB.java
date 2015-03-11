@@ -12,14 +12,19 @@ import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.junit.runner.Result;
+import org.junit.runner.RunWith;
 import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.common.dao.BaseDao;
 import com.common.dao.BaseQueryRecords;
 import com.common.utils.CXFFilter;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath:applicationContext.xml")
 @Repository("baseDaoDB")
 // 默认声明baseDao Bean.
 @SuppressWarnings("all")
