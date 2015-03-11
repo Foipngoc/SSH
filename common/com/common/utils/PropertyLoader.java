@@ -21,7 +21,8 @@ public class PropertyLoader {
 	 * @param key
 	 * @return
 	 */
-	public static String getProperty(String filename, String key) {
+	public static String getProperty(String filename, String key,
+			String defaultvalue) {
 		InputStream inputFile;
 		Properties propertie;
 
@@ -32,9 +33,7 @@ public class PropertyLoader {
 			propertie.load(inputFile);
 			String propertyStr = propertie.getProperty(key);
 			if (propertyStr != null)
-				return new String(propertyStr.getBytes("ISO-8859-1"),"UTF-8");
-			else
-				return "";
+				return new String(propertyStr.getBytes("ISO-8859-1"), "UTF-8");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -44,6 +43,6 @@ public class PropertyLoader {
 				e.printStackTrace();
 			}
 		}
-		return "";
+		return defaultvalue;
 	}
 }

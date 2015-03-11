@@ -4,6 +4,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 时间工具
+ * 
+ * @author DJ
+ *
+ */
 public class DateTimeUtil {
 
 	/**

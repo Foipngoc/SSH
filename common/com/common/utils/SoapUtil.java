@@ -82,8 +82,8 @@ public class SoapUtil {
 			return CallWebService(url, namespace, methodName, requestParams)
 					.toString();
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
-		return "";
+		return null;
 	}
 }

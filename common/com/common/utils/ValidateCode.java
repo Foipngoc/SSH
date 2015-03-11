@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
 
 /**
- * 验证码
+ * 验证码生成工具
  */
 public class ValidateCode {
 	private static String randomString = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 图片上的字符串
@@ -73,7 +73,7 @@ public class ValidateCode {
 	}
 
 	/**
-	 * 生成验证码
+	 * 使用种子生成验证码
 	 * 
 	 * @param seedstring
 	 *            验证码种子
@@ -109,7 +109,7 @@ public class ValidateCode {
 	}
 
 	/**
-	 * 生成验证码图片缓存
+	 * 使用种子生成验证码图片缓存
 	 * 
 	 * @param length
 	 *            验证码长度
@@ -171,7 +171,7 @@ public class ValidateCode {
 	}
 
 	/**
-	 * 生成验证码图片输入流
+	 * 使用种子生成验证码图片输入流
 	 * 
 	 * @param seedstring
 	 *            验证码种子
@@ -203,6 +203,12 @@ public class ValidateCode {
 		return validcodeInputstream;
 	}
 
+	/**
+	 * 随机颜色
+	 * @param fc
+	 * @param bc
+	 * @return
+	 */
 	private static Color getRandColor(int fc, int bc) { // 给定范围获得随机颜色
 		Random random = new Random(new Date().getTime());
 		if (fc > 255)

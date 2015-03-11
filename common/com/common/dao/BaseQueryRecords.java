@@ -15,10 +15,21 @@ public class BaseQueryRecords {
 	private int rows;// 每页记录行数
 	private int pages;// 总页数
 
+	/**
+	 * 默认构造
+	 */
 	public BaseQueryRecords() {
 
 	}
 
+	/**
+	 * 构造函数， 指定分页信息
+	 * 
+	 * @param data
+	 * @param total
+	 * @param page
+	 * @param rows
+	 */
 	public BaseQueryRecords(List<?> data, int total, int page, int rows) {
 		this.data = data;
 		this.total = total;
@@ -27,6 +38,11 @@ public class BaseQueryRecords {
 		this.pages = generatePages(this.total, this.rows);
 	}
 
+	/**
+	 * 构造函数， 默认数据页数为1
+	 * 
+	 * @param data
+	 */
 	public BaseQueryRecords(List<?> data) {
 		this.data = data;
 		this.total = data.size();
@@ -71,6 +87,13 @@ public class BaseQueryRecords {
 		this.pages = pages;
 	}
 
+	/**
+	 * 通过总数与每页行数获得总页数
+	 * 
+	 * @param total
+	 * @param rows
+	 * @return
+	 */
 	private int generatePages(int total, int rows) {
 		int pages = total / rows;
 		if (total % rows != 0) {

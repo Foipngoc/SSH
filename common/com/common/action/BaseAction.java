@@ -17,8 +17,11 @@ import com.opensymphony.xwork2.ActionSupport;
 
 /**
  * BaseAction 提供访问用户action的通用类。
+ * 任何Action层类需要继承该类。
  * 
- * 支持session,request,application的使用； 支持session对象中变量的存取； 支持通用结果集的返回；
+ * 支持session,request,application的使用；
+ * 支持session对象中变量的存取； 
+ * 支持通用结果集的返回；
  * 
  * @author DongJun
  * 

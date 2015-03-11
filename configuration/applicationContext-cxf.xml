@@ -13,6 +13,7 @@
 	<import resource="classpath:META-INF/cxf/cxf.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 	
+	<!-- webservice示例配置 -->
 	<jaxws:endpoint id="webserviceexample"
 		implementor="com.webserviceExample.WebServiceExample" address="/webserviceexample" />
 	

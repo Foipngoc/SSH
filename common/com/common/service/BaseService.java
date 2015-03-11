@@ -6,6 +6,12 @@ import org.springframework.stereotype.Service;
 
 import com.common.utils.CXFFilter;
 
+/**
+ * BaseService已实现事务，继承该类自动继承事务
+ * 
+ * @author DJ
+ *
+ */
 @Service("baseService")
 @Transactional
 public class BaseService {

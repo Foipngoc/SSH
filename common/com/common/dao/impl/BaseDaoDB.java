@@ -37,6 +37,10 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 		this.sessionFactory = sessionFactory;
 	}
 
+	/**
+	 * 获得当前的hibernate session。
+	 * @return
+	 */
 	protected Session getCurrentSession() {
 		return sessionFactory.getCurrentSession();
 	}
