@@ -12,6 +12,7 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.common.utils.CXFFilter;
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
@@ -146,5 +147,13 @@ public class BaseAction extends ActionSupport implements SessionAware,
 	 */
 	public void removeSessionParam(String key) {
 		this.session.remove(key);
+	}
+	
+	/**
+	 * 获得当前项目上下文路径
+	 * @return
+	 */
+	public String getContextPath() {
+		return CXFFilter.contextPath;
 	}
 }

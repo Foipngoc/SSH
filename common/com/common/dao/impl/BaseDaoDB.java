@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import com.common.dao.BaseDao;
 import com.common.dao.BaseQueryRecords;
+import com.common.utils.CXFFilter;
 
 @Repository("baseDaoDB")
 // 默认声明baseDao Bean.
@@ -596,4 +597,11 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 		return ret;
 	}
 
+	/**
+	 * 获得当前项目上下文路径
+	 * @return
+	 */
+	protected String getContextPath() {
+		return CXFFilter.contextPath;
+	}
 }
