@@ -24,14 +24,14 @@ public class PropertyLoader {
 	public static String getProperty(String filename, String key,
 			String defaultvalue) {
 		InputStream inputFile;
-		Properties propertie;
+		Properties properties;
 
-		propertie = new Properties();
+		properties = new Properties();
 		inputFile = PropertyUtil.class.getClassLoader().getResourceAsStream(
 				filename);
 		try {
-			propertie.load(inputFile);
-			String propertyStr = propertie.getProperty(key);
+			properties.load(inputFile);
+			String propertyStr = properties.getProperty(key);
 			if (propertyStr != null)
 				return new String(propertyStr.getBytes("ISO-8859-1"), "UTF-8");
 		} catch (Exception e) {
@@ -44,5 +44,30 @@ public class PropertyLoader {
 			}
 		}
 		return defaultvalue;
+	}
+
+	/**
+	 * 读取属性文件中的属性
+	 */
+	public static Properties getProperty(String propertiesFilename) {
+		InputStream inputFile;
+		Properties properties;
+
+		properties = new Properties();
+		inputFile = PropertyUtil.class.getClassLoader().getResourceAsStream(
+				propertiesFilename);
+		try {
+			properties.load(inputFile);
+			return properties;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				inputFile.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 }
