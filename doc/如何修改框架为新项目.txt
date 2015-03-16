@@ -1,0 +1,8 @@
+将SSH项目修改为TEST
+
+1. 从服务器上将SSH项目下载到本地
+2. 将本地SSH目录修改成项目名如TEST
+3. 将TEST导入到Eclipse目录中
+4. 修改项目名为TEST， Package Explorer --> 项目名上F2 --> 修改为TEST
+5. 修改项目部署名为TEST，右键项目名 --> Properties --> My Eclipse --> Project Facets --> Web --> 将Web Context root修改为/TEST
+6. 修改项目web.xml， 打开WebRoot/WEB-INF/web.xml --> 将所有SSH字符串换成TEST
