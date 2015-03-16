@@ -120,7 +120,7 @@ public class HibernateUtil {
 	 * @return
 	 */
 	public static SessionFactory getSessionFactory(String propertiesFilename) {
-		Properties properties = PropertyLoader.getProperty(propertiesFilename);
+		Properties properties = PropertyLoader.getProperties(propertiesFilename);
 		return getSessionFactory(properties);
 	}
 
