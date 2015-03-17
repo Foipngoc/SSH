@@ -1,19 +1,15 @@
 package com.common.dao.impl;
 
 import java.util.List;
-import java.util.concurrent.locks.Condition;
-
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.junit.runner.Result;
 import org.junit.runner.RunWith;
-import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,10 +20,10 @@ import com.common.dao.BaseQueryRecords;
 import com.common.utils.CXFFilter;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="classpath:applicationContext.xml")
+@ContextConfiguration(locations = "classpath:applicationContext.xml")
 @Repository("baseDaoDB")
-// 默认声明baseDao Bean.
 @SuppressWarnings("all")
+// 默认声明baseDao Bean.
 public class BaseDaoDB<E> implements BaseDao<E> {
 
 	private SessionFactory sessionFactory;
@@ -44,6 +40,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 
 	/**
 	 * 获得当前的hibernate session。
+	 * 
 	 * @return
 	 */
 	protected Session getCurrentSession() {
@@ -263,6 +260,130 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	}
 
 	/**
+	 * 查找所有对象，并排序
+	 * 
+	 * @param o
+	 *            : 待查找对象类型
+	 * @param orderby
+	 *            : 待排序字段
+	 * @param ifdesc
+	 *            : true--> DESC排序,false--> ASC排序
+	 */
+	@Override
+	public BaseQueryRecords findOrderBy(E o, String orderby, boolean ifdesc) {
+		return findOrderBy(o, orderby, ifdesc, -1, -1);
+	}
+
+	/**
+	 * 查找所有对象 带分页, 并排序
+	 * 
+	 * @param o
+	 *            : 待查找对象类型
+	 * @param orderby
+	 *            : 待排序字段
+	 * @param ifdesc
+	 *            : true--> DESC排序,false--> ASC排序
+	 * @param page
+	 *            : 页码
+	 * @param rows
+	 *            : 每页数量
+	 */
+	@Override
+	public BaseQueryRecords findOrderBy(E o, String orderby, boolean ifdesc,
+			int page, int rows) {
+		try {
+			Criteria criteria = getCurrentSession()
+					.createCriteria(o.getClass());
+			if (orderby != null && !orderby.equals("")) {
+				if (ifdesc)
+					criteria.addOrder(Order.desc(orderby));
+				else
+					criteria.addOrder(Order.asc(orderby));
+			}
+			// page和rows 都 >0 时返回分页数据
+			if (page > 0 && rows > 0) {
+				int total = criteria.list().size();
+				criteria.setFirstResult((page - 1) * rows);
+				criteria.setMaxResults(rows);
+				return new BaseQueryRecords(criteria.list(), total, page, rows);
+			} else {
+				return new BaseQueryRecords(criteria.list());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	/**
+	 * 查找满足某一条件的所有对象, 并排序
+	 * 
+	 * @param o
+	 *            : 待查找对象类型
+	 * @param key
+	 *            : 条件字段
+	 * @param value
+	 *            : 条件值
+	 * @param orderby
+	 *            : 待排序字段
+	 * @param ifdesc
+	 *            : true--> DESC排序,false--> ASC排序
+	 */
+	@Override
+	public BaseQueryRecords findOrderBy(E o, String key, Object value,
+			String orderby, boolean ifdesc) {
+		return findOrderBy(o, key, value, orderby, ifdesc, -1, -1);
+	}
+
+	/**
+	 * 查找满足某一条件的所有对象带分页, 并排序
+	 * 
+	 * @param o
+	 *            : 待查找对象类型
+	 * @param key
+	 *            : 条件字段
+	 * @param value
+	 *            : 条件值
+	 * @param orderby
+	 *            : 待排序字段
+	 * @param ifdesc
+	 *            : true--> DESC排序,false--> ASC排序
+	 * @param page
+	 *            : 页码
+	 * @param rows
+	 *            : 每页数量
+	 */
+	@Override
+	public BaseQueryRecords findOrderBy(E o, String key, Object value,
+			String orderby, boolean ifdesc, int page, int rows) {
+		try {
+			Criteria criteria = getCurrentSession()
+					.createCriteria(o.getClass());
+
+			if (orderby != null && !orderby.equals("")) {
+				if (ifdesc)
+					criteria.addOrder(Order.desc(orderby));
+				else
+					criteria.addOrder(Order.asc(orderby));
+			}
+
+			criteria.add(Restrictions.eq(key, value));
+
+			if (page > 0 && rows > 0) {
+				int total = criteria.list().size();
+				criteria.setFirstResult((page - 1) * rows);
+				criteria.setMaxResults(rows);
+				return new BaseQueryRecords(criteria.list(), total, page, rows);
+			} else {
+				return new BaseQueryRecords(criteria.list());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	/**
 	 * 获取Criteria,通过此方法，用户可以实现更多的自定义查询
 	 * 
 	 * @param o
@@ -271,6 +392,42 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 */
 	protected Criteria getCriteria(E o) {
 		return getCurrentSession().createCriteria(o.getClass());
+	}
+
+	/**
+	 * 使用Criteria查寻数据
+	 * 
+	 * @param criteria
+	 * @return
+	 */
+	protected BaseQueryRecords find(Criteria criteria) {
+		return find(criteria, -1, -1);
+	}
+
+	/**
+	 * 使用Criteria查寻数据,带分页
+	 * 
+	 * @param criteria
+	 * @param page
+	 *            ： 页码
+	 * @param rows
+	 *            : 每页数
+	 * @return
+	 */
+	protected BaseQueryRecords find(Criteria criteria, int page, int rows) {
+		try {
+			if (page > 0 && rows > 0) {
+				int total = criteria.list().size();
+				criteria.setFirstResult((page - 1) * rows);
+				criteria.setMaxResults(rows);
+				return new BaseQueryRecords(criteria.list(), total, page, rows);
+			} else {
+				return new BaseQueryRecords(criteria.list());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 
 	/**
@@ -608,6 +765,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 
 	/**
 	 * 获得当前项目上下文路径
+	 * 
 	 * @return
 	 */
 	protected String getContextPath() {

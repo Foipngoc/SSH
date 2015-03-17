@@ -34,9 +34,20 @@ public interface BaseDao<E> {
 	public BaseQueryRecords find(E o);
 
 	/**
+	 * 查找所有对象，并排序
+	 */
+	public BaseQueryRecords findOrderBy(E o, String orderby, boolean ifdesc);
+
+	/**
 	 * 查找所有对象 带分页
 	 */
 	public BaseQueryRecords find(E o, int page, int rows);
+
+	/**
+	 * 查找所有对象 带分页, 并排序
+	 */
+	public BaseQueryRecords findOrderBy(E o, String orderby, boolean ifdesc,
+			int page, int rows);
 
 	/**
 	 * 查找满足某一条件的所有对象
@@ -44,10 +55,22 @@ public interface BaseDao<E> {
 	public BaseQueryRecords find(E o, String key, Object value);
 
 	/**
+	 * 查找满足某一条件的所有对象, 并排序
+	 */
+	public BaseQueryRecords findOrderBy(E o, String key, Object value,
+			String orderby, boolean ifdesc);
+
+	/**
 	 * 查找满足某一条件的所有对象 带分布
 	 */
 	public BaseQueryRecords find(E o, String key, Object value, int page,
 			int rows);
+
+	/**
+	 * 查找满足某一条件的所有对象 带分布,并排序
+	 */
+	public BaseQueryRecords findOrderBy(E o, String key, Object value,
+			String orderby, boolean ifdesc, int page, int rows);
 
 	/**
 	 * 查找唯一对象，如果对象不存在，返回NULL
