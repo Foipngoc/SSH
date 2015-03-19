@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.interceptor.ApplicationAware;
 import org.apache.struts2.interceptor.RequestAware;
 import org.apache.struts2.interceptor.SessionAware;
@@ -28,6 +30,8 @@ import com.opensymphony.xwork2.ActionSupport;
  */
 @Controller
 @Scope("prototype")
+@ParentPackage("cement-interceptor")
+@Namespace("/")
 public class BaseAction extends ActionSupport implements SessionAware,
 		RequestAware, ApplicationAware {
 	/**
