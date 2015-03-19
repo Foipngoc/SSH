@@ -32,9 +32,8 @@ public class CXFFilter extends StrutsPrepareAndExecuteFilter {
 	public void doFilter(ServletRequest req, ServletResponse res,
 			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
+		contextPath = request.getSession().getServletContext().getRealPath("");
 		if (request.getRequestURI().contains("webservice")) {
-			contextPath = request.getSession().getServletContext()
-					.getRealPath("");
 			// 可以直接放行的路径即使用自定义拦截器的路径
 			chain.doFilter(req, res);
 		} else { // 使用默认拦截器的路径
