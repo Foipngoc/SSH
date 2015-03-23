@@ -1,0 +1,11 @@
+示例如下
+
+【接口】http://ip/project/log/querylogs
+【功能】查询日志
+【必选参数】
+【可选参数】
+	page 		页码
+	rows		每页日志数
+【输出】
+	logInfos	日志列表
+	pages		总页数
