@@ -42,7 +42,7 @@ public interface AppVersionCheckService {
 	 * 
 	 * @param appInfo
 	 */
-	public BaseResult modifyApp(int appid, String appname, String appdesc);
+	public BaseResult updateApp(int appid, String appname, String appdesc);
 
 	/**
 	 * 发布应用新版本
@@ -51,8 +51,15 @@ public interface AppVersionCheckService {
 	 * @param appVersionInfo
 	 * @return
 	 */
-	public BaseResult publishAppVersion(int appid, AppVersionInfo appVersionInfo,File resFile,String filename);
+	public BaseResult publishAppVersion(int appid, int versioncode,
+			String versionname, String updatelog, int updatetype,boolean autoset);
 
+	/**
+	 * 添加应用版本资源 ， 如果已存在，则替换
+	 * @return
+	 */
+	public BaseResult addAppVersionRes(int appvid, File file,String filename);
+	
 	/**
 	 * 设置APP最新的版本为哪个
 	 * 
@@ -67,7 +74,8 @@ public interface AppVersionCheckService {
 	 * 
 	 * @param appVersionInfo
 	 */
-	public BaseResult updateAppVersion(AppVersionInfo appVersionInfo);
+	public BaseResult updateAppVersion(int appvid, String versionname,
+			String updatelog, int updatetype);
 
 	/**
 	 * 删除应用已发布的版本, 注： 如果当前用户已安装了被删除的版本，则用户更新时会提醒强制更新

@@ -111,12 +111,13 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 * 
 	 * @param appInfo
 	 */
-	public BaseResult modifyApp(int appid, String appname, String appdesc) {
+	public BaseResult updateApp(int appid, String appname, String appdesc) {
 
 		AppInfo appInfo = this.queryApp(appid);
 
 		if (appInfo == null)
 			return new BaseResult(2, "未找到应用");
+
 		if (appname != null && !appname.equals(appInfo.getAppname())) {
 			if (checkAppName(appname)) {
 				return new BaseResult(1, "应用名已存在");
@@ -141,32 +142,74 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 * @param appVersionInfo
 	 * @return
 	 */
-	public BaseResult publishAppVersion(int appid,
-			AppVersionInfo appVersionInfo, File resFile, String filename) {
-
+	public BaseResult publishAppVersion(int appid, int versioncode,
+			String versionname, String updatelog, int updatetype,
+			boolean autoset) {
 		AppInfo appInfo = this.queryApp(appid);
 
 		if (appInfo == null)
 			return new BaseResult(3, "未找到应用");
 
 		// 版本号必须比上一次发布的版本号增大
-		int maxvcode = this.appVersionInfoDao.getMaxVersionCode();
-		if (appVersionInfo.getVersioncode() <= maxvcode)
+		int maxvcode = this.appVersionInfoDao.getMaxVersionCode(appid);
+		if (versioncode <= maxvcode)
 			return new BaseResult(1, "版本号必须大于当前发布版本中最大版本号：" + maxvcode);
+
+		AppVersionInfo appVersionInfo = new AppVersionInfo();
+
+		appVersionInfo.setAppid(appid);
+		appVersionInfo.setRespath("");
+		appVersionInfo.setUpdatelog(updatelog);
+		appVersionInfo.setUpdatetype(updatetype);
+		appVersionInfo.setVersioncode(versioncode);
+		appVersionInfo.setVersionname(versionname);
+		appVersionInfo.setUpdatedate(DateTimeUtil.getCurrDate());
+		this.appVersionInfoDao.save(appVersionInfo);
+
+		if (autoset) {
+			// 更新应用最新版为此次发布 AppInfo appInfo = this.queryApp(appid);
+			appInfo.setNewestappvid(appVersionInfo.getId());
+			this.appInfoDao.update(appInfo);
+		}
+
+		return new BaseResult(0, "发布成功");
+
+	}
+
+	/**
+	 * 添加应用版本资源 ， 如果已存在，则替换
+	 * 
+	 * @return
+	 */
+	@Override
+	public BaseResult addAppVersionRes(int appvid, File resFile, String filename) {
+		AppVersionInfo appVersionInfo = this.queryAppVersion(appvid);
+		if (appVersionInfo == null)
+			return new BaseResult(1, "应用版本不存在");
+
+		if (appVersionInfo.getRespath() != null) {
+			try {
+				FileUtils
+						.deleteDirectory(new File(appVersionInfo.getRespath()));
+			} catch (IOException e) {
+			}
+		}
 
 		/**
 		 * 保存下载资源
 		 */
-		if (resFile != null) {
-			if (filename == null || filename.equals(""))
-				return new BaseResult(2, "未指定资源名");
+		if (resFile == null || filename == null || filename.equals(""))
+			return new BaseResult(2, "资源文件为空或未指定资源名");
 
-		}
-
-		String path = getContextPath() + RES_PATH + "/" + appid;
+		String path = getContextPath() + RES_PATH + "/"
+				+ appVersionInfo.getAppid();
 		File folder = new File(path);
 		if (!folder.exists() && !folder.isDirectory()) {
 			folder.mkdir();
+		}
+		
+		if (new File(path, filename).exists()){
+			return new BaseResult(3, "同名资源文件已存在,请尝试更改名字");
 		}
 
 		InputStream in = null;
@@ -180,6 +223,11 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 			while ((length = in.read(buffer)) > 0) {
 				out.write(buffer, 0, length);
 			}
+
+			appVersionInfo.setRespath(path + "/" + filename);
+			this.appVersionInfoDao.update(appVersionInfo);
+
+			return new BaseResult(0, "设置成功");
 		} catch (Exception e) {
 			return new BaseResult(4, "文件保存失败");
 		} finally {
@@ -190,17 +238,6 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 				e.printStackTrace();
 			}
 		}
-
-		appVersionInfo.setAppid(appid);
-		appVersionInfo.setUpdatedate(DateTimeUtil.getCurrDate());
-		this.appVersionInfoDao.save(appVersionInfo);
-
-		/*
-		 * // 更新应用最新版为此次发布 AppInfo appInfo = this.queryApp(appid);
-		 * appInfo.setNewestappvid(appVersionInfo.getId());
-		 * this.appInfoDao.update(appInfo);
-		 */
-		return new BaseResult(0, "发布成功");
 	}
 
 	/**
@@ -230,23 +267,21 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 * 
 	 * @param appVersionInfo
 	 */
-	public BaseResult updateAppVersion(AppVersionInfo appVersionInfo) {
-		AppVersionInfo appVersionInfodb = this.queryAppVersion(appVersionInfo
-				.getId());
+	public BaseResult updateAppVersion(int appvid, String versionname,
+			String updatelog, int updatetype) {
+		AppVersionInfo appVersionInfodb = this.queryAppVersion(appvid);
 		if (appVersionInfodb == null)
 			return new BaseResult(1, "版本不存在");
 
 		// 更新版本名
-		appVersionInfodb.setVersionname(appVersionInfo.getVersionname());
+		appVersionInfodb.setVersionname(versionname);
 		// 更新日志
-		appVersionInfodb.setUpdatelog(appVersionInfo.getUpdatelog());
-		// 更新资源路径
-		appVersionInfodb.setRespath(appVersionInfo.getRespath());
+		appVersionInfodb.setUpdatelog(updatelog);
 		// 更新更新类型
-		appVersionInfodb.setUpdatetype(appVersionInfo.getUpdatetype());
+		appVersionInfodb.setUpdatetype(updatetype);
 
 		this.appVersionInfoDao.update(appVersionInfodb);
-		return new BaseResult(0, "发布成功");
+		return new BaseResult(0, "更新成功");
 	}
 
 	/**

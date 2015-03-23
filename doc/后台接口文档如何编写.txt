@@ -1,7 +1,8 @@
 示例如下
 
-【接口】http://ip/project/log/querylogs
+
 【功能】查询日志
+【接口】http://ip/project/log/querylogs
 【必选参数】
 【可选参数】
 	page 		页码

@@ -11,7 +11,7 @@ public interface AppVersionInfoDao extends BaseDao<AppVersionInfo> {
 	 * 
 	 * @return
 	 */
-	public int getMaxVersionCode();
+	public int getMaxVersionCode(int appid);
 
 	/**
 	 * 通过应用及版本号查找版本

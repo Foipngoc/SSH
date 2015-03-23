@@ -17,9 +17,13 @@ public class AppVersionInfoDaoImpl extends BaseDaoDB<AppVersionInfo> implements
 	 * 
 	 * @return
 	 */
-	public int getMaxVersionCode() {
-		return (int) this.findUnique(new HQL(
-				"select max(a.versioncode) from AppVersionInfo a"));
+	public int getMaxVersionCode(int appid) {
+		Object o = this.findUnique(new HQL(
+				"select max(a.versioncode) from AppVersionInfo a where a.appid=?",appid));
+		if (o != null)
+			return (int)o;
+		else
+			return 0;
 	}
 
 	/**
