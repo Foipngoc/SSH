@@ -16,26 +16,6 @@ public class HQL implements BaseExpression {
 	private List<Object> mparams = null;
 
 	/**
-	 * 适配不带参数列表的hql语句
-	 * 
-	 * @param hql
-	 */
-	public HQL(String hql) {
-		this.hql = hql;
-	}
-
-	/**
-	 * 适配带list列表参数的hql语句,参数用?通配符替换
-	 * 
-	 * @param hql
-	 * @param params
-	 */
-	public HQL(String hql, List<Object> params) {
-		this.hql = hql;
-		this.mparams = params;
-	}
-
-	/**
 	 * 适配带可变参数的hql语句,参数用?通配符替换
 	 * 
 	 * @param hql

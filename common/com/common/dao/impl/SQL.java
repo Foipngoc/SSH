@@ -16,26 +16,6 @@ public class SQL implements BaseExpression {
 	private List<Object> mparams = null;
 
 	/**
-	 * 适配不带参数列表的sql语句
-	 * 
-	 * @param sql
-	 */
-	public SQL(String sql) {
-		this.sql = sql;
-	}
-
-	/**
-	 * 适配带list列表参数的sql语句,参数用?通配符替换
-	 * 
-	 * @param sql
-	 * @param params
-	 */
-	public SQL(String sql, List<Object> params) {
-		this.sql = sql;
-		this.mparams = params;
-	}
-
-	/**
 	 * 适配带可变参数的sql语句,参数用?通配符替换
 	 * 
 	 * @param sql
