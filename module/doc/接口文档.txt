@@ -85,10 +85,10 @@
 【接口】http://ip/project/module/AppVersionCheck/updateAppVersion
 【必选参数】
 	appvid //版本id
+【可选参数】
 	versionname //版本名
 	updatelog //更新日志
 	updatetype //更新类型
-【可选参数】
 【输出】
 	BaseResult(1, "版本不存在")
 	BaseResult(0, "更新成功")

@@ -207,8 +207,8 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 		if (!folder.exists() && !folder.isDirectory()) {
 			folder.mkdir();
 		}
-		
-		if (new File(path, filename).exists()){
+
+		if (new File(path, filename).exists()) {
 			return new BaseResult(3, "同名资源文件已存在,请尝试更改名字");
 		}
 
@@ -272,13 +272,16 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 		AppVersionInfo appVersionInfodb = this.queryAppVersion(appvid);
 		if (appVersionInfodb == null)
 			return new BaseResult(1, "版本不存在");
+		if (versionname != null && !versionname.equals(""))
+			appVersionInfodb.setVersionname(versionname);
 
-		// 更新版本名
-		appVersionInfodb.setVersionname(versionname);
-		// 更新日志
-		appVersionInfodb.setUpdatelog(updatelog);
-		// 更新更新类型
-		appVersionInfodb.setUpdatetype(updatetype);
+		if (updatelog != null && updatelog.equals(""))
+			appVersionInfodb.setUpdatelog(updatelog);
+
+		if (updatetype == AppVersionInfo.UPDATE_TYPE_MANUAL_MANUAL
+				|| updatetype == AppVersionInfo.UPDATE_TYPE_POP_AUTO
+				|| updatetype == AppVersionInfo.UPDATE_TYPE_POP_FORCE)
+			appVersionInfodb.setUpdatetype(updatetype);
 
 		this.appVersionInfoDao.update(appVersionInfodb);
 		return new BaseResult(0, "更新成功");
