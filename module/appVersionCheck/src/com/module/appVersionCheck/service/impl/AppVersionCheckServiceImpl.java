@@ -7,8 +7,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -36,7 +39,7 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 
 	@Resource
 	private AppDownloadInfoDao appDownloadInfoDao;
-	
+
 	@Resource
 	private AppInfoDao appInfoDao;
 
@@ -48,9 +51,31 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 * 
 	 * @return
 	 */
-	public List<AppInfo> queryApps() {
-		return (List<AppInfo>) this.appInfoDao.findOrderBy(new AppInfo(),
-				"createdate", true).getData();
+	public List<Map<String, Object>> queryApps() {
+		List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
+		List<AppInfo> appInfos = (List<AppInfo>) this.appInfoDao.findOrderBy(
+				new AppInfo(), "createdate", true).getData();
+
+		for (int i = 0; i < appInfos.size(); i++) {
+			Map<String, Object> map = new HashMap<String, Object>();
+
+			map.put("appinfo", appInfos.get(i));
+			int newestversionid = appInfos.get(i).getNewestappvid();
+
+			if (newestversionid != -1) {
+				AppVersionInfo appVersionInfo = this
+						.queryAppVersion(newestversionid);
+				if (appVersionInfo != null)
+					map.put("newestvcode", appVersionInfo.getVersionname()
+							+ "/" + appVersionInfo.getVersioncode());
+				else
+					map.put("newestvcode", "");
+			} else
+				map.put("newestvcode", "");
+			ret.add(map);
+		}
+
+		return ret;
 	}
 
 	/**
@@ -515,7 +540,8 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 * @param appid
 	 * @return
 	 */
-	public BaseResult downloadNewestAppVersionRes(int appid, int oldvesioncode,String clientinfo) {
+	public BaseResult downloadNewestAppVersionRes(int appid, int oldvesioncode,
+			String clientinfo) {
 
 		BaseResult checkResult = this.checkNewestAppVersion(appid,
 				oldvesioncode);
@@ -524,7 +550,8 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 		if (checkResult.getResultcode() == 2) {
 			// 获得最新版本APP
 			AppInfo appInfo = this.queryApp(appid);
-			AppVersionInfo oldAppVersionInfo = this.queryAppVersion(appid, oldvesioncode);
+			AppVersionInfo oldAppVersionInfo = this.queryAppVersion(appid,
+					oldvesioncode);
 			AppVersionInfo newestAppVersionInfo = this.queryAppVersion(appInfo
 					.getNewestappvid());
 
@@ -540,8 +567,7 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 				String filename = resfile.getName();
 				result.setObj(inputStream);
 				result.addToMap("filename", filename);
-				
-				
+
 				/**
 				 * 添加下载信息
 				 */
@@ -552,8 +578,7 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 				appDownloadInfo.setUpdatedate(new Date());
 				appDownloadInfo.setClientinfo(clientinfo);
 				this.appDownloadInfoDao.save(appDownloadInfo);
-				
-				
+
 				return result;
 			} catch (FileNotFoundException e) {
 				return new BaseResult(3, "未找到更新文件");

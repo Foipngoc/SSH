@@ -2,6 +2,7 @@ package com.module.appVersionCheck.service;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import com.common.action.BaseResult;
 import com.module.appVersionCheck.model.AppInfo;
@@ -13,7 +14,7 @@ public interface AppVersionCheckService {
 	 * 
 	 * @return
 	 */
-	public List<AppInfo> queryApps();
+	public List<Map<String, Object>> queryApps();
 
 	/**
 	 * 获取某一已发布的应用信息

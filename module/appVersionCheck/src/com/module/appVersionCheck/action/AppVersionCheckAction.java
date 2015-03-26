@@ -55,7 +55,7 @@ public class AppVersionCheckAction extends BaseAction {
 	 */
 	@Action(value = "queryApps", results = { @Result(name = "success", type = "json") })
 	public String queryApps() {
-		List<AppInfo> appInfos = this.appVersionCheckService.queryApps();
+		List<?> appInfos = this.appVersionCheckService.queryApps();
 		result = new BaseResult();
 		result.addToMap("appinfos", appInfos);
 		return SUCCESS;

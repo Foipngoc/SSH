@@ -28,6 +28,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   <input type="hidden" value="<%=basePath%>" id="basePath" />
+  <input type="hidden" value="<%=request.getParameter("appId")%>" id="appId">
   	<button onclick="sendVersion()">发布新版本</button>
   	<button onclick="goToBack()">返回</button>
 		   <table class="listTable" id="" cellpadding="0" cellspacing="0">
@@ -37,12 +38,32 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								<th>版本</th>
 								<th>操作</th>
 							</tr>
-							<tr>
+							<!-- <tr>
 								<td>1</td>
 								<td>XX版本</td>
 								<td><a onclick="modifyVersion()">修改版本</a>&nbsp;&nbsp;<a onclick="deleteTheVersion()">删除版本</a></td>
-							</tr>
+							</tr> -->
 						</table> 
+			<!-- 发布新版本 -->
+			<div id="addAppVersionDiv" style="display:none;height:100px;width:200px;border:solid 1px black;">
+		   	<div>
+		   		<table cellpadding="0" cellspacing="0">
+		   		<col width="20%"><col width="80%">
+		   			<tr>
+		   				<td>版本名</td>
+		   				<td><input type="text" id="appname" /></td>
+		   			</tr>
+		   			<tr>
+		   				<td>资源路径</td>
+		   				<td><input type="text" id="appname" /></td>
+		   			</tr>
+		   			<tr>
+		   				<td><button onclick="addApp()">确定</button></td>
+		   				<td><button onclick="canceladd()">取消</button></td>
+		   			</tr>
+		   		</table>
+		   	</div>
+		   </div>
 		   
   </body>
 </html>
