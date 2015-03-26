@@ -18,6 +18,12 @@ public class AppVersionInfo {
 	private String respath; // 资源路径
 	private int updatetype; // 该版本相对上一版本的更新方式
 
+	private String downloadpath; // APP下载到本地路径
+	private int autoopen; // 更新后是否自动打开
+
+	public static final int AUTOOPEN_YES = 1;
+	public static final int AUTOOPEN_NO = 0;
+
 	/**
 	 * 自动弹出更新通知，且要求用户强制更新，如用户选择不更新则不允许使用，直接退出。
 	 */
@@ -95,5 +101,21 @@ public class AppVersionInfo {
 
 	public void setAppid(int appid) {
 		this.appid = appid;
+	}
+
+	public int getAutoopen() {
+		return autoopen;
+	}
+
+	public void setAutoopen(int autoopen) {
+		this.autoopen = autoopen;
+	}
+
+	public String getDownloadpath() {
+		return downloadpath;
+	}
+
+	public void setDownloadpath(String downloadpath) {
+		this.downloadpath = downloadpath;
 	}
 }

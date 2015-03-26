@@ -50,6 +50,7 @@
 	autoset //是否自动将该版本设置为最新 true/false
 【可选参数】
 【输出】
+	BaseResult(-1, "参数错误")
 	BaseResult(3, "未找到应用")
 	BaseResult(1, "版本号必须大于当前发布版本中最大版本号)
 	BaseResult(0, "发布成功")
@@ -124,7 +125,7 @@
 【接口】http://ip/project/module/AppVersionCheck/checkNewestAppVersion
 【必选参数】
 	appid //应用id
-	versioncode //版本号
+	versioncode //原版本号
 【可选参数】
 【输出】
 	json数据
@@ -134,6 +135,8 @@
 【接口】http://ip/project/module/AppVersionCheck/downloadNewestAppVersionRes
 【必选参数】
 	appvid //版本id
+	versioncode //原版本号
+	clientinfo //更新客户端信息
 【可选参数】
 【输出】
 	BaseResult(3, "未找到更新文件")

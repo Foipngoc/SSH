@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -18,8 +19,10 @@ import org.springframework.stereotype.Service;
 import com.common.action.BaseResult;
 import com.common.service.BaseService;
 import com.common.utils.DateTimeUtil;
+import com.module.appVersionCheck.dao.AppDownloadInfoDao;
 import com.module.appVersionCheck.dao.AppInfoDao;
 import com.module.appVersionCheck.dao.AppVersionInfoDao;
+import com.module.appVersionCheck.model.AppDownloadInfo;
 import com.module.appVersionCheck.model.AppInfo;
 import com.module.appVersionCheck.model.AppVersionInfo;
 import com.module.appVersionCheck.service.AppVersionCheckService;
@@ -31,6 +34,9 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 
 	public static String RES_PATH = "/module/appVersionCheck/res";
 
+	@Resource
+	private AppDownloadInfoDao appDownloadInfoDao;
+	
 	@Resource
 	private AppInfoDao appInfoDao;
 
@@ -144,7 +150,13 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 */
 	public BaseResult publishAppVersion(int appid, int versioncode,
 			String versionname, String updatelog, int updatetype,
-			boolean autoset) {
+			boolean autoset, String downloadpath, int autoopen) {
+
+		if (updatetype != AppVersionInfo.UPDATE_TYPE_MANUAL_MANUAL
+				&& updatetype != AppVersionInfo.UPDATE_TYPE_POP_AUTO
+				&& updatetype != AppVersionInfo.UPDATE_TYPE_POP_FORCE)
+			return new BaseResult(-1, "参数错误");
+
 		AppInfo appInfo = this.queryApp(appid);
 
 		if (appInfo == null)
@@ -164,6 +176,8 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 		appVersionInfo.setVersioncode(versioncode);
 		appVersionInfo.setVersionname(versionname);
 		appVersionInfo.setUpdatedate(DateTimeUtil.getCurrDate());
+		appVersionInfo.setDownloadpath(downloadpath);
+		appVersionInfo.setAutoopen(autoopen);
 		this.appVersionInfoDao.save(appVersionInfo);
 
 		if (autoset) {
@@ -268,20 +282,27 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 * @param appVersionInfo
 	 */
 	public BaseResult updateAppVersion(int appvid, String versionname,
-			String updatelog, int updatetype) {
+			String updatelog, int updatetype, String downloadpath, int autoopen) {
 		AppVersionInfo appVersionInfodb = this.queryAppVersion(appvid);
 		if (appVersionInfodb == null)
 			return new BaseResult(1, "版本不存在");
 		if (versionname != null && !versionname.equals(""))
 			appVersionInfodb.setVersionname(versionname);
 
-		if (updatelog != null && updatelog.equals(""))
+		if (updatelog != null && !updatelog.equals(""))
 			appVersionInfodb.setUpdatelog(updatelog);
 
 		if (updatetype == AppVersionInfo.UPDATE_TYPE_MANUAL_MANUAL
 				|| updatetype == AppVersionInfo.UPDATE_TYPE_POP_AUTO
 				|| updatetype == AppVersionInfo.UPDATE_TYPE_POP_FORCE)
 			appVersionInfodb.setUpdatetype(updatetype);
+
+		if (downloadpath != null && !downloadpath.equals(""))
+			appVersionInfodb.setDownloadpath(downloadpath);
+
+		if (autoopen != -1
+				&& (autoopen == AppVersionInfo.AUTOOPEN_YES || autoopen == AppVersionInfo.AUTOOPEN_NO))
+			appVersionInfodb.setAutoopen(autoopen);
 
 		this.appVersionInfoDao.update(appVersionInfodb);
 		return new BaseResult(0, "更新成功");
@@ -494,7 +515,7 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 * @param appid
 	 * @return
 	 */
-	public BaseResult downloadNewestAppVersionRes(int appid, int oldvesioncode) {
+	public BaseResult downloadNewestAppVersionRes(int appid, int oldvesioncode,String clientinfo) {
 
 		BaseResult checkResult = this.checkNewestAppVersion(appid,
 				oldvesioncode);
@@ -503,6 +524,7 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 		if (checkResult.getResultcode() == 2) {
 			// 获得最新版本APP
 			AppInfo appInfo = this.queryApp(appid);
+			AppVersionInfo oldAppVersionInfo = this.queryAppVersion(appid, oldvesioncode);
 			AppVersionInfo newestAppVersionInfo = this.queryAppVersion(appInfo
 					.getNewestappvid());
 
@@ -518,6 +540,20 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 				String filename = resfile.getName();
 				result.setObj(inputStream);
 				result.addToMap("filename", filename);
+				
+				
+				/**
+				 * 添加下载信息
+				 */
+				AppDownloadInfo appDownloadInfo = new AppDownloadInfo();
+				appDownloadInfo.setAppid(appid);
+				appDownloadInfo.setAppvid(newestAppVersionInfo.getId());
+				appDownloadInfo.setOldappvid(oldAppVersionInfo.getId());
+				appDownloadInfo.setUpdatedate(new Date());
+				appDownloadInfo.setClientinfo(clientinfo);
+				this.appDownloadInfoDao.save(appDownloadInfo);
+				
+				
 				return result;
 			} catch (FileNotFoundException e) {
 				return new BaseResult(3, "未找到更新文件");

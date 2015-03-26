@@ -32,6 +32,10 @@ public class AppVersionCheckAction extends BaseAction {
 	private String versionname; // 版本名，用于显示
 	private String updatelog; // 更新日志
 	private int updatetype; // 该版本相对上一版本的更新方式
+	private String downloadpath; // APP下载到本地路径
+	private int autoopen = -1; // 更新后是否自动打开
+
+	private String clientinfo; // 更新客户端信息
 
 	private boolean autoset;
 
@@ -99,8 +103,14 @@ public class AppVersionCheckAction extends BaseAction {
 	 */
 	@Action(value = "publishAppVersion", results = { @Result(name = "success", type = "json") })
 	public String publishAppVersion() {
+		if (versioncode == -1 || versionname == null || versionname.equals("")
+				|| updatelog == null || updatelog.equals("")
+				|| downloadpath == null || downloadpath.equals("")
+				|| autoopen == -1)
+			result = new BaseResult(-1, "参数错误");
 		result = this.appVersionCheckService.publishAppVersion(appid,
-				versioncode, versionname, updatelog, updatetype, autoset);
+				versioncode, versionname, updatelog, updatetype, autoset,
+				downloadpath, autoopen);
 		return SUCCESS;
 	}
 
@@ -129,7 +139,7 @@ public class AppVersionCheckAction extends BaseAction {
 	@Action(value = "updateAppVersion", results = { @Result(name = "success", type = "json") })
 	public String updateAppVersion() {
 		result = this.appVersionCheckService.updateAppVersion(appvid,
-				versionname, updatelog, updatetype);
+				versionname, updatelog, updatetype, downloadpath, autoopen);
 		return SUCCESS;
 	}
 
@@ -186,7 +196,7 @@ public class AppVersionCheckAction extends BaseAction {
 			@Result(name = "json", type = "json") })
 	public String downloadNewestAppVersionRes() {
 		BaseResult result2 = this.appVersionCheckService
-				.downloadNewestAppVersionRes(appid, versioncode);
+				.downloadNewestAppVersionRes(appid, versioncode, clientinfo);
 
 		if (result2.getResultcode() == 2) {
 			inputStream = (InputStream) result2.getObj();
@@ -262,11 +272,23 @@ public class AppVersionCheckAction extends BaseAction {
 		this.updatelog = updatelog;
 	}
 
+	public void setDownloadpath(String downloadpath) {
+		this.downloadpath = downloadpath;
+	}
+
+	public void setAutoopen(int autoopen) {
+		this.autoopen = autoopen;
+	}
+
 	public void setUpdatetype(int updatetype) {
 		this.updatetype = updatetype;
 	}
 
 	public void setAutoset(boolean autoset) {
 		this.autoset = autoset;
+	}
+
+	public void setClientinfo(String clientinfo) {
+		this.clientinfo = clientinfo;
 	}
 }

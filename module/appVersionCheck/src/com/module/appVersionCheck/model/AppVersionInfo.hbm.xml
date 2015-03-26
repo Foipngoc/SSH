@@ -18,5 +18,8 @@
 		<property name="respath" column="respath" type="string"
 			length="255" />
 		<property name="updatetype" column="updatetype" type="integer" />
+		<property name="downloadpath" column="downloadpath" type="string"
+			length="255" />
+		<property name="autoopen" column="autoopen" type="integer" />
 	</class>
 </hibernate-mapping>
