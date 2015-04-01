@@ -4,7 +4,10 @@
 	"http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
 
-	<package name="example" extends="cement-interceptor">
+	<!-- 使用该xml文件导出action接口。 struts框架会自动扫描所有名为*.struts.xml的文件 。 请注意该文件的命名规则： 
+		*.struts.xml -->
+
+	<package name="example" extends="cement-interceptor" namespace="/example">
 		<action name="doaction" method="doAction"
 			class="com.example.action.ExampleAction">
 			<result name="json" type="json"></result>

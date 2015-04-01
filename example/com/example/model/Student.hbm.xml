@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- 每个class对应一个持久化对象 -->
 <hibernate-mapping>
-	<class name="com.example.model.Example" table="example">
+	<class name="com.example.model.Student" table="student">
 		<id name="id" column="id" type="integer">
 			<generator class="native" />
 		</id>

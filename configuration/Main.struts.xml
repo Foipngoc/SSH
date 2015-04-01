@@ -12,6 +12,12 @@
 	<constant name="struts.multipart.saveDir" value="d:\temp" />
 	<!-- 设置导入时文件大小 -->
 	<constant name="struts.multipart.maxSize" value="1000000000" />
+	
+	<!-- 当Struts2的配置文件修改后，系统是否自动重新加载配置文件，默认值为false(生产环境下使用)，开发阶段最好打开 -->
+	<constant name="struts.configuration.xml.reload" value="false" />
+	<!-- 开发模式下使用，这样可以打印出更详细的日志信息 -->
+	<constant name="struts.devMode" value="false" />
+	
 	<!-- 定义默认包 -->
 	<package name="cement-interceptor" extends="json-default"
 		namespace="/">
@@ -24,6 +30,10 @@
 			<exception-mapping result="exception" exception="java.lang.Exception"></exception-mapping>
 		</global-exception-mappings>
 	</package>
+
+
+	<!-- struts框架会自动扫描所有名为*.struts.xml的文件 。 请注意该文件的命名规则： *.struts.xml -->
+
 
 </struts>
 

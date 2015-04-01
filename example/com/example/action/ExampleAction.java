@@ -4,17 +4,28 @@ import javax.annotation.Resource;
 
 import com.common.action.BaseAction;
 import com.common.action.BaseResult;
-import com.example.model.Example;
+import com.example.model.Student;
 import com.example.service.ExampleService;
 
-@SuppressWarnings("all")
+/**
+ * Action层接口类
+ * 
+ * 该类需要继承BaseAction
+ * 
+ * @author DJ
+ *
+ */
+@SuppressWarnings("all") //忽略该类中的所有警告
 public class ExampleAction extends BaseAction {
 
+	/**
+	 * 使用注解从spring托管库中注入exampleservice， 也就是ExampleServiceImpl类的实例
+	 */
 	@Resource(name = "exampleservice")
 	private ExampleService exampleService;
-	private Example example;
-	private Example example2;
-	private int page;
+	private Student example; //对象传值，需要同时编写get/set方法
+	private Student example2;
+	private int page; //属性传值， 传入值添加set方法，传出值添加get方法
 	private int rows;
 
 	/**
@@ -73,19 +84,19 @@ public class ExampleAction extends BaseAction {
 		this.rows = rows;
 	}
 
-	public void setExample(Example example) {
+	public void setExample(Student example) {
 		this.example = example;
 	}
 
-	public void setExample2(Example example2) {
+	public void setExample2(Student example2) {
 		this.example2 = example2;
 	}
 
-	public Example getExample() {
+	public Student getExample() {
 		return example;
 	}
 
-	public Example getExample2() {
+	public Student getExample2() {
 		return example2;
 	}
 }
