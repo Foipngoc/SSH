@@ -1,4 +1,4 @@
-package com.common.utils;
+package com.common.framework;
 
 import java.io.IOException;
 

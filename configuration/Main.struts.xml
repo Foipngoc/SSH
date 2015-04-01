@@ -13,12 +13,17 @@
 	<!-- 设置导入时文件大小 -->
 	<constant name="struts.multipart.maxSize" value="1000000000" />
 	<!-- 定义默认包 -->
-	<package name="cement-interceptor" extends="json-default" namespace="/">
+	<package name="cement-interceptor" extends="json-default"
+		namespace="/">
+		<global-results>
+			<result name="exception">/error/exceptionPage.jsp</result>
+		</global-results>
+
 		<!-- 统一异常处理 -->
 		<global-exception-mappings>
-			<exception-mapping result="error" exception="java.lang.Exception"></exception-mapping>
+			<exception-mapping result="exception" exception="java.lang.Exception"></exception-mapping>
 		</global-exception-mappings>
 	</package>
-	
+
 </struts>
 

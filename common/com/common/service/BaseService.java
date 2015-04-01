@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.common.utils.CXFFilter;
+import com.common.framework.CXFFilter;
 
 /**
  * BaseService已实现事务，继承该类自动继承事务

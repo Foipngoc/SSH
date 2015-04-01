@@ -6,32 +6,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.convention.annotation.Namespace;
-import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.interceptor.ApplicationAware;
 import org.apache.struts2.interceptor.RequestAware;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import com.common.utils.CXFFilter;
+import com.common.framework.CXFFilter;
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
- * BaseAction 提供访问用户action的通用类。
- * 任何Action层类需要继承该类。
+ * BaseAction 提供访问用户action的通用类。 任何Action层类需要继承该类。
  * 
- * 支持session,request,application的使用；
- * 支持session对象中变量的存取； 
- * 支持通用结果集的返回；
+ * 支持session,request,application的使用； 支持session对象中变量的存取； 支持通用结果集的返回；
  * 
  * @author DongJun
  * 
  */
 @Controller
 @Scope("prototype")
-@ParentPackage("cement-interceptor")
-@Namespace("/")
 public class BaseAction extends ActionSupport implements SessionAware,
 		RequestAware, ApplicationAware {
 	/**
@@ -155,9 +148,10 @@ public class BaseAction extends ActionSupport implements SessionAware,
 	public void removeSessionParam(String key) {
 		this.session.remove(key);
 	}
-	
+
 	/**
 	 * 获得当前项目上下文路径
+	 * 
 	 * @return
 	 */
 	public String getContextPath() {

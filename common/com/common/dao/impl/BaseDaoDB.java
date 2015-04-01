@@ -1,6 +1,7 @@
 package com.common.dao.impl;
 
 import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -17,7 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.common.dao.BaseDao;
 import com.common.dao.BaseQueryRecords;
-import com.common.utils.CXFFilter;
+import com.common.framework.CXFFilter;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")

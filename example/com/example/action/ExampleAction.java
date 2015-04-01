@@ -2,20 +2,12 @@ package com.example.action;
 
 import javax.annotation.Resource;
 
-import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.convention.annotation.Namespace;
-import org.apache.struts2.convention.annotation.ParentPackage;
-import org.apache.struts2.convention.annotation.Result;
-import org.springframework.stereotype.Controller;
-
 import com.common.action.BaseAction;
 import com.common.action.BaseResult;
 import com.example.model.Example;
 import com.example.service.ExampleService;
 
-@Controller
-@ParentPackage("cement-interceptor")
-@Namespace("/example")
+@SuppressWarnings("all")
 public class ExampleAction extends BaseAction {
 
 	@Resource(name = "exampleservice")
@@ -32,7 +24,6 @@ public class ExampleAction extends BaseAction {
 	private String input;
 	private BaseResult result;
 
-	@Action(value = "doaction", results = { @Result(name = "json", type = "json")})
 	public String doAction() {
 		if (example2 != null) {
 			String name = example2.getName();
@@ -48,6 +39,10 @@ public class ExampleAction extends BaseAction {
 			this.result.setObj(this.exampleService.getExamples(page, rows));
 		}
 		return "json";
+	}
+
+	public String doAction2() {
+		throw new RuntimeException();
 	}
 
 	public void setInput(String input) {
@@ -77,18 +72,19 @@ public class ExampleAction extends BaseAction {
 	public void setRows(int rows) {
 		this.rows = rows;
 	}
-	
+
 	public void setExample(Example example) {
 		this.example = example;
 	}
-	
+
 	public void setExample2(Example example2) {
 		this.example2 = example2;
 	}
+
 	public Example getExample() {
 		return example;
 	}
-	
+
 	public Example getExample2() {
 		return example2;
 	}
