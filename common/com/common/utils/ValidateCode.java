@@ -18,7 +18,6 @@ import javax.imageio.stream.ImageOutputStream;
  * 验证码生成工具
  */
 public class ValidateCode {
-	private static String randomString = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 图片上的字符串
 
 	public static class ValidatecodeInputstream {
 		private InputStream inputStream;
@@ -63,34 +62,6 @@ public class ValidateCode {
 	}
 
 	/**
-	 * 生成验证码
-	 * 
-	 * @param length
-	 * @return
-	 */
-	public static String genValidateCode(int length) {
-		return genValidateCode(randomString, length);
-	}
-
-	/**
-	 * 使用种子生成验证码
-	 * 
-	 * @param seedstring
-	 *            验证码种子
-	 * @param length
-	 * @return
-	 */
-	public static String genValidateCode(String seedstring, int length) {
-		String code = "";
-		Random random = new Random(new Date().getTime());
-		for (int i = 0; i < length; i++) {
-			code += String.valueOf(seedstring.charAt(random.nextInt(seedstring
-					.length())));
-		}
-		return code;
-	}
-
-	/**
 	 * 生成验证码图片缓存
 	 * 
 	 * @param seedstring
@@ -105,7 +76,36 @@ public class ValidateCode {
 	 */
 	public static ValidatecodeImage genValidateCodeImage(int length,
 			int imgwidth, int imgheight) {
-		return genValidateCodeImage(randomString, length, imgwidth, imgheight);
+		BufferedImage image = new BufferedImage(imgwidth, imgheight,
+				BufferedImage.TYPE_INT_RGB);// 在内存中创建图象
+		Graphics2D raphics = (Graphics2D) image.getGraphics();// 获取图形上下文
+		Color c = new Color(203, 231, 240);
+		raphics.setColor(c);// 设定背景色
+		raphics.fillRect(0, 0, imgwidth, imgheight);
+		raphics.setFont(new Font("Times New Roman", Font.ITALIC, 28));// 设定字体
+																		// style:HANGING_BASELINE
+		raphics.setColor(getRandColor(160, 200));// 给定范围获得随机颜色
+		Random random = new Random(new Date().getTime()); // 生成随机类
+		// 随机产生155条干扰线，使图象中的认证码不易被其它程序探测到
+		for (int i = 0; i < 255; i++) {
+			int x = random.nextInt(imgwidth);
+			int y = random.nextInt(imgheight);
+			raphics.drawLine(x, y, x, y);
+		}
+
+		String validcode = RandomCode.genRandomCode(length);
+		// 取随机产生的认证码(length位数字)
+		for (int i = 0; i < length; i++) {
+			char code = validcode.charAt(i);
+			raphics.setColor(Color.BLACK);// 设置为黑色字体
+			raphics.drawString("" + code, 15 * i + 25, 32);
+		}
+		raphics.dispose(); // 图象生效
+
+		ValidatecodeImage img = new ValidatecodeImage();
+		img.setImage(image);
+		img.setValidatecode(validcode);
+		return img;
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class ValidateCode {
 			raphics.drawLine(x, y, x, y);
 		}
 
-		String validcode = genValidateCode(seedstring, length);
+		String validcode = RandomCode.genRandomCode(seedstring, length);
 		// 取随机产生的认证码(length位数字)
 		for (int i = 0; i < length; i++) {
 			char code = validcode.charAt(i);
@@ -166,7 +166,7 @@ public class ValidateCode {
 	 */
 	public static ValidatecodeInputstream genValidateCodeInputStream(
 			int length, int imgwidth, int imgheight) {
-		return genValidateCodeInputStream(randomString, length, imgwidth,
+		return genValidateCodeInputStream(length, imgwidth,
 				imgheight);
 	}
 
@@ -205,6 +205,7 @@ public class ValidateCode {
 
 	/**
 	 * 随机颜色
+	 * 
 	 * @param fc
 	 * @param bc
 	 * @return
