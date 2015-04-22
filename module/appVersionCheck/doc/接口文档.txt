@@ -18,6 +18,15 @@
 	json数据
 	
 	
+【功能】获得所有已发布的应用信息
+【接口】http://ip/project/module/AppVersionCheck/queryApp
+【必选参数】
+	appid
+【可选参数】
+【输出】
+	json数据
+	
+	
 【功能】删除已发布的应用
 【接口】http://ip/project/module/AppVersionCheck/delApp
 【必选参数】
@@ -43,21 +52,27 @@
 【接口】http://ip/project/module/AppVersionCheck/publishAppVersion
 【必选参数】
 	appid //应用id
+	autogenvcode //是否自动生成版本号 1/0
 	versioncode //版本号
 	versionname //版本名
 	updatelog //更新日志
 	updatetype //更新方式
-	autoset //是否自动将该版本设置为最新 true/false
+	autoset //是否自动将该版本设置为最新 1/0
+	downloadpath //APP下载到本地路径，通常为空，由APP自己选择
+	autoinstall //下载完立即安装 1/0
 【可选参数】
 【输出】
 	BaseResult(-1, "参数错误")
 	BaseResult(3, "未找到应用")
+	BaseResult(2,"APP上传失败")
+	BaseResult(4, "文件保存失败")
+	BaseResult(5, "MD5校验失败")
 	BaseResult(1, "版本号必须大于当前发布版本中最大版本号)
 	BaseResult(0, "发布成功")
 
 
-【功能】上传应用版本资源
-【接口】http://ip/project/module/AppVersionCheck/addAppVersionRes
+【功能】应用版本资源
+【接口】http://ip/project/module/AppVersionCheck/downloadAppVersionRes
 【必选参数】
 	appvid //版本id
 	file //资源文件流
@@ -89,9 +104,13 @@
 【可选参数】
 	versionname //版本名
 	updatelog //更新日志
-	updatetype //更新类型
+	updatetype //更新方式
+	downloadpath //APP下载到本地路径，通常为空，由APP自己选择
+	autoinstall //下载完立即安装 1/0
 【输出】
 	BaseResult(1, "版本不存在")
+	BaseResult(5, "MD5校验失败")
+	new BaseResult(4, "文件保存失败")
 	BaseResult(0, "更新成功")
 	
 	
@@ -128,18 +147,17 @@
 	versioncode //原版本号
 【可选参数】
 【输出】
-	json数据
+	BaseResult(0, "不存在该应用")
+	BaseResult(1, "已为最新版本")
+	BaseResult(2, "有新版本可以升级")
 	
 	
 【功能】下载最新版本
 【接口】http://ip/project/module/AppVersionCheck/downloadNewestAppVersionRes
 【必选参数】
-	appvid //版本id
+	appid //应用id
 	versioncode //原版本号
 	clientinfo //更新客户端信息
 【可选参数】
 【输出】
-	BaseResult(3, "未找到更新文件")
-	BaseResult(2, "下载成功") + stream流
-	BaseResult(0, "不存在该应用")
-	BaseResult(1, "已为最新版本")
+	如果成功，返回文件流，如果失败，返回空的流

@@ -1,6 +1,8 @@
-package com.module.appVersionCheck.model;
+package com.module.appversioncheck.model;
 
 import java.util.Date;
+
+import org.apache.struts2.json.annotations.JSON;
 
 /**
  * APP下载信息
@@ -48,6 +50,7 @@ public class AppDownloadInfo {
 		this.appvid = appvid;
 	}
 
+	@JSON(format="yyyy-MM-dd HH:mm:ss")
 	public Date getUpdatedate() {
 		return updatedate;
 	}

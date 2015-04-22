@@ -1,7 +1,7 @@
-package com.module.appVersionCheck.dao;
+package com.module.appversioncheck.dao;
 
 import com.common.dao.BaseDao;
-import com.module.appVersionCheck.model.AppDownloadInfo;
+import com.module.appversioncheck.model.AppDownloadInfo;
 
 public interface AppDownloadInfoDao extends BaseDao<AppDownloadInfo> {
 

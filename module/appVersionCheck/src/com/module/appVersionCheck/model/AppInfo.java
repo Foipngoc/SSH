@@ -1,6 +1,8 @@
-package com.module.appVersionCheck.model;
+package com.module.appversioncheck.model;
 
 import java.util.Date;
+
+import org.apache.struts2.json.annotations.JSON;
 
 public class AppInfo {
 	private int id; // 自增ID
@@ -33,6 +35,7 @@ public class AppInfo {
 		this.appdesc = appdesc;
 	}
 
+	@JSON(format="yyyy-MM-dd HH:mm:ss")
 	public Date getCreatedate() {
 		return createdate;
 	}

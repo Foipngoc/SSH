@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- 每个class对应一个持久化对象 -->
 <hibernate-mapping>
-	<class name="com.module.appVersionCheck.model.AppInfo" table="appinfo">
+	<class name="com.module.appversioncheck.model.AppInfo" table="appinfo">
 		<id name="id" column="id" type="integer">
 			<generator class="native" />
 		</id>

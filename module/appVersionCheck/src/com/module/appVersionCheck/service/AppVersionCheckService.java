@@ -1,12 +1,12 @@
-package com.module.appVersionCheck.service;
+package com.module.appversioncheck.service;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 
 import com.common.action.BaseResult;
-import com.module.appVersionCheck.model.AppInfo;
-import com.module.appVersionCheck.model.AppVersionInfo;
+import com.module.appversioncheck.model.AppInfo;
+import com.module.appversioncheck.model.AppVersionInfo;
 
 public interface AppVersionCheckService {
 	/**
@@ -15,6 +15,13 @@ public interface AppVersionCheckService {
 	 * @return
 	 */
 	public List<Map<String, Object>> queryApps();
+	
+	/**
+	 * 获得已发布的应用信息
+	 * 
+	 * @return
+	 */
+	public Map<String, Object> queryAppDetail(int appid);
 
 	/**
 	 * 获取某一已发布的应用信息
@@ -52,16 +59,9 @@ public interface AppVersionCheckService {
 	 * @param appVersionInfo
 	 * @return
 	 */
-	public BaseResult publishAppVersion(int appid, int versioncode,
+	public BaseResult publishAppVersion(int appid, boolean autogenvcode,int versioncode,
 			String versionname, String updatelog, int updatetype,
-			boolean autoset, String downloadpath, int autoopen);
-
-	/**
-	 * 添加应用版本资源 ， 如果已存在，则替换
-	 * 
-	 * @return
-	 */
-	public BaseResult addAppVersionRes(int appvid, File file, String filename);
+			boolean autoset, String downloadpath, int autoinstall,File file, String filename);
 
 	/**
 	 * 设置APP最新的版本为哪个
@@ -78,7 +78,7 @@ public interface AppVersionCheckService {
 	 * @param appVersionInfo
 	 */
 	public BaseResult updateAppVersion(int appvid, String versionname,
-			String updatelog, int updatetype, String downloadpath, int autoopen);
+			String updatelog, int updatetype, String downloadpath, int autoinstall,File file,String filename);
 
 	/**
 	 * 删除应用已发布的版本, 注： 如果当前用户已安装了被删除的版本，则用户更新时会提醒强制更新
@@ -128,6 +128,14 @@ public interface AppVersionCheckService {
 	 * @param appid
 	 * @return
 	 */
-	public BaseResult downloadNewestAppVersionRes(int appid, int oldvesioncode,
+	public String downloadNewestAppVersionRes(int appid, int oldvesioncode,
 			String clientinfo);
+	
+	/**
+	 * 下载某版本资源
+	 * 
+	 * @param appid
+	 * @return
+	 */
+	public String downloadAppVersionRes(int appvid);
 }

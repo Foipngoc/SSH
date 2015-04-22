@@ -1,9 +1,9 @@
-package com.module.appVersionCheck.dao;
+package com.module.appversioncheck.dao;
 
 import java.util.List;
 
 import com.common.dao.BaseDao;
-import com.module.appVersionCheck.model.AppVersionInfo;
+import com.module.appversioncheck.model.AppVersionInfo;
 
 public interface AppVersionInfoDao extends BaseDao<AppVersionInfo> {
 	/**

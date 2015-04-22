@@ -1,10 +1,10 @@
-package com.module.appVersionCheck.dao.impl;
+package com.module.appversioncheck.dao.impl;
 
 import org.springframework.stereotype.Repository;
 
 import com.common.dao.impl.BaseDaoDB;
-import com.module.appVersionCheck.dao.AppDownloadInfoDao;
-import com.module.appVersionCheck.model.AppDownloadInfo;
+import com.module.appversioncheck.model.AppDownloadInfo;
+import com.module.appversioncheck.dao.AppDownloadInfoDao;
 
 @Repository("appDownloadInfoDao")
 public class AppDownloadInfoDaoImpl extends BaseDaoDB<AppDownloadInfo>
