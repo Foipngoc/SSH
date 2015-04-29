@@ -1,9 +1,9 @@
 package com.common.action;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import com.common.dao.BaseQueryRecords;
 
 /**
  * 数据返回结果集，常用于json返回或service层与action层数据交换
@@ -15,10 +15,9 @@ public class BaseResult {
 	private int resultcode;// 常用于返回操作结果码
 	private String resultdesc;// 常用于返回操作结果描述
 
+	private BaseQueryRecords<?> records = null; // 返回查询结果
 	private Map<String, Object> map = null;// 返回自定义数据
 	private Object obj = null;// 返回自定义数据
-	private Object[] objs = null;// 返回自定义数据
-	private List<Object> list = null;// 返回自定义数据
 
 	/**
 	 * 默认构造
@@ -35,6 +34,19 @@ public class BaseResult {
 	public BaseResult(int code, String desc) {
 		this.resultcode = code;
 		this.resultdesc = desc;
+	}
+
+	/**
+	 * 带结果码与结果描述构造函数
+	 * 
+	 * @param code
+	 * @param desc
+	 * @param records
+	 */
+	public BaseResult(int code, String desc, BaseQueryRecords<?> records) {
+		this.resultcode = code;
+		this.resultdesc = desc;
+		this.records = records;
 	}
 
 	/**
@@ -135,68 +147,11 @@ public class BaseResult {
 		this.obj = obj;
 	}
 
-	/**
-	 * 获得自定义对象数组
-	 * 
-	 * @return
-	 */
-	public Object[] getObjs() {
-		return objs;
+	public BaseQueryRecords<?> getRecords() {
+		return records;
 	}
 
-	/**
-	 * 设置自定义对象数组
-	 * 
-	 * @param objs
-	 */
-	public void setObjs(Object[] objs) {
-		this.objs = objs;
-	}
-
-	/**
-	 * 获得自定义列表list
-	 * 
-	 * @return
-	 */
-	public List<Object> getList() {
-		return list;
-	}
-
-	/**
-	 * 设置自定义列表
-	 * 
-	 * @param list
-	 */
-	public void setList(List<Object> list) {
-		this.list = list;
-	}
-
-	/**
-	 * 添加自定义对象到列表中
-	 * 
-	 * @param obj
-	 */
-	public void addToList(Object obj) {
-		if (this.list == null)
-			this.list = new ArrayList<>();
-
-		this.list.add(obj);
-	}
-
-	/**
-	 * 从列表中获得自定义对象
-	 * 
-	 * @param index
-	 * @return
-	 */
-	public Object getFromList(int index) {
-		if (this.list == null) {
-			return null;
-		}
-		try {
-			return this.list.get(index);
-		} catch (Exception e) {
-			return null;
-		}
+	public void setRecords(BaseQueryRecords<?> records) {
+		this.records = records;
 	}
 }

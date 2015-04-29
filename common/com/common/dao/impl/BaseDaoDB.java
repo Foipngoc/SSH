@@ -12,7 +12,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -22,7 +21,6 @@ import com.common.framework.CXFFilter;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
-@Repository("baseDaoDB")
 // 默认声明baseDao Bean.
 public class BaseDaoDB<E> implements BaseDao<E> {
 
@@ -420,7 +418,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : 每页数
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected BaseQueryRecords<?> find(Criteria criteria, int page, int rows) {
 		try {
 			if (page > 0 && rows > 0) {
@@ -631,7 +629,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            ： 每页行数
 	 * @return： 数据集
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected BaseQueryRecords<?> find(HQL hql, int page, int rows) {
 		try {
 			Query q = getCurrentSession().createQuery(hql.toString());
@@ -688,7 +686,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            ： 每页行数
 	 * @return: 数据集
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected BaseQueryRecords<?> find(SQL sql, int page, int rows) {
 		try {
 			Query q = getCurrentSession().createSQLQuery(sql.toString());
