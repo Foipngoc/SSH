@@ -13,9 +13,10 @@ import com.example.service.ExampleService;
  * 该类需要继承BaseAction
  * 
  * @author DJ
- *
+ * 
  */
-@SuppressWarnings("all") //忽略该类中的所有警告
+@SuppressWarnings("all")
+// 忽略该类中的所有警告
 public class ExampleAction extends BaseAction {
 
 	/**
@@ -23,9 +24,9 @@ public class ExampleAction extends BaseAction {
 	 */
 	@Resource(name = "exampleservice")
 	private ExampleService exampleService;
-	private Student example; //对象传值，需要同时编写get/set方法
+	private Student example; // 对象传值，需要同时编写get/set方法
 	private Student example2;
-	private int page; //属性传值， 传入值添加set方法，传出值添加get方法
+	private int page; // 属性传值， 传入值添加set方法，传出值添加get方法
 	private int rows;
 
 	/**
@@ -45,9 +46,8 @@ public class ExampleAction extends BaseAction {
 			int age = example.getAge();
 		}
 		if (input != null && input != "") {
-			this.baseResult = new BaseResult(1, "example");
-			this.result = new BaseResult(1, "examples");
-			this.result.setObj(this.exampleService.getExamples(page, rows));
+			this.result = new BaseResult(1, "examples",
+					this.exampleService.getExamples(page, rows));
 		}
 		return "json";
 	}

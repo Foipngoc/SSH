@@ -21,7 +21,7 @@ import com.example.model.Student;
 public class ExampleDaoImpl extends BaseDaoDB<Student> implements ExampleDao {
 
 	@Override
-	public BaseQueryRecords getExamples(int page, int rows) {
+	public BaseQueryRecords<Student> getExamples(int page, int rows) {
 		return super.find(new Student(), page, rows);
 	}
 

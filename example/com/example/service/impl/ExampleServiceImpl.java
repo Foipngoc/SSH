@@ -4,9 +4,11 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.springframework.stereotype.Service;
+
 import com.common.dao.BaseQueryRecords;
 import com.common.service.BaseService;
 import com.example.dao.ExampleDao;
+import com.example.model.Student;
 import com.example.service.ExampleService;
 
 /**
@@ -29,7 +31,7 @@ public class ExampleServiceImpl extends BaseService implements ExampleService {
 	private ExampleDao exampleDao;
 
 	@Override
-	public BaseQueryRecords getExamples(int page, int rows) {
+	public BaseQueryRecords<Student> getExamples(int page, int rows) {
 		return this.exampleDao.getExamples(page, rows);
 	}
 

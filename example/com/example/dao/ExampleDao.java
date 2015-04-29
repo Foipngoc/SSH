@@ -13,5 +13,5 @@ import com.example.model.Student;
  * 
  */
 public interface ExampleDao extends BaseDao<Student> {
-	public BaseQueryRecords getExamples(int page, int rows);
+	public BaseQueryRecords<Student> getExamples(int page, int rows);
 }
