@@ -8,8 +8,8 @@ import java.util.List;
  * @author DongJun
  * 
  */
-public class BaseQueryRecords {
-	private List<?> data;// 返回数据
+public class BaseQueryRecords<T> {
+	private List<T> data;// 返回数据
 	private int total;// 记录总数
 	private int page;// 页码
 	private int rows;// 每页记录行数
@@ -30,7 +30,7 @@ public class BaseQueryRecords {
 	 * @param page
 	 * @param rows
 	 */
-	public BaseQueryRecords(List<?> data, int total, int page, int rows) {
+	public BaseQueryRecords(List<T> data, int total, int page, int rows) {
 		this.data = data;
 		this.total = total;
 		this.page = page;
@@ -43,11 +43,11 @@ public class BaseQueryRecords {
 	 * 
 	 * @param data
 	 */
-	public BaseQueryRecords(List<?> data) {
+	public BaseQueryRecords(List<T> data) {
 		this.data = data;
 		this.total = data.size();
 		this.page = 1;
-		//解決  当数据为空的时候，  出现除0错误
+		// 解決 当数据为空的时候， 出现除0错误
 		if (this.total == 0)
 			this.rows = 1;
 		else
@@ -102,11 +102,11 @@ public class BaseQueryRecords {
 		return pages;
 	}
 
-	public List<?> getData() {
+	public List<T> getData() {
 		return data;
 	}
 
-	public void setData(List<?> data) {
+	public void setData(List<T> data) {
 		this.data = data;
 	}
 }

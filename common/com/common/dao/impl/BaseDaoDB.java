@@ -23,7 +23,6 @@ import com.common.framework.CXFFilter;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
 @Repository("baseDaoDB")
-@SuppressWarnings("all")
 // 默认声明baseDao Bean.
 public class BaseDaoDB<E> implements BaseDao<E> {
 
@@ -121,7 +120,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return: 对象集
 	 */
 	@Override
-	public BaseQueryRecords find(E o) {
+	public BaseQueryRecords<E> find(E o) {
 		return this.find(o, -1, -1);
 	}
 
@@ -136,8 +135,9 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : 每页条数
 	 * @return: 对象集
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public BaseQueryRecords find(E o, int page, int rows) {
+	public BaseQueryRecords<E> find(E o, int page, int rows) {
 		try {
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());
@@ -147,9 +147,10 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 				int total = criteria.list().size();
 				criteria.setFirstResult((page - 1) * rows);
 				criteria.setMaxResults(rows);
-				return new BaseQueryRecords(criteria.list(), total, page, rows);
+				return new BaseQueryRecords<E>(criteria.list(), total, page,
+						rows);
 			} else {
-				return new BaseQueryRecords(criteria.list());
+				return new BaseQueryRecords<E>(criteria.list());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -169,7 +170,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return: 对象集
 	 */
 	@Override
-	public BaseQueryRecords find(E o, String key, Object value) {
+	public BaseQueryRecords<E> find(E o, String key, Object value) {
 		return this.find(o, Restrictions.eq(key, value));
 	}
 
@@ -189,7 +190,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return： 对象集
 	 */
 	@Override
-	public BaseQueryRecords find(E o, String key, Object value, int page,
+	public BaseQueryRecords<E> find(E o, String key, Object value, int page,
 			int rows) {
 		return this.find(o, page, rows, Restrictions.eq(key, value));
 	}
@@ -271,7 +272,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : true--> DESC排序,false--> ASC排序
 	 */
 	@Override
-	public BaseQueryRecords findOrderBy(E o, String orderby, boolean ifdesc) {
+	public BaseQueryRecords<E> findOrderBy(E o, String orderby, boolean ifdesc) {
 		return findOrderBy(o, orderby, ifdesc, -1, -1);
 	}
 
@@ -289,8 +290,9 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @param rows
 	 *            : 每页数量
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public BaseQueryRecords findOrderBy(E o, String orderby, boolean ifdesc,
+	public BaseQueryRecords<E> findOrderBy(E o, String orderby, boolean ifdesc,
 			int page, int rows) {
 		try {
 			Criteria criteria = getCurrentSession()
@@ -306,9 +308,10 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 				int total = criteria.list().size();
 				criteria.setFirstResult((page - 1) * rows);
 				criteria.setMaxResults(rows);
-				return new BaseQueryRecords(criteria.list(), total, page, rows);
+				return new BaseQueryRecords<E>(criteria.list(), total, page,
+						rows);
 			} else {
-				return new BaseQueryRecords(criteria.list());
+				return new BaseQueryRecords<E>(criteria.list());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -331,7 +334,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : true--> DESC排序,false--> ASC排序
 	 */
 	@Override
-	public BaseQueryRecords findOrderBy(E o, String key, Object value,
+	public BaseQueryRecords<E> findOrderBy(E o, String key, Object value,
 			String orderby, boolean ifdesc) {
 		return findOrderBy(o, key, value, orderby, ifdesc, -1, -1);
 	}
@@ -354,8 +357,9 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @param rows
 	 *            : 每页数量
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public BaseQueryRecords findOrderBy(E o, String key, Object value,
+	public BaseQueryRecords<E> findOrderBy(E o, String key, Object value,
 			String orderby, boolean ifdesc, int page, int rows) {
 		try {
 			Criteria criteria = getCurrentSession()
@@ -374,9 +378,10 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 				int total = criteria.list().size();
 				criteria.setFirstResult((page - 1) * rows);
 				criteria.setMaxResults(rows);
-				return new BaseQueryRecords(criteria.list(), total, page, rows);
+				return new BaseQueryRecords<E>(criteria.list(), total, page,
+						rows);
 			} else {
-				return new BaseQueryRecords(criteria.list());
+				return new BaseQueryRecords<E>(criteria.list());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -401,7 +406,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @param criteria
 	 * @return
 	 */
-	protected BaseQueryRecords find(Criteria criteria) {
+	protected BaseQueryRecords<?> find(Criteria criteria) {
 		return find(criteria, -1, -1);
 	}
 
@@ -415,7 +420,8 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : 每页数
 	 * @return
 	 */
-	protected BaseQueryRecords find(Criteria criteria, int page, int rows) {
+	@SuppressWarnings("unchecked")
+	protected BaseQueryRecords<?> find(Criteria criteria, int page, int rows) {
 		try {
 			if (page > 0 && rows > 0) {
 				int total = criteria.list().size();
@@ -444,7 +450,8 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : 查询条件
 	 * @return: 对象集
 	 */
-	protected BaseQueryRecords find(E o, int page, int rows,
+	@SuppressWarnings("unchecked")
+	protected BaseQueryRecords<E> find(E o, int page, int rows,
 			Criterion... contidions) {
 		try {
 			Criteria criteria = getCurrentSession()
@@ -458,9 +465,10 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 				int total = criteria.list().size();
 				criteria.setFirstResult((page - 1) * rows);
 				criteria.setMaxResults(rows);
-				return new BaseQueryRecords(criteria.list(), total, page, rows);
+				return new BaseQueryRecords<E>(criteria.list(), total, page,
+						rows);
 			} else {
-				return new BaseQueryRecords(criteria.list());
+				return new BaseQueryRecords<E>(criteria.list());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -477,7 +485,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : 条件
 	 * @return: 对象集
 	 */
-	protected BaseQueryRecords find(E o, Criterion... conditions) {
+	protected BaseQueryRecords<E> find(E o, Criterion... conditions) {
 		return this.find(o, -1, -1, conditions);
 	}
 
@@ -593,7 +601,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : hql语句
 	 * @return: 记录集
 	 */
-	protected BaseQueryRecords find(HQL hql) {
+	protected BaseQueryRecords<?> find(HQL hql) {
 		return this.find(hql, -1, -1);
 	}
 
@@ -623,7 +631,8 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            ： 每页行数
 	 * @return： 数据集
 	 */
-	protected BaseQueryRecords find(HQL hql, int page, int rows) {
+	@SuppressWarnings("unchecked")
+	protected BaseQueryRecords<?> find(HQL hql, int page, int rows) {
 		try {
 			Query q = getCurrentSession().createQuery(hql.toString());
 
@@ -649,7 +658,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            ： sql语句
 	 * @return: 数据集
 	 */
-	protected BaseQueryRecords find(SQL sql) {
+	protected BaseQueryRecords<?> find(SQL sql) {
 		return find(sql, -1, -1);
 	}
 
@@ -679,7 +688,8 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            ： 每页行数
 	 * @return: 数据集
 	 */
-	protected BaseQueryRecords find(SQL sql, int page, int rows) {
+	@SuppressWarnings("unchecked")
+	protected BaseQueryRecords<?> find(SQL sql, int page, int rows) {
 		try {
 			Query q = getCurrentSession().createSQLQuery(sql.toString());
 
