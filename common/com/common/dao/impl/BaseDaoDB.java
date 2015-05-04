@@ -18,11 +18,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.common.dao.BaseDao;
 import com.common.dao.BaseQueryRecords;
 import com.common.framework.CXFFilter;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
 // 默认声明baseDao Bean.
-public class BaseDaoDB<E> implements BaseDao<E> {
+public class BaseDaoDB implements BaseDao {
 
 	private SessionFactory sessionFactory;
 
@@ -53,7 +52,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return: 通过参数o返回对象信息，如自增ID
 	 */
 	@Override
-	public void save(E o) {
+	public void save(Object o) {
 		try {
 			getCurrentSession().save(o);
 		} catch (Exception e) {
@@ -69,7 +68,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : 待删除对象
 	 */
 	@Override
-	public void delete(E o) {
+	public void delete(Object o) {
 		try {
 			getCurrentSession().delete(o);
 		} catch (Exception e) {
@@ -85,7 +84,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : 待更新的对象
 	 */
 	@Override
-	public void update(E o) {
+	public void update(Object o) {
 		try {
 			getCurrentSession().update(o);
 		} catch (Exception e) {
@@ -101,7 +100,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : 待保存或更新的对象
 	 */
 	@Override
-	public void saveOrUpdate(E o) {
+	public void saveOrUpdate(Object o) {
 		try {
 			getCurrentSession().saveOrUpdate(o);
 		} catch (Exception e) {
@@ -118,7 +117,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return: 对象集
 	 */
 	@Override
-	public BaseQueryRecords<E> find(E o) {
+	public BaseQueryRecords<?> find(Object o) {
 		return this.find(o, -1, -1);
 	}
 
@@ -133,9 +132,9 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : 每页条数
 	 * @return: 对象集
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public BaseQueryRecords<E> find(E o, int page, int rows) {
+	public BaseQueryRecords<?> find(Object o, int page, int rows) {
 		try {
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());
@@ -145,10 +144,9 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 				int total = criteria.list().size();
 				criteria.setFirstResult((page - 1) * rows);
 				criteria.setMaxResults(rows);
-				return new BaseQueryRecords<E>(criteria.list(), total, page,
-						rows);
+				return new BaseQueryRecords(criteria.list(), total, page, rows);
 			} else {
-				return new BaseQueryRecords<E>(criteria.list());
+				return new BaseQueryRecords(criteria.list());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -168,7 +166,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return: 对象集
 	 */
 	@Override
-	public BaseQueryRecords<E> find(E o, String key, Object value) {
+	public BaseQueryRecords<?> find(Object o, String key, Object value) {
 		return this.find(o, Restrictions.eq(key, value));
 	}
 
@@ -188,8 +186,8 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return： 对象集
 	 */
 	@Override
-	public BaseQueryRecords<E> find(E o, String key, Object value, int page,
-			int rows) {
+	public BaseQueryRecords<?> find(Object o, String key, Object value,
+			int page, int rows) {
 		return this.find(o, page, rows, Restrictions.eq(key, value));
 	}
 
@@ -205,9 +203,9 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return: 对象
 	 */
 	@Override
-	public E findUnique(E o, String key, Object value) {
-		List<E> lists = (List<E>) this.find(o, 1, 1,
-				Restrictions.eq(key, value)).getData();
+	public Object findUnique(Object o, String key, Object value) {
+		List<?> lists = this.find(o, 1, 1, Restrictions.eq(key, value))
+				.getData();
 		if (lists.size() > 0) {
 			return lists.get(0);
 		}
@@ -222,7 +220,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return： 对象的数量
 	 */
 	@Override
-	public Long count(E o) {
+	public Long count(Object o) {
 		try {
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());
@@ -246,7 +244,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @return ： 对象数量
 	 */
 	@Override
-	public Long count(E o, String key, Object value) {
+	public Long count(Object o, String key, Object value) {
 		try {
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());
@@ -270,7 +268,8 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : true--> DESC排序,false--> ASC排序
 	 */
 	@Override
-	public BaseQueryRecords<E> findOrderBy(E o, String orderby, boolean ifdesc) {
+	public BaseQueryRecords<?> findOrderBy(Object o, String orderby,
+			boolean ifdesc) {
 		return findOrderBy(o, orderby, ifdesc, -1, -1);
 	}
 
@@ -288,10 +287,10 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @param rows
 	 *            : 每页数量
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public BaseQueryRecords<E> findOrderBy(E o, String orderby, boolean ifdesc,
-			int page, int rows) {
+	public BaseQueryRecords<?> findOrderBy(Object o, String orderby,
+			boolean ifdesc, int page, int rows) {
 		try {
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());
@@ -306,10 +305,9 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 				int total = criteria.list().size();
 				criteria.setFirstResult((page - 1) * rows);
 				criteria.setMaxResults(rows);
-				return new BaseQueryRecords<E>(criteria.list(), total, page,
-						rows);
+				return new BaseQueryRecords(criteria.list(), total, page, rows);
 			} else {
-				return new BaseQueryRecords<E>(criteria.list());
+				return new BaseQueryRecords(criteria.list());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -332,7 +330,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : true--> DESC排序,false--> ASC排序
 	 */
 	@Override
-	public BaseQueryRecords<E> findOrderBy(E o, String key, Object value,
+	public BaseQueryRecords<?> findOrderBy(Object o, String key, Object value,
 			String orderby, boolean ifdesc) {
 		return findOrderBy(o, key, value, orderby, ifdesc, -1, -1);
 	}
@@ -355,9 +353,9 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 * @param rows
 	 *            : 每页数量
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public BaseQueryRecords<E> findOrderBy(E o, String key, Object value,
+	public BaseQueryRecords<?> findOrderBy(Object o, String key, Object value,
 			String orderby, boolean ifdesc, int page, int rows) {
 		try {
 			Criteria criteria = getCurrentSession()
@@ -376,10 +374,9 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 				int total = criteria.list().size();
 				criteria.setFirstResult((page - 1) * rows);
 				criteria.setMaxResults(rows);
-				return new BaseQueryRecords<E>(criteria.list(), total, page,
-						rows);
+				return new BaseQueryRecords(criteria.list(), total, page, rows);
 			} else {
-				return new BaseQueryRecords<E>(criteria.list());
+				return new BaseQueryRecords(criteria.list());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -394,7 +391,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            ： 待查找的类型
 	 * @return 获得查寻条件
 	 */
-	protected Criteria getCriteria(E o) {
+	protected Criteria getCriteria(Object o) {
 		return getCurrentSession().createCriteria(o.getClass());
 	}
 
@@ -448,8 +445,8 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : 查询条件
 	 * @return: 对象集
 	 */
-	@SuppressWarnings("unchecked")
-	protected BaseQueryRecords<E> find(E o, int page, int rows,
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected BaseQueryRecords<?> find(Object o, int page, int rows,
 			Criterion... contidions) {
 		try {
 			Criteria criteria = getCurrentSession()
@@ -463,10 +460,9 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 				int total = criteria.list().size();
 				criteria.setFirstResult((page - 1) * rows);
 				criteria.setMaxResults(rows);
-				return new BaseQueryRecords<E>(criteria.list(), total, page,
-						rows);
+				return new BaseQueryRecords(criteria.list(), total, page, rows);
 			} else {
-				return new BaseQueryRecords<E>(criteria.list());
+				return new BaseQueryRecords(criteria.list());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -483,7 +479,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            : 条件
 	 * @return: 对象集
 	 */
-	protected BaseQueryRecords<E> find(E o, Criterion... conditions) {
+	protected BaseQueryRecords<?> find(Object o, Criterion... conditions) {
 		return this.find(o, -1, -1, conditions);
 	}
 
@@ -496,8 +492,8 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            ： 查询条件
 	 * @return: 查到到的对象，没有查到找返回 null
 	 */
-	protected E findUnique(E o, Criterion... conditions) {
-		List<E> lists = (List<E>) find(o, 1, 1, conditions).getData();
+	protected Object findUnique(Object o, Criterion... conditions) {
+		List<?> lists = (List<?>) find(o, 1, 1, conditions).getData();
 		if (lists.size() > 0) {
 			return lists.get(0);
 		}
@@ -513,7 +509,7 @@ public class BaseDaoDB<E> implements BaseDao<E> {
 	 *            ： 条件
 	 * @return： 记录数
 	 */
-	protected Long count(E o, Criterion... conditions) {
+	protected Long count(Object o, Criterion... conditions) {
 		try {
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());

@@ -4,6 +4,7 @@ import javax.transaction.Transactional;
 
 import org.junit.Test;
 import org.springframework.stereotype.Repository;
+
 import com.common.dao.BaseQueryRecords;
 import com.common.dao.impl.BaseDaoDB;
 import com.example.dao.ExampleDao;
@@ -18,11 +19,12 @@ import com.example.model.Student;
  * 
  */
 @Repository("exampledao")
-public class ExampleDaoImpl extends BaseDaoDB<Student> implements ExampleDao {
+public class ExampleDaoImpl extends BaseDaoDB implements ExampleDao {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public BaseQueryRecords<Student> getExamples(int page, int rows) {
-		return super.find(new Student(), page, rows);
+		return (BaseQueryRecords<Student>) super.find(new Student(), page, rows);
 	}
 
 	/**

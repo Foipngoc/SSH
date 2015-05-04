@@ -12,6 +12,6 @@ import com.example.model.Student;
  * @author DJ
  * 
  */
-public interface ExampleDao extends BaseDao<Student> {
+public interface ExampleDao extends BaseDao {
 	public BaseQueryRecords<Student> getExamples(int page, int rows);
 }
