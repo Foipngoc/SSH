@@ -2,6 +2,8 @@ package com.example.model;
 
 import java.util.Date;
 
+import org.apache.struts2.json.annotations.JSON;
+
 public class Student {
 	private int id;
 	private String name;
@@ -32,6 +34,7 @@ public class Student {
 		this.age = age;
 	}
 
+	@JSON(format="yyyy-MM-dd") //当对象转换成JSON时，如果控制时间对象输出格式
 	public Date getBorn() {
 		return born;
 	}
