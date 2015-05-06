@@ -15,6 +15,9 @@ public class BaseResult {
 	private int resultcode;// 常用于返回操作结果码
 	private String resultdesc;// 常用于返回操作结果描述
 
+	public static final int RESULT_OK = 0; // 成功结果码
+	public static final int RESULT_FAILED = -1; // 失败结果码
+
 	private BaseQueryRecords<?> records = null; // 返回查询结果
 	private Map<String, Object> map = null;// 返回自定义数据
 	private Object obj = null;// 返回自定义数据
