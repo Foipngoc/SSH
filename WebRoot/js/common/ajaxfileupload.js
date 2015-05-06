@@ -26,11 +26,20 @@ jQuery.extend({
 		var formId = 'jUploadForm' + id;
 		var fileId = 'jUploadFile' + id;
 		var form = jQuery('<form  action="" method="POST" name="' + formId + '" id="' + formId + '" enctype="multipart/form-data"></form>');	
-		var oldElement = jQuery('#' + fileElementId);
-		var newElement = jQuery(oldElement).clone();
-		jQuery(oldElement).attr('id', fileId);
-		jQuery(oldElement).before(newElement);
-		jQuery(oldElement).appendTo(form);
+		
+		// 实现多文件上传
+        if (typeof(fileElementId) == 'string') {
+            fileElementId = [fileElementId];
+        }
+        for (var i in fileElementId) {
+            var oldElement = jQuery('#' + fileElementId[i]);
+            var newElement = jQuery(oldElement).clone();
+            jQuery(oldElement).attr('id', fileId);
+            jQuery(oldElement).before(newElement);
+            jQuery(oldElement).appendTo(form);
+        }
+		
+		
 
 		// 增加参数支持
 		if (data)
