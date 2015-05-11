@@ -1,0 +1,18 @@
+任意树功能
+	--使用此功能可以方便的构造以树为模型的java代码，并提供常用的树查寻等操作。
+
+提供任意树的常用功能
+
+Tree.java    			----树的内存表示方式，用于从数据库等持久化介质获取树数据结构，可应用于缓存处理等。
+TreeNode.java 			----树节点基类，用于描述最简单的树节点信息
+TreeNodeRelation.java 	----树节点间父子关系描述
+TreeService.java		----树功能接口
+TreeServiceImpl.java 	----树功能实现类，在该类中，有跟持久化相关的接口为抽象方法，需使用对应的dao来给予实现
+TreeDao.java			----树持久化功能接口，即如何将树在持久化介质中存储，读取等功能
+TreeDaoImpl.java		----树数据库方式实现，继承该类在实现接口时告诉该类的持久化model类类型，这些类型必须继承TreeNode和TreeNodeRelation类
+
+使用方法：
+1.  实现存储树节点的model以及树节点父子关系的model类，并继承TreeNode和TreeNodeRelation
+2.  实现自己的树存储Dao类，并继承TreeDaoImpl类，并将自己的model传入dao的接口方法中实现接口方法以获得节点实体类和节点关系类
+3.  实现自己的树Service类，并继承TreeServiceImpl，因为该类已将常用的接口实现了。
+4.  在树Service类中，通过Spring @Resource注解引用刚实现的Dao类，并将Service类中需要实现的接口用该Dao来实现。
