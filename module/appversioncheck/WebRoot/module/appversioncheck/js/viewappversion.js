@@ -58,9 +58,9 @@ function getFileName(url){
 }
 
 function closeview() {
-	window.location.href="module/appversioncheck/appversioninfo.jsp?appid="+$("#appid").val();
+	window.location.href=$("#basePath").val()+"module/appversioncheck/appversioninfo.jsp?appid="+$("#appid").val();
 }
 
 function downloadfile() {
-	window.location.href="module/appversioncheck/downloadAppVersionRes?appvid="+$("#appvid").val();
+	window.location.href=$("#basePath").val()+"module/appversioncheck/downloadAppVersionRes?appvid="+$("#appvid").val();
 }

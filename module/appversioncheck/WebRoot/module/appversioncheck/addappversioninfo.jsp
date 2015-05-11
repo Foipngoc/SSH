@@ -24,6 +24,7 @@
 	href="<%=basePath%>css/common/style.css">
 
 <script src="js/common/jquery-1.10.2.min.js"></script>
+<script src="js/common/ajaxfileupload.js"></script>
 <script type="text/javascript"
 	src="<%=basePath%>module/appversioncheck/js/addappversioninfo.js"></script>
 <script type="text/javascript" src="js/common/paging.js"></script>
@@ -33,11 +34,12 @@
 </head>
 
 <body>
+	<br>
+	<input id="basePath" name="basePath" type="hidden" value="<%=basePath%>">
 	<div align="left" style="width: 80%">
-	<form id="form" enctype="multipart/form-data" action="module/appversioncheck/publishAppVersion" method="post">
 	<input type="hidden" value="<%=request.getParameter("appid")%>" name="appid" id="appid"/>
 	<h2>应用名&nbsp;&nbsp;<input type="text" name="appname" id="appname" readonly="readonly" style="border: 0px; font-weight: bold;"></h2> <br>
-	<h2>版本号&nbsp;&nbsp;<input type="text" name="versioncode" id="versioncode"><input type="hidden" value="0" name="autogenvcode"></h2> <br>
+	<h2>版本号&nbsp;&nbsp;<input type="text" name="versioncode" id="versioncode"></h2> <br>
 	<h2>版本名&nbsp;&nbsp;<input type="text" name="versionname" id="versionname"> </h2><br>
 	<h2>更新日志&nbsp;<textarea rows="6" cols="40" name="updatelog" id="updatelog"></textarea></h2><br>
 	<h2>更新方式&nbsp;<select name="updatetype" id="updatetype"> <option value="0">强制更新</option><option value="1">用户选择</option><option value="2">不弹出更新</option></select> </h2><br>
@@ -46,7 +48,6 @@
 	<h2>下载路径&nbsp;<input type="text" name="downloadpath" id="downloadpath"> </h2><br>
 	<h2>自动安装&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="autoinstall" id="autoinstall"><option value="1">自动安装</option><option value="0">不自动安装</option></select> </h2><br>
 	<input type="button" value="发布新版本" onclick="publicAppversioninfo()">
-	</form>
 	</div>
 </body>
 </html>

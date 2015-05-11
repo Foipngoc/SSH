@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Controller;
 
 import com.common.action.BaseAction;
-import com.common.action.BaseResult;
+import com.common.action.result.BaseResult;
 import com.module.appversioncheck.model.AppInfo;
 import com.module.appversioncheck.model.AppVersionInfo;
 import com.module.appversioncheck.service.AppVersionCheckService;
@@ -196,11 +196,11 @@ public class AppVersionCheckAction extends BaseAction {
 		filename = this.appVersionCheckService.downloadAppVersionRes(appvid);
 		return "file";
 	}
-
+	
 	public BaseResult getResult() {
 		return result;
 	}
-
+	
 	public void setFile(List<File> file) {
 		this.file = file;
 	}

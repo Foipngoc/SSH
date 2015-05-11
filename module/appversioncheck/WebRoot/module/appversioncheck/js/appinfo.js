@@ -15,7 +15,7 @@ function showAppList() {
 			for (var i = 0; i < list.length; i++) {
 				var newTr = $("<tr class='addTr'></tr>");
 				newTr.append($("<td>" + list[i].appinfo.id + "</td>"));
-				newTr.append($("<td><a style='color:blue;text-decoration:underline' href='module/appversioncheck/appversioninfo.jsp?appid="
+				newTr.append($("<td><a style='color:blue;text-decoration:underline' href='"+$("#basePath").val()+"module/appversioncheck/appversioninfo.jsp?appid="
 							+list[i].appinfo.id+"'>" + list[i].appinfo.appname + "</a></td>"));
 				newTr.append($("<td>" + list[i].appinfo.appdesc + "</td>"));
 				newTr.append($("<td>" + list[i].appinfo.createdate + "</td>"));
@@ -31,7 +31,7 @@ function showAppList() {
 }
 
 function modifyApp(appid) {
-	window.location.href = "module/appversioncheck/modifyapp.jsp?appid="+ appid;
+	window.location.href = $("#basePath").val()+"module/appversioncheck/modifyapp.jsp?appid="+ appid;
 }
 
 function delApp(id) {

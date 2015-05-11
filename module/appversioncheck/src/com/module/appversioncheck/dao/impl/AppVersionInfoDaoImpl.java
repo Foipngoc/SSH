@@ -6,11 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import com.common.dao.impl.BaseDaoDB;
 import com.common.dao.impl.HQL;
-import com.module.appversioncheck.model.AppVersionInfo;
 import com.module.appversioncheck.dao.AppVersionInfoDao;
+import com.module.appversioncheck.model.AppVersionInfo;
 
 @Repository("appVersionInfoDao")
-public class AppVersionInfoDaoImpl extends BaseDaoDB<AppVersionInfo> implements
+public class AppVersionInfoDaoImpl extends BaseDaoDB implements
 		AppVersionInfoDao {
 	/**
 	 * 获得最大的版本号

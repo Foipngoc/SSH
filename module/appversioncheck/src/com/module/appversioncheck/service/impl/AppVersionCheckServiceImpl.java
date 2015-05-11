@@ -2,7 +2,6 @@ package com.module.appversioncheck.service.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,35 +10,31 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.poi.util.SystemOutLogger;
-import org.junit.runner.Result;
 import org.springframework.stereotype.Service;
 
-import com.common.action.BaseResult;
+import com.common.action.result.BaseResult;
 import com.common.service.BaseService;
 import com.common.utils.DateTimeUtil;
 import com.common.utils.FileMd5;
+import com.module.appversioncheck.dao.AppDownloadInfoDao;
+import com.module.appversioncheck.dao.AppInfoDao;
+import com.module.appversioncheck.dao.AppVersionInfoDao;
 import com.module.appversioncheck.model.AppDownloadInfo;
 import com.module.appversioncheck.model.AppInfo;
 import com.module.appversioncheck.model.AppVersionInfo;
 import com.module.appversioncheck.service.AppVersionCheckService;
-import com.module.appversioncheck.dao.AppDownloadInfoDao;
-import com.module.appversioncheck.dao.AppInfoDao;
-import com.module.appversioncheck.dao.AppVersionInfoDao;
 
 @Service("appVersionCheckService")
 @SuppressWarnings("all")
 public class AppVersionCheckServiceImpl extends BaseService implements
 		AppVersionCheckService {
 
-	public static String RES_PATH = "module/appversioncheck/res";
+	public static String RES_PATH = "appversion";
 
 	@Resource
 	private AppDownloadInfoDao appDownloadInfoDao;
@@ -108,7 +103,7 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 * @return
 	 */
 	public AppInfo queryApp(int appid) {
-		return this.appInfoDao.findUnique(new AppInfo(), "id", appid);
+		return (AppInfo) this.appInfoDao.findUnique(new AppInfo(), "id", appid);
 	}
 
 	/**
@@ -502,8 +497,7 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 				String respath = appVersionInfo.getRespath();
 				if (respath != null && respath.contains(RES_PATH))
 					// 删除资源
-					new File(getContextPath() + "/"
-							+ respath).delete();
+					new File(getContextPath() + "/" + respath).delete();
 				this.appVersionInfoDao.delete(appVersionInfo);
 			}
 		}
@@ -519,28 +513,21 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 		List<AppVersionInfo> list = (List<AppVersionInfo>) this.appVersionInfoDao
 				.findOrderBy(new AppVersionInfo(), "appid", appid,
 						"updatedate", true).getData();
-		/*for (int i = 0; i < list.size(); i++) {
-			AppVersionInfo appVersionInfo = list.get(i);
-			if (appVersionInfo != null) {
-				// 检查资源文件是否存在，如果不存在，则清空respath和md5
-				File resFile = new File(getContextPath() + "/"
-						+ appVersionInfo.getRespath());
-				String md5 = FileMd5.getMd5ByFile(resFile);
-				if (resFile.exists() && resFile.isFile() && md5 != null
-						&& md5.toLowerCase().equals(appVersionInfo.getResmd5().toLowerCase())) { // 如果存在且md5一致
-					System.out.println("Res OK!");
-				} else {
-					// 删除原资源文件
-					if (appVersionInfo.getRespath() != null
-							&& appVersionInfo.getRespath().contains(RES_PATH))
-						resFile.delete();
-					
-					appVersionInfo.setResmd5("");
-					appVersionInfo.setRespath("");
-					this.appVersionInfoDao.save(appVersionInfo);
-				}
-			}
-		}*/
+		/*
+		 * for (int i = 0; i < list.size(); i++) { AppVersionInfo appVersionInfo
+		 * = list.get(i); if (appVersionInfo != null) { //
+		 * 检查资源文件是否存在，如果不存在，则清空respath和md5 File resFile = new
+		 * File(getContextPath() + "/" + appVersionInfo.getRespath()); String
+		 * md5 = FileMd5.getMd5ByFile(resFile); if (resFile.exists() &&
+		 * resFile.isFile() && md5 != null &&
+		 * md5.toLowerCase().equals(appVersionInfo.getResmd5().toLowerCase())) {
+		 * // 如果存在且md5一致 System.out.println("Res OK!"); } else { // 删除原资源文件 if
+		 * (appVersionInfo.getRespath() != null &&
+		 * appVersionInfo.getRespath().contains(RES_PATH)) resFile.delete();
+		 * 
+		 * appVersionInfo.setResmd5(""); appVersionInfo.setRespath("");
+		 * this.appVersionInfoDao.save(appVersionInfo); } } }
+		 */
 		return list;
 	}
 
@@ -552,27 +539,8 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 * @return
 	 */
 	public AppVersionInfo queryAppVersion(int appvid) {
-		AppVersionInfo appVersionInfo = this.appVersionInfoDao.findUnique(
-				new AppVersionInfo(), "id", appvid);
-		/*if (appVersionInfo != null) {
-			// 检查资源文件是否存在，如果不存在，则清空respath和md5
-			File resFile = new File(getContextPath() + "/"
-					+ appVersionInfo.getRespath());
-			String md5 = FileMd5.getMd5ByFile(resFile);
-			if (resFile.exists() && resFile.isFile() && md5 != null
-					&& md5.toLowerCase().equals(appVersionInfo.getResmd5().toLowerCase())) { // 如果存在且md5一致
-				System.out.println("Res OK!");
-			} else {
-				// 删除原资源文件
-				if (appVersionInfo.getRespath() != null
-						&& appVersionInfo.getRespath().contains(RES_PATH))
-					resFile.delete();
-				
-				appVersionInfo.setResmd5("");
-				appVersionInfo.setRespath("");
-				this.appVersionInfoDao.save(appVersionInfo);
-			}
-		}*/
+		AppVersionInfo appVersionInfo = (AppVersionInfo) this.appVersionInfoDao
+				.findUnique(new AppVersionInfo(), "id", appvid);
 		return appVersionInfo;
 	}
 
@@ -586,25 +554,6 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	public AppVersionInfo queryAppVersion(int appid, int vcode) {
 		AppVersionInfo appVersionInfo = this.appVersionInfoDao
 				.queryAppVersionInfo(appid, vcode);
-		/*if (appVersionInfo != null) {
-			// 检查资源文件是否存在，如果不存在，则清空respath和md5
-			File resFile = new File(getContextPath() + "/"
-					+ appVersionInfo.getRespath());
-			String md5 = FileMd5.getMd5ByFile(resFile);
-			if (resFile.exists() && resFile.isFile() && md5 != null
-					&& md5.toLowerCase().equals(appVersionInfo.getResmd5().toLowerCase())) { // 如果存在且md5一致
-				System.out.println("Res OK!");
-			} else {
-				// 删除原资源文件
-				if (appVersionInfo.getRespath() != null
-						&& appVersionInfo.getRespath().contains(RES_PATH))
-					resFile.delete();
-				
-				appVersionInfo.setResmd5("");
-				appVersionInfo.setRespath("");
-				this.appVersionInfoDao.save(appVersionInfo);
-			}
-		}*/
 		return appVersionInfo;
 	}
 
@@ -786,16 +735,16 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 			return null;
 		}
 	}
-	
+
 	/**
 	 * 下载某版本资源
 	 * 
 	 * @param appid
 	 * @return
 	 */
-	public String downloadAppVersionRes(int appvid){
+	public String downloadAppVersionRes(int appvid) {
 		AppVersionInfo appVersionInfo = this.queryAppVersion(appvid);
-		if (appVersionInfo != null){
+		if (appVersionInfo != null) {
 			String filepath = appVersionInfo.getRespath();
 			String filemd5 = FileMd5.getMd5ByFile(getContextPath() + "/"
 					+ filepath);

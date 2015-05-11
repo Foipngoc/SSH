@@ -28,7 +28,6 @@ $(document).ready(function(){
 					var downloadpath = appvinfo.downloadpath;
 					var autoinstall = appvinfo.autoinstall;
 					var respath = appvinfo.respath;
-					
 
 					document.getElementById("apptitle").innerHTML += versionname+"'>版本";
 					
@@ -63,7 +62,6 @@ function filesel() {
 }
 
 function modifyAppversioninfo() {
-	var form = document.getElementById("form");
 	var versionname = $("#versionname").val();
 	var updatelog = $("#updatelog").val();
 	var updatetype = $("#updatetype").find("option:selected").val();
@@ -78,5 +76,34 @@ function modifyAppversioninfo() {
 		return;
 	}
 	
-	form.submit();
+	$.ajaxFileUpload({
+		url : 'module/appversioncheck/updateAppVersion', // 用于文件上传的服务器端请求地址
+		secureuri : false, // 是否需要安全协议，一般设置为false
+		fileElementId : 'file', // 文件上传域的ID
+		dataType : 'json', // 返回值类型 一般设置为json
+		data : {
+			appvid:$("#appvid").val(),
+			versionname: versionname,
+			updatelog: updatelog,
+			updatetype: updatetype,
+			downloadpath: downloadpath,
+			autoinstall: autoinstall
+		},
+		success : function(data, status) // 服务器成功响应处理函数
+		{
+			var resultcode = data.result.resultcode;
+			if (resultcode == 0) {
+				alert("更新成功");
+				window.location.href=$("#basePath").val()
+					+"module/appversioncheck/appversioninfo.jsp?&appid="
+					+$("#appid").val();
+			}else{
+				alert(data.result.resultdesc);
+			}
+		},
+		error : function(data, status, e)// 服务器响应失败处理函数
+		{
+			
+		}
+	});
 }

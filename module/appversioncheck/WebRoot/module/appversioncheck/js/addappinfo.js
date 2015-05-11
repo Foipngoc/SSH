@@ -26,7 +26,7 @@ function addappinfo(){
 			var resultdesc = data.result.resultdesc;
 			alert(resultdesc);
 			if (resultcode == 0){
-				window.location.href="module/appversioncheck/appinfo.jsp";
+				window.location.href=$("#basePath").val()+"module/appversioncheck/appinfo.jsp";
 			}
 		}
 	});

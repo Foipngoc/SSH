@@ -3,7 +3,7 @@ package com.example.action;
 import javax.annotation.Resource;
 
 import com.common.action.BaseAction;
-import com.common.action.BaseResult;
+import com.common.action.result.BaseResult;
 import com.example.model.Student;
 import com.example.service.ExampleService;
 

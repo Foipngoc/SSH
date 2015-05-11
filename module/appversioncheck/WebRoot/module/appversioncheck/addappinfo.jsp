@@ -33,6 +33,8 @@
 </head>
 
 <body>
+	<input id="basePath" name="basePath" type="hidden" value="<%=basePath%>">
+	<br>
 	<h2>应用名&nbsp;&nbsp;<input type="text" id="appname"></h2> <br>
 	<h2>应用描述&nbsp;<input type="text" id="appdesc"> </h2><br>
 	<input type="button" onclick="addappinfo()" value="发布新应用">

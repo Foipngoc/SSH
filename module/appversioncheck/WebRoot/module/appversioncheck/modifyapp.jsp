@@ -27,6 +27,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
+  <input id="basePath" name="basePath" type="hidden" value="<%=basePath%>">
   <input type="hidden" value="<%=request.getParameter("appid")%>" id="appid">
   <input type="hidden" value="" id="newestappvid">
   	<b>应用名&nbsp&nbsp</b><input style="width: 30%" type="text" id="appname"><br><br>

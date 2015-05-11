@@ -39,11 +39,7 @@
 		<action name="publishAppVersion"
 			class="com.module.appversioncheck.action.AppVersionCheckAction"
 			method="publishAppVersion">
-			<result name="success" type="redirect">
-				<param name="location">/module/appversioncheck/publishappversionresult.jsp</param>
-				<param name="appid">${appid}</param>
-				<param name="resultcode">${result.resultcode}</param>
-			</result>
+			<result name="success" type="json"></result>
 		</action>
 
 		<action name="updateNewestAppVersion"
@@ -55,11 +51,7 @@
 		<action name="updateAppVersion"
 			class="com.module.appversioncheck.action.AppVersionCheckAction"
 			method="updateAppVersion">
-			<result name="success" type="redirect">
-				<param name="location">/module/appversioncheck/publishappversionresult.jsp</param>
-				<param name="appid">${appid}</param>
-				<param name="resultcode">${result.resultcode}</param>
-			</result>
+			<result name="success" type="json"></result>
 		</action>
 
 		<action name="deleteAppVersion"
@@ -89,17 +81,13 @@
 		<action name="downloadNewestAppVersionRes"
 			class="com.module.appversioncheck.action.AppVersionCheckAction"
 			method="downloadNewestAppVersionRes">
-			<result name="file" type="redirect">
-				/${filename}
-			</result>
+			<result name="file" type="redirect">/${filename}</result>
 		</action>
-		
+
 		<action name="downloadAppVersionRes"
 			class="com.module.appversioncheck.action.AppVersionCheckAction"
 			method="downloadAppVersionRes">
-			<result name="file" type="redirect">
-				/${filename}
-			</result>
+			<result name="file" type="redirect">/${filename}</result>
 		</action>
 	</package>
 </struts>

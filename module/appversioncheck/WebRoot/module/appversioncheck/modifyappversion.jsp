@@ -20,6 +20,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="stylesheet" type="text/css" href="<%=basePath%>css/common/table.css">	
 	
 	<script src="js/common/jquery-1.10.2.min.js"></script>
+	<script src="js/common/ajaxfileupload.js"></script>
 	<script type="text/javascript" src="<%=basePath%>module/appversioncheck/js/modifyappversion.js"></script>
 	<script type="text/javascript" src="js/common/paging.js"></script>
 	<script type="text/javascript" src="<%=basePath%>js/WdatePicker/WdatePicker.js"></script>
@@ -27,7 +28,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-  <form id="form" enctype="multipart/form-data" action="module/appversioncheck/updateAppVersion" method="post">
+  <input id="basePath" name="basePath" type="hidden" value="<%=basePath%>">
   	<input type="hidden" value="<%=request.getParameter("appvid")%>" name="appvid" id="appvid">
  	<input type="hidden" value="<%=request.getParameter("appid")%>" name="appid" id="appid"/>
 	<h2>应用名&nbsp;&nbsp;<input type="text" name="appname" id="appname" readonly="readonly" style="border: 0px; font-weight: bold;"></h2> <br>
@@ -39,7 +40,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<h2>下载路径&nbsp;<input type="text" name="downloadpath" id="downloadpath"> </h2><br>
 	<h2>自动安装&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="autoinstall" id="autoinstall"><option value="1">自动安装</option><option value="0">不自动安装</option></select> </h2><br>
 	<input type="button" value="修改应用版本" onclick="modifyAppversioninfo()">
-	</form>
   
   </body>
 </html>

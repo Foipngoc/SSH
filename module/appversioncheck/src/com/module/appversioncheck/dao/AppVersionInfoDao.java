@@ -5,7 +5,7 @@ import java.util.List;
 import com.common.dao.BaseDao;
 import com.module.appversioncheck.model.AppVersionInfo;
 
-public interface AppVersionInfoDao extends BaseDao<AppVersionInfo> {
+public interface AppVersionInfoDao extends BaseDao {
 	/**
 	 * 获得最大的版本号
 	 * 

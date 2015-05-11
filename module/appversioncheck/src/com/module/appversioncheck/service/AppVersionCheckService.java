@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import com.common.action.BaseResult;
+import com.common.action.result.BaseResult;
 import com.module.appversioncheck.model.AppInfo;
 import com.module.appversioncheck.model.AppVersionInfo;
 
@@ -15,7 +15,7 @@ public interface AppVersionCheckService {
 	 * @return
 	 */
 	public List<Map<String, Object>> queryApps();
-	
+
 	/**
 	 * 获得已发布的应用信息
 	 * 
@@ -59,9 +59,10 @@ public interface AppVersionCheckService {
 	 * @param appVersionInfo
 	 * @return
 	 */
-	public BaseResult publishAppVersion(int appid, boolean autogenvcode,int versioncode,
-			String versionname, String updatelog, int updatetype,
-			boolean autoset, String downloadpath, int autoinstall,File file, String filename);
+	public BaseResult publishAppVersion(int appid, boolean autogenvcode,
+			int versioncode, String versionname, String updatelog,
+			int updatetype, boolean autoset, String downloadpath,
+			int autoinstall, File file, String filename);
 
 	/**
 	 * 设置APP最新的版本为哪个
@@ -78,7 +79,8 @@ public interface AppVersionCheckService {
 	 * @param appVersionInfo
 	 */
 	public BaseResult updateAppVersion(int appvid, String versionname,
-			String updatelog, int updatetype, String downloadpath, int autoinstall,File file,String filename);
+			String updatelog, int updatetype, String downloadpath,
+			int autoinstall, File file, String filename);
 
 	/**
 	 * 删除应用已发布的版本, 注： 如果当前用户已安装了被删除的版本，则用户更新时会提醒强制更新
@@ -130,7 +132,7 @@ public interface AppVersionCheckService {
 	 */
 	public String downloadNewestAppVersionRes(int appid, int oldvesioncode,
 			String clientinfo);
-	
+
 	/**
 	 * 下载某版本资源
 	 * 

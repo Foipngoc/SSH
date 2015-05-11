@@ -13,8 +13,6 @@ $(document).ready(function() {
 			var appname = appinfo.appname;
 			var newestappvid = appinfo.newestappvid;
 			document.getElementById("title").innerHTML = "<"+appname+">的所有版本";
-			document.getElementById("apptitle").innerHTML = "<"+appname+">的所有版本";
-
 			showAppVersionList(appid,newestappvid);
 		}
 	});
@@ -94,15 +92,15 @@ function delAppVersion(appvid) {
 }
 
 function modifyAppVersion(appvid) {
-	window.location.href="module/appversioncheck/modifyappversion.jsp?appvid="+appvid+"&appid="+$("#appid").val();
+	window.location.href=$("#basePath").val()+"module/appversioncheck/modifyappversion.jsp?appvid="+appvid+"&appid="+$("#appid").val();
 }
 
 function viewAppVersion(appvid) {
-	window.location.href="module/appversioncheck/viewappversion.jsp?appvid="+appvid+"&appid="+$("#appid").val();
+	window.location.href=$("#basePath").val()+"module/appversioncheck/viewappversion.jsp?appvid="+appvid+"&appid="+$("#appid").val();
 }
 
 function addAppVersion() {
-	window.location.href="module/appversioncheck/addappversioninfo.jsp?appid="+$("#appid").val();
+	window.location.href=$("#basePath").val()+"module/appversioncheck/addappversioninfo.jsp?appid="+$("#appid").val();
 }
 
 function settonewest(appvid) {

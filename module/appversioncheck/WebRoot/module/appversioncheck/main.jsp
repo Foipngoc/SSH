@@ -27,6 +27,6 @@ function load() {
 </head>
 
 <body onload="load()">
-
+<input id="basePath" name="basePath" type="hidden" value="<%=basePath%>">
 </body>
 </html>

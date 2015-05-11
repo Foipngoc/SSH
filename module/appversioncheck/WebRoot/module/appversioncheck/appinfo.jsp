@@ -33,6 +33,7 @@
 </head>
 
 <body style="">
+	<input id="basePath" name="basePath" type="hidden" value="<%=basePath%>">
 	<div align="center" style="width: 50%">
 	<h1>当前系统所有应用</h1>
 	<table class="listTable" id="" cellpadding="0" cellspacing="0">
