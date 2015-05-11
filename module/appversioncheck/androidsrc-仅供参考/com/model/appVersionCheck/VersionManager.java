@@ -15,28 +15,37 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.view.View;
-import com.yidong_app.common.util.ActivityTaskManager;
-import com.yidong_app.common.util.SDFileUtils;
-import com.yidong_app.interfaceURL.URL;
 
 /**
  * APP更新类。
+ * 通过回调函数可以在各个更新节点实现更多功能
  * 
  * @author DJ
  * 
  */
-public class VersionManager {
-	public static int APPID = 1;
-	public static String CHECK_URL = URL.SERVER_URL
-			+ "MobileAM/module/appversioncheck/checkNewestAppVersion";
-	public static String DOWNLOAD_URL = URL.SERVER_URL
-			+ "MobileAM/module/appversioncheck/downloadNewestAppVersionRes";
-
+public abstract class VersionManager {
+	private int appid = 1;
+	private String serverUrl = "";
+	private static final String CHECK_URL = "/module/appversioncheck/checkNewestAppVersion";
+	private static final String DOWNLOAD_URL = "/module/appversioncheck/downloadNewestAppVersionRes";
 	private Context context;
 	private VersionUpdateCallBack versionUpdateCallBack;
 
-	public VersionManager(Context context, VersionUpdateCallBack callback) {
+	/**
+	 * 构造函数
+	 * 
+	 * @param context
+	 *            上下文
+	 * @param serverURL
+	 *            服务器地址: 192.168.1.1:8080/项目名
+	 * @param appid
+	 * @param callback
+	 */
+	public VersionManager(Context context, String serverURL, int appid,
+			VersionUpdateCallBack callback) {
+		this.appid = appid;
 		this.context = context;
+		this.serverUrl = serverURL;
 		if (callback != null)
 			versionUpdateCallBack = callback;
 		else
@@ -44,13 +53,18 @@ public class VersionManager {
 	}
 
 	/**
+	 * 退出APP， 调用者请自行实现该功能，用于当强制更新时，如果用户不更新，强制退出APP
+	 */
+	public abstract void exitApp();
+
+	/**
 	 * 自动检查更新，常用于应用打开时进行更新检查,如果有更新且需要弹出窗口提示，则弹窗提醒
 	 */
 	public void autocheck() {
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("appid", APPID);
+		param.put("appid", appid);
 		param.put("versioncode", getVersionCode());
-		new VersionCheckAsync(context, CHECK_URL, param) {
+		new VersionCheckAsync(context, serverUrl + CHECK_URL, param) {
 
 			protected void onPostExecute(AppVersionInfo appVersionInfo) {
 				super.onPostExecute(appVersionInfo);
@@ -134,10 +148,10 @@ public class VersionManager {
 	 */
 	public void manucheck() {
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("appid", APPID);
+		param.put("appid", appid);
 		param.put("versioncode", getVersionCode());
 
-		new VersionCheckAsync(context, CHECK_URL, param) {
+		new VersionCheckAsync(context, serverUrl + CHECK_URL, param) {
 			protected void onPostExecute(AppVersionInfo appVersionInfo) {
 				super.onPostExecute(appVersionInfo);
 				// 有新版本升级
@@ -222,6 +236,67 @@ public class VersionManager {
 	}
 
 	/**
+	 * 只检查APP更新，不做任何其它弹窗等功能， 其它功能调用者需在回调函数中进行实现。
+	 * 回调函数支持以下几种结果的回调
+	 * 
+	 * VersionUpdateCallBack.CHECK_RESULT_ERROR  检查更新出错,或无此APP的信息时 
+	 * VersionUpdateCallBack.CHECK_RESULT_NOTING_UPDATE  检查没有发现更新
+	 * VersionUpdateCallBack.CHECK_RESULT_UPDATE_TYPE_POP_FORCE  检查到有更新，且类型为强制更新
+	 * VersionUpdateCallBack.CHECK_RESULT_UPDATE_TYPE_POP_AUTO  检查到有更新，且类型为自动弹出更新通知，允许用户选择更新或不更新，可以继续使用
+	 * VersionUpdateCallBack.CHECK_RESULT_UPDATE_TYPE_MANUAL_MANUAL 检查到有更新，且类型为不自动弹出更新通知
+	 * 
+	 * 回调函数中通过参数params[0] 获得更新信息AppVersionInfo appVersionInfo
+	 */
+	public void onlycheck() {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("appid", appid);
+		param.put("versioncode", getVersionCode());
+		new VersionCheckAsync(context, serverUrl + CHECK_URL, param) {
+
+			protected void onPostExecute(AppVersionInfo appVersionInfo) {
+				super.onPostExecute(appVersionInfo);
+				// 检查更新失败
+				if (appVersionInfo.getResultcode() == AppVersionInfo.RESULT_ERROR
+						|| appVersionInfo.getResultcode() == AppVersionInfo.RESULT_NO_APP) {
+					versionUpdateCallBack.callBack(
+							VersionUpdateCallBack.CHECK_RESULT_ERROR,
+							appVersionInfo);
+				}
+				// 未检测到新版本
+				if (appVersionInfo.getResultcode() == AppVersionInfo.RESULT_NOTINGNEW) {
+					versionUpdateCallBack.callBack(
+							VersionUpdateCallBack.CHECK_RESULT_NOTING_UPDATE,
+							appVersionInfo);
+				}
+				// 有新版本升级
+				if (appVersionInfo.getResultcode() == AppVersionInfo.RESULT_NEWVERSION) {
+					// 有更新，强制更新
+					if (appVersionInfo.getUpdatetype() == AppVersionInfo.UPDATE_TYPE_POP_FORCE) {
+						versionUpdateCallBack
+								.callBack(
+										VersionUpdateCallBack.CHECK_RESULT_UPDATE_TYPE_POP_FORCE,
+										appVersionInfo);
+					}
+					// 有更新，用户选择
+					if (appVersionInfo.getUpdatetype() == AppVersionInfo.UPDATE_TYPE_POP_AUTO) {
+						versionUpdateCallBack
+								.callBack(
+										VersionUpdateCallBack.CHECK_RESULT_UPDATE_TYPE_POP_AUTO,
+										appVersionInfo);
+					}
+					// 有更新，不弹出提醒
+					if (appVersionInfo.getUpdatetype() == AppVersionInfo.UPDATE_TYPE_MANUAL_MANUAL) {
+						versionUpdateCallBack
+								.callBack(
+										VersionUpdateCallBack.CHECK_RESULT_UPDATE_TYPE_MANUAL_MANUAL,
+										appVersionInfo);
+					}
+				}
+			};
+		}.execute();
+	}
+
+	/**
 	 * 安装apk
 	 */
 	private void installAPK(String APKPath, Context context) {
@@ -261,12 +336,12 @@ public class VersionManager {
 			// 检查是不是已经下载
 			if (checkMd5(savepath, appVersionInfo.getResmd5()) == false) {
 				Map<String, Object> param = new HashMap<String, Object>();
-				param.put("appid", APPID);
+				param.put("appid", appid);
 				param.put("versioncode", getVersionCode());
 				param.put("clientinfo", getClientInfo());
 
-				new VersionDownloadAsync(context, DOWNLOAD_URL, param,
-						savepath, cancelable, appVersionInfo,
+				new VersionDownloadAsync(context, serverUrl + DOWNLOAD_URL,
+						param, savepath, cancelable, appVersionInfo,
 						versionUpdateCallBack) {
 					protected void onPostExecute(Integer result) {
 						super.onPostExecute(result);// 调用父postexecute执行进度条的关闭
@@ -339,7 +414,7 @@ public class VersionManager {
 		public void onClick(View v) {
 			versionUpdateCallBack.callBack(VersionUpdateCallBack.EXIT_APP,
 					appVersionInfo);
-			ActivityTaskManager.getInstance().closeAllActivity();
+			exitApp();
 			dialog.dismiss();
 		}
 	}

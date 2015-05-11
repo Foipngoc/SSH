@@ -1,4 +1,4 @@
-package com.yidong_app.common.util;
+package com.model.appVersionCheck;
 
 import java.io.File;
 import java.io.IOException;
