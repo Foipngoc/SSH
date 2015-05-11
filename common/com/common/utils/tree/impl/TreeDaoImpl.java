@@ -7,16 +7,23 @@ import com.common.utils.tree.TreeDao;
 import com.common.utils.tree.model.TreeNode;
 import com.common.utils.tree.model.TreeNodeRelation;
 
-public abstract class TreeDaoImpl extends BaseDaoDB implements TreeDao {
+/**
+ * 以treenode/treenoderelation为模型的一种实现,支持treenode/treenoderelation的子类
+ * 
+ * @author DJ
+ * 
+ */
+public abstract class TreeDaoImpl extends BaseDaoDB implements
+		TreeDao<TreeNode> {
 	public abstract Class<?> getEntryClass();
 
 	public abstract Class<?> getEntryRelationClass();
 
-	public BaseQueryRecords<?> findRootNodes() {
-		return this.findRootNodes(-1, -1);
+	public BaseQueryRecords<?> _findRootNodes() {
+		return _findRootNodes(-1, -1);
 	}
 
-	public BaseQueryRecords<?> findRootNodes(int page, int rows) {
+	public BaseQueryRecords<?> _findRootNodes(int page, int rows) {
 		String hql = "select a from ? a where a.id not in "
 				+ "(select r.sid from ? r)";
 
@@ -24,11 +31,11 @@ public abstract class TreeDaoImpl extends BaseDaoDB implements TreeDao {
 				getEntryRelationClass().getSimpleName()), page, rows);
 	}
 
-	public BaseQueryRecords<?> findRootNodes(int type) {
-		return findRootNodes(type, -1, -1);
+	public BaseQueryRecords<?> _findRootNodes(int type) {
+		return _findRootNodes(type, -1, -1);
 	}
 
-	public BaseQueryRecords<?> findRootNodes(int type, int page, int rows) {
+	public BaseQueryRecords<?> _findRootNodes(int type, int page, int rows) {
 		String hql = "select a from ? a where a.id not in "
 				+ "(select r.sid from ? r)" + " and a.type=?";
 
@@ -36,11 +43,11 @@ public abstract class TreeDaoImpl extends BaseDaoDB implements TreeDao {
 				getEntryRelationClass().getSimpleName(), type), page, rows);
 	}
 
-	public BaseQueryRecords<?> findLeafNodes() {
-		return findLeafNodes(-1, -1);
+	public BaseQueryRecords<?> _findLeafNodes() {
+		return _findLeafNodes(-1, -1);
 	}
 
-	public BaseQueryRecords<?> findLeafNodes(int page, int rows) {
+	public BaseQueryRecords<?> _findLeafNodes(int page, int rows) {
 		String hql = "select a from ? a where a.id not in "
 				+ "(select r.pid from ? r)";
 
@@ -48,11 +55,11 @@ public abstract class TreeDaoImpl extends BaseDaoDB implements TreeDao {
 				getEntryRelationClass().getSimpleName()), page, rows);
 	}
 
-	public BaseQueryRecords<?> findLeafNodes(int type) {
-		return findLeafNodes(type, -1, -1);
+	public BaseQueryRecords<?> _findLeafNodes(int type) {
+		return _findLeafNodes(type, -1, -1);
 	}
 
-	public BaseQueryRecords<?> findLeafNodes(int type, int page, int rows) {
+	public BaseQueryRecords<?> _findLeafNodes(int type, int page, int rows) {
 		String hql = "select a from ? a where a.id not in "
 				+ "(select r.pid from ? r)" + " and a.type=?";
 
@@ -60,33 +67,33 @@ public abstract class TreeDaoImpl extends BaseDaoDB implements TreeDao {
 				getEntryRelationClass().getSimpleName(), type), page, rows);
 	}
 
-	public BaseQueryRecords<?> findNodes() {
-		return findNodes(-1, -1);
+	public BaseQueryRecords<?> _findNodes() {
+		return _findNodes(-1, -1);
 	}
 
-	public BaseQueryRecords<?> findNodes(int page, int rows) {
+	public BaseQueryRecords<?> _findNodes(int page, int rows) {
 		String hql = "select a from ? a";
 
 		return super.find(new HQL(hql, getEntryClass().getSimpleName()), page,
 				rows);
 	}
 
-	public BaseQueryRecords<?> findNodes(int type) {
-		return findNodes(type, -1, -1);
+	public BaseQueryRecords<?> _findNodes(int type) {
+		return _findNodes(type, -1, -1);
 	}
 
-	public BaseQueryRecords<?> findNodes(int type, int page, int rows) {
+	public BaseQueryRecords<?> _findNodes(int type, int page, int rows) {
 		String hql = "select a from ? a where a.type=?";
 
 		return super.find(new HQL(hql, getEntryClass().getSimpleName(), type),
 				page, rows);
 	}
 
-	public BaseQueryRecords<?> findChildrenNodes(TreeNode node) {
-		return findChildrenNodes(node, -1, -1);
+	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node) {
+		return _findChildrenNodes(node, -1, -1);
 	}
 
-	public BaseQueryRecords<?> findChildrenNodes(TreeNode node, int page,
+	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node, int page,
 			int rows) {
 		String hql = "select a from ? b,? a " + "where b.sid=a.id and b.pid=?";
 
@@ -94,11 +101,11 @@ public abstract class TreeDaoImpl extends BaseDaoDB implements TreeDao {
 				getEntryClass().getSimpleName(), node.getId()));
 	}
 
-	public BaseQueryRecords<?> findChildrenNodes(TreeNode node, int type) {
-		return findChildrenNodes(node, type, -1, -1);
+	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node, int type) {
+		return _findChildrenNodes(node, type, -1, -1);
 	}
 
-	public BaseQueryRecords<?> findChildrenNodes(TreeNode node, int type,
+	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node, int type,
 			int page, int rows) {
 		String hql = "select a from ? b,? a "
 				+ "where b.sid=a.id and b.pid=? and a.type=?";
@@ -168,15 +175,27 @@ public abstract class TreeDaoImpl extends BaseDaoDB implements TreeDao {
 		TreeNodeRelation relation = (TreeNodeRelation) super
 				.findUnique(new HQL(
 						"select a from ? a where a.pid=? and a.sid=?",
-						getEntryRelationClass().getSimpleName(), pnode.getId(), snode
-								.getId()));
+						getEntryRelationClass().getSimpleName(), pnode.getId(),
+						snode.getId()));
 		return relation == null ? false : true;
 	}
 
-	public BaseQueryRecords<?> findParentNodes(TreeNode node) {
+	public BaseQueryRecords<?> _findParentNodes(TreeNode node) {
 		String hql = "select a from ? b,? a " + "where b.pid=a.id and b.sid=?";
 
 		return super.find(new HQL(hql, getEntryRelationClass().getSimpleName(),
 				getEntryClass().getSimpleName(), node.getId()));
+	}
+
+	@Override
+	public boolean _ifNodeEqual(TreeNode nodea, TreeNode nodeb) {
+		if (nodea == null || nodeb == null)
+			return false;
+		return nodea.getId() == nodeb.getId();
+	}
+
+	@Override
+	public void _modifyNode(TreeNode node) {
+		super.update(node);
 	}
 }

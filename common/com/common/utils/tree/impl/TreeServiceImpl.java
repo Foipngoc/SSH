@@ -3,16 +3,14 @@ package com.common.utils.tree.impl;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import com.common.dao.BaseQueryRecords;
 import com.common.service.BaseService;
+import com.common.utils.tree.TreeDao;
 import com.common.utils.tree.TreeService;
 import com.common.utils.tree.model.Tree;
 
 public abstract class TreeServiceImpl<E> extends BaseService implements
 		TreeService<E> {
-	private Logger log = Logger.getLogger(getClass().getName());
 
 	@Override
 	public E addBindChildrenNode(E pnode, E newnode) {
@@ -31,14 +29,12 @@ public abstract class TreeServiceImpl<E> extends BaseService implements
 	@Override
 	public boolean bindChildrenNode(E pnode, E snode) {
 		if (ifNodeEqual(pnode, snode)) {
-			log.debug("两个节点一样，绑定失败");
 			return false;
 		}
 
 		// 是否已有关联
 		if (ifTwoNodeHasRelation(pnode, snode)
 				|| ifTwoNodeHasRelation(snode, pnode)) {
-			log.debug("已存在关联，绑定失败");
 			return false;
 		}
 
@@ -46,7 +42,6 @@ public abstract class TreeServiceImpl<E> extends BaseService implements
 		List<E> subpermsubs = findChildrenNodes_r(snode);
 		for (int i = 0; i < subpermsubs.size(); i++) {
 			if (ifNodeEqual(subpermsubs.get(i), pnode)) {
-				log.debug("出现回路，绑定失败");
 				return false;
 			}
 		}
@@ -177,5 +172,171 @@ public abstract class TreeServiceImpl<E> extends BaseService implements
 				|| parent.getData().size() <= 0)
 			return true;
 		return false;
+	}
+
+	/****************************************************/
+
+	/**
+	 * 获取treedao的实现
+	 * 
+	 */
+	public abstract TreeDao<E> getTreeDao();
+
+	@Override
+	public boolean ifNodeEqual(E nodea, E nodeb) {
+		return getTreeDao()._ifNodeEqual(nodea, nodeb);
+	}
+
+	@Override
+	public boolean ifTwoNodeHasRelation(E pnode, E snode) {
+		return getTreeDao()._ifTwoNodeHasRelation(pnode, snode);
+	}
+
+	@Override
+	public boolean bindTwoNode(E pnode, E snode) {
+		return getTreeDao()._bindTwoNode(pnode, snode);
+	}
+
+	@Override
+	public E addNode(E node) {
+		return getTreeDao()._addNode(node);
+	}
+
+	@Override
+	public void delBindChildrenNode(E pnode, E snode) {
+		getTreeDao()._delbindTwoNode(pnode, snode);
+	}
+
+	@Override
+	public void delBindChildrenNodes(E node) {
+		getTreeDao()._delBindChildrenNodes(node);
+	}
+
+	@Override
+	public void delBindParentNodes(E node) {
+		getTreeDao()._delBindParentNodes(node);
+	}
+
+	@Override
+	public void modifyNode(E node) {
+		getTreeDao()._modifyNode(node);
+	}
+
+	@Override
+	public void delNode(E node) {
+		getTreeDao()._delNode(node);
+	}
+
+	@Override
+	public E findNode(E node) {
+		return getTreeDao()._findNode(node);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findRootNodes() {
+		return (BaseQueryRecords<E>) getTreeDao()._findRootNodes();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findRootNodes(int page, int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findRootNodes(page, rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findRootNodes(int type) {
+		return (BaseQueryRecords<E>) getTreeDao()._findRootNodes(type);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findRootNodes(int type, int page, int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findRootNodes(type, page,
+				rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findLeafNodes() {
+		return (BaseQueryRecords<E>) getTreeDao()._findLeafNodes();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findLeafNodes(int page, int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findLeafNodes(page, rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findLeafNodes(int type) {
+		return (BaseQueryRecords<E>) getTreeDao()._findLeafNodes(type);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findLeafNodes(int type, int page, int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findLeafNodes(type, page,
+				rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findNodes() {
+		return (BaseQueryRecords<E>) getTreeDao()._findNodes();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findNodes(int page, int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findNodes(page, rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findNodes(int type) {
+		return (BaseQueryRecords<E>) getTreeDao()._findNodes(type);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findNodes(int type, int page, int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findNodes(type, page, rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findChildrenNodes(E node) {
+		return (BaseQueryRecords<E>) getTreeDao()._findChildrenNodes(node);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findChildrenNodes(E node, int page, int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findChildrenNodes(node,
+				page, rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findChildrenNodes(E node, int type) {
+		return (BaseQueryRecords<E>) getTreeDao()
+				._findChildrenNodes(node, type);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findChildrenNodes(E node, int type, int page,
+			int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findChildrenNodes(node,
+				type, page, rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findParentNodes(E node) {
+		return (BaseQueryRecords<E>) getTreeDao()._findParentNodes(node);
 	}
 }

@@ -11,8 +11,12 @@ TreeServiceImpl.java 	----树功能实现类，在该类中，有跟持久化相
 TreeDao.java			----树持久化功能接口，即如何将树在持久化介质中存储，读取等功能
 TreeDaoImpl.java		----树数据库方式实现，继承该类在实现接口时告诉该类的持久化model类类型，这些类型必须继承TreeNode和TreeNodeRelation类
 
-使用方法：
-1.  实现存储树节点的model以及树节点父子关系的model类，并继承TreeNode和TreeNodeRelation
-2.  实现自己的树存储Dao类，并继承TreeDaoImpl类，并将自己的model传入dao的接口方法中实现接口方法以获得节点实体类和节点关系类
-3.  实现自己的树Service类，并继承TreeServiceImpl，因为该类已将常用的接口实现了。
-4.  在树Service类中，通过Spring @Resource注解引用刚实现的Dao类，并将Service类中需要实现的接口用该Dao来实现。
+快速使用方法：
+1.  编写存储树节点模型并配置好相关的hibernate数据库，模型如无其它特殊属性可直接继承TreeNode和TreeNodeRelation
+2.  编写自己的树存储Dao类，并继承TreeDaoImpl类，并将自己的model传入dao的接口方法中实现接口方法以获得节点实体类和节点关系类
+3.  编写自己的树Service接口，并继承TreeService<1中的的模型类>
+4.  编写3中的树Service接口实现类并继承TreeServiceImpl<1中的的模型类>，
+	通过Spring @Resource注解引用2中刚实现的Dao类，并在getTreeDao()方法中将该Dao返回
+	注： 请将dao类声明为TreeDao<IndicatorTreeNode>类型
+
+5.  如常用的功能无法满足要求，可自行进行扩展

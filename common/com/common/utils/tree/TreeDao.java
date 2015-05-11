@@ -1,60 +1,62 @@
 package com.common.utils.tree;
 
 import com.common.dao.BaseQueryRecords;
-import com.common.utils.tree.model.TreeNode;
 
-public interface TreeDao {
-	public BaseQueryRecords<?> findRootNodes();
+public interface TreeDao<E> {
+	public BaseQueryRecords<?> _findRootNodes();
 
-	public BaseQueryRecords<?> findRootNodes(int page, int rows);
+	public BaseQueryRecords<?> _findRootNodes(int page, int rows);
 
-	public BaseQueryRecords<?> findRootNodes(int type);
+	public BaseQueryRecords<?> _findRootNodes(int type);
 
-	public BaseQueryRecords<?> findRootNodes(int type, int page, int rows);
+	public BaseQueryRecords<?> _findRootNodes(int type, int page, int rows);
 
-	public BaseQueryRecords<?> findLeafNodes();
+	public BaseQueryRecords<?> _findLeafNodes();
 
-	public BaseQueryRecords<?> findLeafNodes(int page, int rows);
+	public BaseQueryRecords<?> _findLeafNodes(int page, int rows);
 
-	public BaseQueryRecords<?> findLeafNodes(int type);
+	public BaseQueryRecords<?> _findLeafNodes(int type);
 
-	public BaseQueryRecords<?> findLeafNodes(int type, int page, int rows);
+	public BaseQueryRecords<?> _findLeafNodes(int type, int page, int rows);
 
-	public BaseQueryRecords<?> findNodes();
+	public BaseQueryRecords<?> _findNodes();
 
-	public BaseQueryRecords<?> findNodes(int page, int rows);
+	public BaseQueryRecords<?> _findNodes(int page, int rows);
 
-	public BaseQueryRecords<?> findNodes(int type);
+	public BaseQueryRecords<?> _findNodes(int type);
 
-	public BaseQueryRecords<?> findNodes(int type, int page, int rows);
+	public BaseQueryRecords<?> _findNodes(int type, int page, int rows);
 
-	public BaseQueryRecords<?> findChildrenNodes(TreeNode node);
+	public BaseQueryRecords<?> _findChildrenNodes(E node);
 
-	public BaseQueryRecords<?> findChildrenNodes(TreeNode node, int page,
+	public BaseQueryRecords<?> _findChildrenNodes(E node, int page, int rows);
+
+	public BaseQueryRecords<?> _findChildrenNodes(E node, int type);
+
+	public BaseQueryRecords<?> _findChildrenNodes(E node, int type, int page,
 			int rows);
 
-	public BaseQueryRecords<?> findChildrenNodes(TreeNode node, int type);
+	public E _addNode(E node);
 
-	public BaseQueryRecords<?> findChildrenNodes(TreeNode node, int type,
-			int page, int rows);
+	public boolean _delNode(E node);
 
-	public TreeNode _addNode(TreeNode node);
+	public E _updateNode(E node);
 
-	public boolean _delNode(TreeNode node);
+	public E _findNode(E node);
 
-	public TreeNode _updateNode(TreeNode node);
+	public boolean _bindTwoNode(E pnode, E snode);
 
-	public TreeNode _findNode(TreeNode node);
+	public boolean _delbindTwoNode(E pnode, E snode);
 
-	public boolean _bindTwoNode(TreeNode pnode, TreeNode snode);
+	public boolean _delBindChildrenNodes(E node);
 
-	public boolean _delbindTwoNode(TreeNode pnode, TreeNode snode);
+	public boolean _delBindParentNodes(E node);
 
-	public boolean _delBindChildrenNodes(TreeNode node);
+	public boolean _ifTwoNodeHasRelation(E pnode, E snode);
 
-	public boolean _delBindParentNodes(TreeNode node);
+	public BaseQueryRecords<?> _findParentNodes(E node);
 
-	public boolean _ifTwoNodeHasRelation(TreeNode pnode, TreeNode snode);
+	public boolean _ifNodeEqual(E nodea, E nodeb);
 
-	public BaseQueryRecords<?> findParentNodes(TreeNode node);
+	public void _modifyNode(E node);
 }
