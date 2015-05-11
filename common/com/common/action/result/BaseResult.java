@@ -1,4 +1,4 @@
-package com.common.action;
+package com.common.action.result;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +50,32 @@ public class BaseResult {
 		this.resultcode = code;
 		this.resultdesc = desc;
 		this.records = records;
+	}
+
+	/**
+	 * 带结果码与结果描述构造函数
+	 * 
+	 * @param code
+	 * @param desc
+	 * @param records
+	 */
+	public BaseResult(int code, String desc, Map<String, Object> map) {
+		this.resultcode = code;
+		this.resultdesc = desc;
+		this.map = map;
+	}
+
+	/**
+	 * 带结果码与结果描述构造函数
+	 * 
+	 * @param code
+	 * @param desc
+	 * @param records
+	 */
+	public BaseResult(int code, String desc, Object obj) {
+		this.resultcode = code;
+		this.resultdesc = desc;
+		this.obj = obj;
 	}
 
 	/**
@@ -156,5 +182,9 @@ public class BaseResult {
 
 	public void setRecords(BaseQueryRecords<?> records) {
 		this.records = records;
+	}
+
+	public boolean ifResultOK() {
+		return this.resultcode == RESULT_OK;
 	}
 }
