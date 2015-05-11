@@ -34,12 +34,12 @@ public class CustomStrutsConfigurationProvider extends XmlConfigurationProvider 
 
 	public CustomStrutsConfigurationProvider() {
 		Map<String, String> mappings = new HashMap<String, String>();
-		mappings.put("-//OpenSymphony Group//XWork 2.1.3//EN",
-				"xwork-2.1.3.dtd");
+		mappings.put("-//OpenSymphony Group//XWork 2.3//EN", "xwork-2.3.dtd");
+		mappings.put("-//OpenSymphony Group//XWork 2.1.3//EN","xwork-2.1.3.dtd");
 		mappings.put("-//OpenSymphony Group//XWork 2.1//EN", "xwork-2.1.dtd");
 		mappings.put("-//OpenSymphony Group//XWork 2.0//EN", "xwork-2.0.dtd");
-		mappings.put("-//OpenSymphony Group//XWork 1.1.1//EN",
-				"xwork-1.1.1.dtd");
+		mappings.put("-//OpenSymphony Group//XWork 1.1.2//EN","xwork-1.1.2.dtd");
+		mappings.put("-//OpenSymphony Group//XWork 1.1.1//EN","xwork-1.1.1.dtd");
 		mappings.put("-//OpenSymphony Group//XWork 1.1//EN", "xwork-1.1.dtd");
 		mappings.put("-//OpenSymphony Group//XWork 1.0//EN", "xwork-1.0.dtd");
 		mappings.put(
@@ -51,6 +51,9 @@ public class CustomStrutsConfigurationProvider extends XmlConfigurationProvider 
 		mappings.put(
 				"-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN",
 				"struts-2.1.7.dtd");
+		mappings.put(
+				"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN",
+				"struts-2.3.dtd");
 		setDtdMappings(mappings);
 	}
 
