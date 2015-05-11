@@ -50,6 +50,8 @@ public class AppVersionCheckAction extends BaseAction {
 	private String resultcode;
 	private String resultdesc;
 
+	private String url;
+
 	/**
 	 * 获得所有已发布的应用信息
 	 */
@@ -83,7 +85,9 @@ public class AppVersionCheckAction extends BaseAction {
 		AppInfo appInfo = new AppInfo();
 		appInfo.setAppname(appname);
 		appInfo.setAppdesc(appdesc);
-		result = this.appVersionCheckService.publishApp(appInfo);
+		result = this.appVersionCheckService.publishApp(appInfo,
+				file == null ? null : file.get(0), fileFileName == null ? null
+						: fileFileName.get(0));
 		return SUCCESS;
 	}
 
@@ -101,7 +105,8 @@ public class AppVersionCheckAction extends BaseAction {
 	 * 更新已发布应用
 	 */
 	public String updateApp() {
-		result = this.appVersionCheckService.updateApp(appid, appname, appdesc);
+		result = this.appVersionCheckService.updateApp(appid, appname, appdesc,file == null ? null : file.get(0), fileFileName == null ? null
+				: fileFileName.get(0));
 		return SUCCESS;
 	}
 
@@ -189,6 +194,11 @@ public class AppVersionCheckAction extends BaseAction {
 		return "file";
 	}
 
+	public String genBarCode() {
+		result = this.appVersionCheckService.genBarCode(appid,url);
+		return SUCCESS;
+	}
+
 	/**
 	 * 下载某版本版本资源
 	 */
@@ -196,11 +206,11 @@ public class AppVersionCheckAction extends BaseAction {
 		filename = this.appVersionCheckService.downloadAppVersionRes(appvid);
 		return "file";
 	}
-	
+
 	public BaseResult getResult() {
 		return result;
 	}
-	
+
 	public void setFile(List<File> file) {
 		this.file = file;
 	}
@@ -291,5 +301,9 @@ public class AppVersionCheckAction extends BaseAction {
 
 	public int getAppid() {
 		return appid;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 }

@@ -10,6 +10,8 @@ public class AppInfo {
 	private String appdesc; // 应用描述
 	private Date createdate; // 创建时间
 	private int newestappvid; // 最新版版本
+	private String applogo; // 应用logo地址
+	private String applogomd5; // 应用logoMD5
 
 	public int getId() {
 		return id;
@@ -35,7 +37,7 @@ public class AppInfo {
 		this.appdesc = appdesc;
 	}
 
-	@JSON(format="yyyy-MM-dd HH:mm:ss")
+	@JSON(format = "yyyy-MM-dd HH:mm:ss")
 	public Date getCreatedate() {
 		return createdate;
 	}
@@ -50,5 +52,21 @@ public class AppInfo {
 
 	public void setNewestappvid(int newestappvid) {
 		this.newestappvid = newestappvid;
+	}
+
+	public String getApplogo() {
+		return applogo;
+	}
+
+	public void setApplogo(String applogo) {
+		this.applogo = applogo;
+	}
+
+	public String getApplogomd5() {
+		return applogomd5;
+	}
+
+	public void setApplogomd5(String applogomd5) {
+		this.applogomd5 = applogomd5;
 	}
 }

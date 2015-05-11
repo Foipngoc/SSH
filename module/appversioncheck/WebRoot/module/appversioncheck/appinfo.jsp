@@ -14,7 +14,8 @@
 <title>所有应用</title>
 
 <meta http-equiv="pragma" content="no-cache">
-<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
 <meta http-equiv="expires" content="0">
 <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
 <meta http-equiv="description" content="This is my page">
@@ -24,6 +25,7 @@
 	href="<%=basePath%>css/common/style.css">
 
 <script src="js/common/jquery-1.10.2.min.js"></script>
+<script src="js/common/ajaxfileupload.js"></script>
 <script type="text/javascript"
 	src="<%=basePath%>module/appversioncheck/js/appinfo.js"></script>
 <script type="text/javascript" src="js/common/paging.js"></script>
@@ -34,17 +36,19 @@
 
 <body style="">
 	<input id="basePath" name="basePath" type="hidden" value="<%=basePath%>">
-	<div align="center" style="width: 50%">
+	<div align="center" style="width: 80%">
 	<h1>当前系统所有应用</h1>
 	<table class="listTable" id="" cellpadding="0" cellspacing="0">
 		<col width="10%" />
 		<col width="10%" />
+		<col width="10%" />
 		<col width="20%" />
 		<col width="20%" />
 		<col width="10%" />
-		<col width="10%" />
+		<col width="20%" />
 		<tr>
 			<th>应用ID</th>
+			<th>应用LOGO</th>
 			<th>应用名</th>
 			<th>应用描述</th>
 			<th>创建时间</th>
@@ -56,5 +60,9 @@
 	</div>
 	<input type="button" value="发布新应用" onclick="window.location.href='<%=basePath%>/module/appversioncheck/addappinfo.jsp'">
 	
+	<div id="win" style="display:none; POSITION:absolute; left:50%; top:50%; width:600px; height:400px; margin-left:-300px; margin-top:-200px; border:0px solid #888; background: #eeeeee; text-align:left">
+		<textarea id="newdlurl" rows="6" cols="70"></textarea><input type="button" value="取消" onclick="hideUrlBar()">
+		<img id="newdlurlbarcode" src="">
+	</div>
 </body>
 </html>

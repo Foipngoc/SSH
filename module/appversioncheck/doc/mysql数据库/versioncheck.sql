@@ -39,6 +39,8 @@ CREATE TABLE `appinfo` (
   `appdesc` longtext,
   `createdate` datetime DEFAULT NULL,
   `newestappvid` int(11) DEFAULT NULL,
+  `applogo` varchar(128) DEFAULT NULL,
+  `applogomd5` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 

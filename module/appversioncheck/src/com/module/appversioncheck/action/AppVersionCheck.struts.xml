@@ -89,6 +89,12 @@
 			method="downloadAppVersionRes">
 			<result name="file" type="redirect">/${filename}</result>
 		</action>
+		
+		<action name="genBarCode"
+			class="com.module.appversioncheck.action.AppVersionCheckAction"
+			method="genBarCode">
+			<result name="success" type="json"></result>
+		</action>
 	</package>
 </struts>
 

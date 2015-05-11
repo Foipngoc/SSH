@@ -161,3 +161,16 @@
 【可选参数】
 【输出】
 	如果成功，返回文件流，如果失败，返回空的流
+	
+
+【功能】获取二维码
+【接口】http://ip/project/module/AppVersionCheck/genBarCode
+【必选参数】
+	appid //应用id
+	url //加密的url
+【可选参数】
+	file //logo文件
+【输出】
+	BaseResultFailed("URL不能为空")
+	BaseResultFailed("生成二维码失败");
+	BaseResultOK(RES_PATH+"/barcode.jpg"); //result.obj 包含logo的路径 

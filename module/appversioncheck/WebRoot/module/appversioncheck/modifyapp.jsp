@@ -20,6 +20,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="stylesheet" type="text/css" href="<%=basePath%>css/common/table.css">	
 	
 	<script src="js/common/jquery-1.10.2.min.js"></script>
+	<script src="js/common/ajaxfileupload.js"></script>
 	<script type="text/javascript" src="<%=basePath%>module/appversioncheck/js/modifyapp.js"></script>
 	<script type="text/javascript" src="js/common/paging.js"></script>
 	<script type="text/javascript" src="<%=basePath%>js/WdatePicker/WdatePicker.js"></script>
@@ -32,6 +33,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <input type="hidden" value="" id="newestappvid">
   	<b>应用名&nbsp&nbsp</b><input style="width: 30%" type="text" id="appname"><br><br>
   	<b>应用描述&nbsp</b><textarea style="width: 30%; height:60px" type="text" id="appdesc"></textarea><br><br>
+  	<h2>应用LOGO&nbsp;<input type="file" id="file" name="file"> </h2><br>
   	<b>最新版本&nbsp</b><input style="width: 25%" type="text" readonly=true id="newestversion"><input type="button" id="selversion" value="选择最新版本" onclick="selversion()"><br><br>
 	<input type="button" onclick="modifyappinfo()" value="修改应用">
   

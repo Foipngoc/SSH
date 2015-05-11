@@ -12,7 +12,10 @@
 		<property name="appdesc" column="appdesc" type="string"
 			length="512" />
 		<property name="createdate" column="createdate" type="timestamp" />
-		<property name="newestappvid" column="newestappvid"
-			type="integer" />
+		<property name="newestappvid" column="newestappvid" type="integer" />
+		<property name="applogo" column="applogo" type="string"
+			length="128" />
+		<property name="applogomd5" column="applogomd5" type="string"
+			length="255" />
 	</class>
 </hibernate-mapping>

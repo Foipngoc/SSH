@@ -42,9 +42,10 @@ function modifyappinfo(){
 		return;
 	}
 	
-	$.ajax({
+	$.ajaxFileUpload({
 		url : 'module/appversioncheck/updateApp',
-		type : 'post',
+		secureuri : false, // 是否需要安全协议，一般设置为false
+		fileElementId : 'file', // 文件上传域的ID
 		dataType : 'json',
 		data : {
 			'appid': $("#appid").val(),
