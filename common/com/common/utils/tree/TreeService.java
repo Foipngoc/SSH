@@ -168,19 +168,51 @@ public interface TreeService<E> {
 			int rows);
 
 	/**
+	 * 查询节点id的子节点中名字模糊匹配name的列表，不包括子节点下的子节点
+	 */
+	public BaseQueryRecords<E> findChildrenNodes(E node, String name);
+
+	/**
+	 * 查询节点id的子节点中名字模糊匹配name的列表，不包括子节点下的子节点
+	 */
+	public BaseQueryRecords<E> findChildrenNodes(E node, String name, int type);
+
+	/**
+	 * 查询节点id的子节点中名字模糊匹配name的列表，不包括子节点下的子节点
+	 */
+	public BaseQueryRecords<E> findChildrenNodes(E node, String name, int type,
+			int page, int rows);
+
+	/**
+	 * 查询节点id的子节点中名字模糊匹配name的列表，不包括子节点下的子节点
+	 */
+	public BaseQueryRecords<E> findChildrenNodes(E node, String name, int page,
+			int rows);
+
+	/**
 	 * 查找节点的父节点
 	 */
 	public BaseQueryRecords<E> findParentNodes(E node);
 
 	/**
-	 * 递归查询节点id的子节点列表，包括子节点下的子节点
+	 * 递归查询节点id的子节点列表，包括子节点下的子节点，无法作分页
 	 */
 	public List<E> findChildrenNodes_r(E node);
 
 	/**
-	 * 递归查询节点id的子节点中类型为type的所有子节点，包括子节点下的子节点
+	 * 递归查询节点id的子节点中类型为type的所有子节点，包括子节点下的子节点，无法作分页
 	 */
 	public List<E> findChildrenNodes_r(E node, int type);
+
+	/**
+	 * 递归查询节点id的子节点中名字模糊匹配name的列表，包括子节点下的子节点，无法作分页
+	 */
+	public List<E> findChildrenNodes_r(E node, String name);
+
+	/**
+	 * 递归查询节点id的子节点中类型为type的所有子节点中名字模糊匹配name的，包括子节点下的子节点，无法作分页
+	 */
+	public List<E> findChildrenNodes_r(E node, String name, int type);
 
 	/**
 	 * 查询节点id对应的子树, lv = -1 搜索到叶子节点， lv=0 返回该节点， lv=1返回该节点与子节点，lv=2.....
@@ -188,12 +220,12 @@ public interface TreeService<E> {
 	 * lv 查询层次
 	 */
 	public Tree<E> findNodeTree(E node, int lv);
-	
+
 	/**
 	 * 判断节点是否为根节点
 	 */
 	public boolean ifNodeRoot(E node);
-	
+
 	/**
 	 * 判断节点是否为叶子节点
 	 */

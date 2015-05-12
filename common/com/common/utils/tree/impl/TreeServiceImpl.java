@@ -68,6 +68,34 @@ public abstract class TreeServiceImpl<E> extends BaseService implements
 	/**
 	 * 以递归的方式所有子节点
 	 */
+	private List<E> _findChildrenNodes_r(E nd, String name) {
+		// 查询自己的子节点
+		List<E> lists = findChildrenNodes(nd, name).getData();
+
+		// 查询子节点的所有子节点
+		for (int i = 0; i < lists.size(); i++) {
+			lists.addAll(_findChildrenNodes_r(lists.get(i), name));
+		}
+		return lists;
+	}
+
+	/**
+	 * 以递归的方式所有子节点
+	 */
+	private List<E> _findChildrenNodes_r(E nd, String name, int type) {
+		// 查询自己的子节点
+		List<E> lists = findChildrenNodes(nd, name, type).getData();
+
+		// 查询子节点的所有子节点
+		for (int i = 0; i < lists.size(); i++) {
+			lists.addAll(_findChildrenNodes_r(lists.get(i), name, type));
+		}
+		return lists;
+	}
+
+	/**
+	 * 以递归的方式所有子节点
+	 */
 	private List<E> _findChildrenNodes_r(E nd) {
 		// 查询自己的子节点
 		List<E> lists = findChildrenNodes(nd).getData();
@@ -339,5 +367,61 @@ public abstract class TreeServiceImpl<E> extends BaseService implements
 	@Override
 	public BaseQueryRecords<E> findParentNodes(E node) {
 		return (BaseQueryRecords<E>) getTreeDao()._findParentNodes(node);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findChildrenNodes(E node, String name) {
+		BaseQueryRecords<E> result = (BaseQueryRecords<E>) getTreeDao()
+				._findChildrenNodes(node, name);
+
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findChildrenNodes(E node, String name, int type) {
+		return (BaseQueryRecords<E>) getTreeDao()._findChildrenNodes(node,
+				name, type);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findChildrenNodes(E node, String name, int type,
+			int page, int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findChildrenNodes(node,
+				name, type, page, rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findChildrenNodes(E node, String name, int page,
+			int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findChildrenNodes(node,
+				name, page, rows);
+	}
+
+	@Override
+	public List<E> findChildrenNodes_r(E node, String name) {
+		// 查询自己的子节点
+		List<E> lists = findChildrenNodes(node, name).getData();
+
+		// 查询子节点的所有子节点
+		for (int i = 0; i < lists.size(); i++) {
+			lists.addAll(_findChildrenNodes_r(lists.get(i), name));
+		}
+		return lists;
+	}
+
+	@Override
+	public List<E> findChildrenNodes_r(E node, String name, int type) {
+		// 查询自己的子节点
+		List<E> lists = findChildrenNodes(node, name, type).getData();
+
+		// 查询子节点的所有子节点
+		for (int i = 0; i < lists.size(); i++) {
+			lists.addAll(_findChildrenNodes_r(lists.get(i), name, type));
+		}
+		return lists;
 	}
 }

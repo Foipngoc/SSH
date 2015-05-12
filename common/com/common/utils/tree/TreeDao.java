@@ -36,6 +36,16 @@ public interface TreeDao<E> {
 	public BaseQueryRecords<?> _findChildrenNodes(E node, int type, int page,
 			int rows);
 
+	public BaseQueryRecords<?> _findChildrenNodes(E node, String name);
+
+	public BaseQueryRecords<?> _findChildrenNodes(E node, String name, int type);
+
+	public BaseQueryRecords<?> _findChildrenNodes(E node, String name, int type,
+			int page, int rows);
+
+	public BaseQueryRecords<?> _findChildrenNodes(E node, String name, int page,
+			int rows);
+
 	public E _addNode(E node);
 
 	public boolean _delNode(E node);

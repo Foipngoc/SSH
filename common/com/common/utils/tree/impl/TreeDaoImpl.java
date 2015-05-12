@@ -198,4 +198,36 @@ public abstract class TreeDaoImpl extends BaseDaoDB implements
 	public void _modifyNode(TreeNode node) {
 		super.update(node);
 	}
+
+	@Override
+	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node, String name) {
+		return _findChildrenNodes(node, name, -1, -1);
+	}
+
+	@Override
+	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node, String name,
+			int type) {
+		return _findChildrenNodes(node, name, type, -1, -1);
+	}
+
+	@Override
+	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node, String name,
+			int type, int page, int rows) {
+		String hql = "select a from ? b,? a "
+				+ "where b.sid=a.id and b.pid=? and a.name like '%?%' and a.type=?";
+
+		return super.find(new HQL(hql, getEntryRelationClass().getSimpleName(),
+				getEntryClass().getSimpleName(), node.getId(), name, type));
+	}
+
+	@Override
+	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node, String name,
+			int page, int rows) {
+		String hql = "select a from ? b,? a "
+				+ "where b.sid=a.id and b.pid=? and a.name like '%?%'";
+
+		BaseQueryRecords<?> result = super.find(new HQL(hql, getEntryRelationClass().getSimpleName(),
+				getEntryClass().getSimpleName(), node.getId(), name));
+		return result;
+	}
 }
