@@ -225,6 +225,7 @@ public abstract class TreeServiceImpl<E> extends BaseService implements
 	@Override
 	public void delNode(E node) {
 		getTreeDao()._delNode(node);
+		delBindNodes(node);
 	}
 
 	@Override
