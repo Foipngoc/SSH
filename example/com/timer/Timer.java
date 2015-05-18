@@ -10,7 +10,7 @@ public class Timer {
 	//@Scheduled(cron) cron表达式可用网址http://www.bejson.com/cronCreator/生成
 	@Scheduled(fixedRate=5000)
 	public void doTimer(){
-		System.out.println("Timer: "+index);
+		//System.out.println("Timer: "+index);
 		index++;
 	}
 }

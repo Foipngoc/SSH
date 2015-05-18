@@ -1,3 +1,3 @@
 eclipse.preferences.version=1
-validator.Checked=WebRoot/js/common/jquery-1.10.2.min.js,module/appversioncheck/src/com/module/appversioncheck/action/AppVersionCheck.struts.xml,configuration/applicationContext-cxf.xml
+validator.Checked=WebRoot/js/common/jquery-1.10.2.min.js,doc/\u5982\u4F55\u6DFB\u52A0WebService\u652F\u6301/applicationContext-cxf.xml,module/appversioncheck/src/com/module/appversioncheck/action/AppVersionCheck.struts.xml,configuration/applicationContext-cxf.xml
 validator.Unchecked=
