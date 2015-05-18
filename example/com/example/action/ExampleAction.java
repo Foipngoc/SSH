@@ -2,8 +2,11 @@ package com.example.action;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+
 import com.common.action.BaseAction;
 import com.common.action.result.BaseResult;
+import com.common.utils.LogUtils;
 import com.example.model.Student;
 import com.example.service.ExampleService;
 
@@ -18,7 +21,7 @@ import com.example.service.ExampleService;
 @SuppressWarnings("all")
 // 忽略该类中的所有警告
 public class ExampleAction extends BaseAction {
-
+	private Logger log = LogUtils.getLogger(getClass());
 	/**
 	 * 使用注解从spring托管库中注入exampleservice， 也就是ExampleServiceImpl类的实例
 	 */
@@ -37,6 +40,10 @@ public class ExampleAction extends BaseAction {
 	private BaseResult result;
 
 	public String doAction() {
+		log.debug("this is a debug info");
+		log.info("this is a info info");
+		log.warn("this is a warn info");
+		log.error("this is a error info");
 		if (example2 != null) {
 			String name = example2.getName();
 			int age = example2.getAge();
