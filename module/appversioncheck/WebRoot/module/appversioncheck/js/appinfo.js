@@ -16,7 +16,10 @@ function showAppList() {
 					for (var i = 0; i < list.length; i++) {
 						var newTr = $("<tr class='addTr'></tr>");
 						newTr.append($("<td>" + list[i].appinfo.id + "</td>"));
-						newTr.append($("<td><img width='50' height='50' src='"+$("#basePath").val()+"/"+ list[i].appinfo.applogo +"'></img></td>"));
+						if (list[i].appinfo.applogo != null)
+							newTr.append($("<td><img width='50' height='50' src='"+$("#basePath").val()+"/"+ list[i].appinfo.applogo +"'></img></td>"));
+						else
+							newTr.append($("<td>暂无LOGO</td>"));
 						newTr
 								.append($("<td><a style='color:blue;text-decoration:underline' href='"
 										+ $("#basePath").val()
