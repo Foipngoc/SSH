@@ -9,5 +9,6 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>CXFServlet</servlet-name>
-		<url-pattern>/webservices/*</url-pattern>
+		<url-pattern>/webservice/*</url-pattern>
 	</servlet-mapping>
+4. 示例参考webserviceExample
