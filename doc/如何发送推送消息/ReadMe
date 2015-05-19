@@ -1,0 +1,4 @@
+1. 部署好推送服务器
+2. 将libs拷贝到WebRoot/lib目录下，并添加到BuildPath中
+3. 将pushserver.properties添加到configuration目录中，并修改推送服务器配置
+4. 示例代码可参考src中
