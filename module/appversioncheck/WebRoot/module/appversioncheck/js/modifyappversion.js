@@ -11,7 +11,7 @@ $(document).ready(function(){
 			var appname = appinfo.appname;
 			document.getElementById("apptitle").innerHTML = "修改<"+appname+"'";
 			$("#appname").val(appname);
-			
+			$("#appname1").text(appname);
 			$.ajax({
 				url : 'module/appversioncheck/queryAppVersion',
 				type : 'post',
@@ -28,7 +28,7 @@ $(document).ready(function(){
 					var downloadpath = appvinfo.downloadpath;
 					var autoinstall = appvinfo.autoinstall;
 					var respath = appvinfo.respath;
-
+					$("#appname2").text(versioncode);
 					document.getElementById("apptitle").innerHTML += versionname+"'>版本";
 					
 					$("#respath").val(getFileName(respath));

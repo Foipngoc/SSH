@@ -1,4 +1,10 @@
 $(document).ready(function(){
+	document.onkeydown=function(event){
+		var e = event || window.event || arguments.callee.caller.arguments[0];
+		if(e && e.keyCode==27){ // 按 Esc 
+			document.getElementById("win").style.display="none";
+		}
+		}
 	$.ajax({
 		url : 'module/appversioncheck/queryApp',
 		type : 'post',

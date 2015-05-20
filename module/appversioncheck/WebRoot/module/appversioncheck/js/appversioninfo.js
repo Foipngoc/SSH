@@ -1,6 +1,5 @@
 $(document).ready(function() {
 	var appid = $("#appid").val();
-	
 	$.ajax({
 		url : 'module/appversioncheck/queryApp',
 		type : 'post',
@@ -12,7 +11,10 @@ $(document).ready(function() {
 			var appinfo = data.result.map.appinfo.appinfo;
 			var appname = appinfo.appname;
 			var newestappvid = appinfo.newestappvid;
-			document.getElementById("title").innerHTML = "<"+appname+">的所有版本";
+			
+			$("#appname").text(appname);
+			
+			
 			showAppVersionList(appid,newestappvid);
 		}
 	});

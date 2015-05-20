@@ -1,5 +1,11 @@
 $(document).ready(function() {
 	showAppList();
+	document.onkeydown=function(event){
+	var e = event || window.event || arguments.callee.caller.arguments[0];
+	if(e && e.keyCode==27){ // 按 Esc 
+		hideUrlBar();
+	}
+	}
 });
 
 function showAppList() {
@@ -24,8 +30,7 @@ function showAppList() {
 								.append($("<td><a style='color:blue;text-decoration:underline' href='"
 										+ $("#basePath").val()
 										+ "module/appversioncheck/appversioninfo.jsp?appid="
-										+ list[i].appinfo.id
-										+ "'>"
+										+ list[i].appinfo.id+"'>"
 										+ list[i].appinfo.appname + "</a></td>"));
 						newTr.append($("<td>" + list[i].appinfo.appdesc
 								+ "</td>"));

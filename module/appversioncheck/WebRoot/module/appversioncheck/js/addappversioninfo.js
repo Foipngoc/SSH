@@ -9,6 +9,7 @@ $(document).ready(function() {
 		success : function(data) {
 			var appinfo = data.result.map.appinfo.appinfo;
 			var appname = appinfo.appname;
+			$("#appname1").text(appname);
 			document.getElementById("apptitle").innerHTML = "发布<"+appname+">版本";
 			$("#appname").val(appname);
 		}

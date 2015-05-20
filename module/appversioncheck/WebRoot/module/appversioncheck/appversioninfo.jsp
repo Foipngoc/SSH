@@ -22,7 +22,8 @@
 	href="<%=basePath%>css/common/table.css">
 <link rel="stylesheet" type="text/css"
 	href="<%=basePath%>css/common/style.css">
-
+<link rel="stylesheet" type="text/css"
+	href="<%=basePath%>module/appversioncheck/css/appversioninfo.css">
 <script src="js/common/jquery-1.10.2.min.js"></script>
 <script type="text/javascript"
 	src="<%=basePath%>module/appversioncheck/js/appversioninfo.js"></script>
@@ -33,9 +34,15 @@
 </head>
 
 <body>
+<jsp:include page="top.jsp" flush="true" />
+<div class='firstplace'> 
+<span style='color:#3984e5;cursor: pointer;' onclick="window.location.href='<%=basePath%>/module/appversioncheck/appinfo.jsp'" >所有应用     
+</span>>&nbsp;<span id='appname'></span>的所有版本</div>
 	<input id="basePath" name="basePath" type="hidden" value="<%=basePath%>">
-	<div align="center" style="width: 60%">
-	<h1 id="title">当前应用所有版本</h1>
+	<div align="center" style="width: 100%">
+	<div class='secondplace'>
+	<input type="button" value="发布新版本" onclick="addAppVersion()" class='input'>
+	</div>
 	<table class="listTable" id="" cellpadding="0" cellspacing="0">
 		<col width="5%" />
 		<col width="8%" />
@@ -56,6 +63,5 @@
 	</table>
 	</div>
 	<input type="hidden" value="<%=request.getParameter("appid")%>" id="appid"/>
-	<input type="button" value="发布新版本" onclick="addAppVersion()">
 </body>
 </html>
