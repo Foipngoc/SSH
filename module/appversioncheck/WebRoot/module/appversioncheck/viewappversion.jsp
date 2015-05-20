@@ -38,17 +38,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
  	<input id="basePath" name="basePath" type="hidden" value="<%=basePath%>">
   	<input type="hidden" value="<%=request.getParameter("appvid")%>" name="appvid" id="appvid">
  	<input type="hidden" value="<%=request.getParameter("appid")%>" name="appid" id="appid"/>
-	<h2>应用名:&nbsp;&nbsp;&nbsp;<input class='inputinfo' type="text" name="appname" id="appname" readonly="readonly" style="border: 0px; font-weight: bold;"></h2> <br>
-	<h2>版本号:&nbsp;&nbsp;&nbsp;<input class='inputinfo' type="text" name="versioncode" id="versioncode" readonly="readonly" style="border: 0px;"></h2> <br>
-	<h2>版本名:&nbsp;&nbsp;&nbsp;<input class='inputinfo' type="text" name="versionname" id="versionname"> </h2><br>
-	<h2>
-	<span style='position: relative;top:-100px;'>更新日志:</span>
-  	<textarea rows="" cols="" name="updatelog" id="updatelog" style=" height: 113px; width: 432px; border: solid 1px #e5ebf1;line-height: 20px;resize:none;font-size: 14px;"></textarea>
+	<h2>应用名&nbsp;&nbsp;<input class='inputinfo' type="text" name="appname" id="appname" readonly="readonly" style="border: 0px; font-weight: bold;"></h2> <br>
+	<h2>版本号&nbsp;&nbsp;<input class='inputinfo' type="text" name="versioncode" id="versioncode" readonly="readonly" style="border: 0px;"></h2> <br>
+	<h2>版本名&nbsp;&nbsp;<input class='inputinfo' type="text" name="versionname" id="versionname" readonly="readonly" style="border: 0px;"> </h2><br>
+	<h2>更新日志&nbsp;<textarea rows="" cols="" name="updatelog" id="updatelog" readonly="readonly" style=" height: 113px; width: 432px; border: solid 1px #e5ebf1;line-height: 20px;resize:none;font-size: 14px;"></textarea>
 	</h2><br>
-	<h2>更新方式:&nbsp;<select class='inputinfo' name="updatetype" id="updatetype"> <option value="0">强制更新</option><option value="1">用户选择</option><option value="2">不弹出更新</option></select> </h2><br>
-	<h2>选择APP:&nbsp;&nbsp;<input class='inputinfo' type="text" id="respath" style="border:0px;width:220px" readonly="readonly"><input style="width: 73px;" type="file" name="file" id="file" onchange="filesel()"></h2><br>
-	<h2>下载路径:&nbsp;<input class='inputinfo' type="text" name="downloadpath" id="downloadpath"> </h2><br>
-	<h2>自动安装:&nbsp;<select class='inputinfo' name="autoinstall" id="autoinstall"><option value="1">自动安装</option><option value="0">不自动安装</option></select> </h2><br>
+	<h2>更新方式&nbsp;<select class='inputinfo' name="updatetype" id="updatetype" disabled="disabled"> <option value="0">强制更新</option><option value="1">用户选择</option><option value="2">不弹出更新</option></select> </h2><br>
+	<h2>下载APP&nbsp;&nbsp;<input type="text" id="respath" style="border:0px;" readonly="readonly"><input type="button" id="file" onclick="downloadfile()" value="下载APP"></h2><br>
+	<h2>下载路径&nbsp;<input class='inputinfo' type="text" name="downloadpath" id="downloadpath" readonly="readonly"> </h2><br>
+	<h2>自动安装&nbsp;<select class='inputinfo' name="autoinstall" id="autoinstall" disabled="disabled"><option value="1">自动安装</option><option value="0">不自动安装</option></select> </h2><br>
 	<div class='secondplace'>
 	<input type="button" value="返回" class='input1' onclick="closeview()">
 	

@@ -38,9 +38,9 @@
 <jsp:include page="top.jsp" flush="true" />
 <div class='firstplace'> <span style='color:#3984e5;cursor: pointer;' onclick="window.location.href='<%=basePath%>/module/appversioncheck/appinfo.jsp'" >所有应用     </span>>&nbsp;发布新应用</div>
 	<input id="basePath" name="basePath" type="hidden" value="<%=basePath%>">
-	<h2 style='	margin-top: 30px;'>应用名称:&nbsp;&nbsp;<input type="text" id="appname" style=" height: 36px; width: 289px; border: solid 1px #e5ebf1;"></h2> <br>
-	<h2><span style='position: relative;top:-100px;'>应用描述:&nbsp;&nbsp;</span><textarea rows="" cols="" id="appdesc" style=" height: 113px; width: 432px; border: solid 1px #e5ebf1;line-height: 20px;resize:none;"></textarea>    </h2><br>
-	<h2>应用LOGO:&nbsp;&nbsp;<input type="file" id="file" name="file" > </h2><br>
+	<h2 style='	margin-top: 30px;'>应用名称&nbsp;&nbsp;<input type="text" id="appname" style=" height: 36px; width: 289px; border: solid 1px #e5ebf1;"></h2> <br>
+	<h2><span style='position: relative;top:-100px;'>应用描述&nbsp;&nbsp;</span><textarea rows="" cols="" id="appdesc" style=" height: 113px; width: 432px; border: solid 1px #e5ebf1;line-height: 20px;resize:none;"></textarea>    </h2><br>
+	<h2>应用LOGO&nbsp;&nbsp;<input type="file" id="file" name="file" > </h2><br>
 	<div class='secondplace'>
 	<input type="button" onclick="addappinfo()" class='input' value="发布新应用">
 	<input type="button" class='input1' value="取消发布" onclick="window.location.href='<%=basePath%>/module/appversioncheck/appinfo.jsp'" >

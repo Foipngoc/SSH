@@ -45,15 +45,15 @@
 	<input id="basePath" name="basePath" type="hidden" value="<%=basePath%>">
 	<div align="left" style="width: 80%">
 	<input type="hidden" value="<%=request.getParameter("appid")%>" name="appid" id="appid"/>
-	<h2 style='margin-top: 30px;'>应用名:&nbsp;&nbsp;&nbsp;<input type="text" name="appname" id="appname" readonly="readonly" style="border: 0px; font-weight: bold;font-size: 14px;"></h2> <br>
-	<h2>版本号:&nbsp;&nbsp;&nbsp;<input class='inputinfo' type="text" name="versioncode" id="versioncode"></h2> <br>
-	<h2>版本名:&nbsp;&nbsp;&nbsp;<input class='inputinfo' type="text" name="versionname" id="versionname"> </h2><br>
-	<h2>更新日志:&nbsp;</textarea><textarea rows="" cols="" name="updatelog" id="updatelog" style=" height: 113px; width: 432px; border: solid 1px #e5ebf1;line-height: 20px;resize:none;"></textarea></h2><br>
-	<h2>更新方式:&nbsp;<select name="updatetype" id="updatetype"class='inputinfo'> <option value="0">强制更新</option><option value="1">用户选择</option><option value="2">不弹出更新</option></select> </h2><br>
-	<h2>选择APP:&nbsp;&nbsp;<input type="file" name="file" id="file"></h2><br>
-	<h2>自动设置:&nbsp;<select name="autoset" id="autoset" class='inputinfo'><option value="1">自动设置</option><option value="0">不自动设置</option></select></h2><br>
-	<h2>自动安装:&nbsp;<select name="autoinstall" id="autoinstall" class='inputinfo'><option value="1">自动安装</option><option value="0">不自动安装</option></select> </h2><br>
-	<h2>下载路径:&nbsp;<input type="text" name="downloadpath" id="downloadpath" class='inputinfo'> </h2><br>
+	<h2 style='margin-top: 30px;'>应用名&nbsp;&nbsp;<input type="text" name="appname" id="appname" readonly="readonly" style="border: 0px; font-weight: bold;font-size: 14px;"></h2> <br>
+	<h2>版本号&nbsp;&nbsp;<input class='inputinfo' type="text" name="versioncode" id="versioncode"></h2> <br>
+	<h2>版本名&nbsp;&nbsp;<input class='inputinfo' type="text" name="versionname" id="versionname"> </h2><br>
+	<h2>更新日志&nbsp;</textarea><textarea rows="" cols="" name="updatelog" id="updatelog" style=" height: 113px; width: 432px; border: solid 1px #e5ebf1;line-height: 20px;resize:none;"></textarea></h2><br>
+	<h2>更新方式&nbsp;<select name="updatetype" id="updatetype" class='inputinfo'> <option value="0">强制更新</option><option value="1">用户选择</option><option value="2">不弹出更新</option></select> </h2><br>
+	<h2>选择APP&nbsp;&nbsp;<input type="file" name="file" id="file"></h2><br>
+	<h2>自动设置&nbsp;<select name="autoset" id="autoset" class='inputinfo'><option value="1">自动设置</option><option value="0">不自动设置</option></select></h2><br>
+	<h2>自动安装&nbsp;<select name="autoinstall" id="autoinstall" class='inputinfo'><option value="1">自动安装</option><option value="0">不自动安装</option></select> </h2><br>
+	<h2>下载路径&nbsp;<input type="text" name="downloadpath" id="downloadpath" class='inputinfo'> </h2><br>
 	<div class='secondplace'>
 	<input type="button" value="发布新版本" onclick="publicAppversioninfo()" class='input'>
 	<input type="button" value="取消发布" class='input1' onclick="window.location.href='<%=basePath%>module/appversioncheck/appversioninfo.jsp?appid=<%=request.getParameter("appid")%>'">

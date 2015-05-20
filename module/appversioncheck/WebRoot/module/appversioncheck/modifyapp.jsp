@@ -35,12 +35,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <input id="basePath" name="basePath" type="hidden" value="<%=basePath%>">
   <input type="hidden" value="<%=request.getParameter("appid")%>" id="appid">
   <input type="hidden" value="" id="newestappvid">
-  	<h2 style='	margin-top: 30px;'>应用名:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input style=" height: 36px; width: 289px; border: solid 1px #e5ebf1;font-size: 14px;" type="text" id="appname"></h2><br>
-  	<h2><span style='position: relative;top:-100px;'>应用描述:&nbsp;</span>
+  	<h2 style='	margin-top: 30px;'>应用名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input style=" height: 36px; width: 289px; border: solid 1px #e5ebf1;font-size: 14px;" type="text" id="appname"></h2><br>
+  	<h2><span style='position: relative;top:-100px;'>应用描述&nbsp;&nbsp;&nbsp;&nbsp;</span>
   	<textarea rows="" cols="" id="appdesc" style=" height: 113px; width: 432px; border: solid 1px #e5ebf1;line-height: 20px;resize:none;font-size: 14px;"></textarea>
   	</h2><br>
-  	<h2>应用LOGO:&nbsp;<input type="file" id="file" name="file"> </h2><br>
-  	<h2>最新版本:&nbsp;<input  style=" height: 36px; width: 289px; border: solid 1px #e5ebf1;font-size: 14px;" type="text" readonly=true id="newestversion"><input class='input1' type="button" id="selversion" value="选择最新版本" onclick="selversion()" style='height:36px;'></h2><br>
+  	<h2>应用LOGO&nbsp;&nbsp;<input type="file" id="file" name="file"> </h2><br>
+  	<h2>最新版本&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input  style=" height: 36px; width: 289px; border: solid 1px #e5ebf1;font-size: 14px;" type="text" readonly=true id="newestversion"><input class='input1' type="button" id="selversion" value="选择最新版本" onclick="selversion()" style='height:36px;'></h2><br>
 	<div class='secondplace'>
 	<input type="button" onclick="modifyappinfo()" value="修改应用" class='input'>
 	<input type="button" class='input1' onclick="window.location.href='<%=basePath%>/module/appversioncheck/appinfo.jsp'" value="取消发布">
