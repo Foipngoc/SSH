@@ -148,6 +148,8 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 			if (!logodirfile.exists() && !logodirfile.isDirectory()) {
 				logodirfile.mkdirs();
 			}
+			logoname = "logo" + appInfo.getId() + "."
+					+ getFileExtension(logoname);
 			String logofilepath = logodir + "/" + logoname;
 			// 检查目录 上否已经存在同名文件，如果存在改名
 			File checklogoFile = new File(logofilepath);
@@ -231,7 +233,8 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 * 
 	 * @param appInfo
 	 */
-	public BaseResult updateApp(int appid, String appname, String appdesc, File logo, String logoname) {
+	public BaseResult updateApp(int appid, String appname, String appdesc,
+			File logo, String logoname) {
 
 		AppInfo appInfo = this.queryApp(appid);
 
@@ -249,13 +252,15 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 			appInfo.setAppdesc(appdesc);
 		}
 		this.appInfoDao.update(appInfo);
-		
+
 		if (logo != null) {
 			String logodir = getContextPath() + "/" + DATA_PATH + "/logo";
 			File logodirfile = new File(logodir);
 			if (!logodirfile.exists() && !logodirfile.isDirectory()) {
 				logodirfile.mkdirs();
 			}
+			logoname = "logo" + appInfo.getId() + "."
+					+ getFileExtension(logoname);
 			String logofilepath = logodir + "/" + logoname;
 			// 检查目录 上否已经存在同名文件，如果存在改名
 			File checklogoFile = new File(logofilepath);
@@ -272,7 +277,7 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 							+ DateTimeUtil
 									.getCurrTimeFmt("yyyy-MM-dd_HH-mm-ss")
 							+ "." + getFileExtension(logoname);
-					logofilepath = logodir + "/" +logoname;
+					logofilepath = logodir + "/" + logoname;
 				}
 			}
 
@@ -311,8 +316,7 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 			appInfo.setApplogo(DATA_PATH + "/logo/" + logoname);
 			this.appInfoDao.update(appInfo);
 		}
-		
-		
+
 		BaseResult result = new BaseResult(0, "更新成功");
 		return result;
 	}
@@ -355,7 +359,8 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 			return new BaseResult(2, "APP上传失败");
 		}
 
-		File DATA_PATH_FOLDER = new File(getContextPath() + "/" + DATA_PATH +"/res");
+		File DATA_PATH_FOLDER = new File(getContextPath() + "/" + DATA_PATH
+				+ "/res");
 		if (!DATA_PATH_FOLDER.exists() && !DATA_PATH_FOLDER.isDirectory()) {
 			DATA_PATH_FOLDER.mkdirs();
 		}
@@ -516,7 +521,8 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 			appVersionInfodb.setAutoinstall(autoinstall);
 
 		if (file != null) {
-			File DATA_PATH_FOLDER = new File(getContextPath() + "/" + DATA_PATH +"/res");
+			File DATA_PATH_FOLDER = new File(getContextPath() + "/" + DATA_PATH
+					+ "/res");
 			if (!DATA_PATH_FOLDER.exists() && !DATA_PATH_FOLDER.isDirectory()) {
 				DATA_PATH_FOLDER.mkdirs();
 			}
@@ -527,7 +533,8 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 			}
 
 			// 获得res目录 ，如果不存在，创建
-			String resfolder = DATA_PATH + "/res/" + appVersionInfodb.getAppid();
+			String resfolder = DATA_PATH + "/res/"
+					+ appVersionInfodb.getAppid();
 			File folder = new File(getContextPath() + "/" + resfolder);
 			if (!folder.exists() && !folder.isDirectory()) {
 				folder.mkdirs();
@@ -878,36 +885,36 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 		if (url == null)
 			return new BaseResultFailed("URL不能为空");
 		String logopath = null;
-		
+
 		AppInfo appInfo = this.queryApp(appid);
 
 		if (appInfo == null) {
 			return new BaseResultFailed("不存在该应用");
 		}
-		logopath = getContextPath()+"/"+appInfo.getApplogo();
-		
+		logopath = getContextPath() + "/" + appInfo.getApplogo();
+
 		if (!checkMd5(logopath, appInfo.getApplogomd5())) {
 			logopath = null;
 		}
-		
+
 		if (logopath == null) {
 			try {
 				QRCodeUtil.encode(url, getContextPath() + "/" + DATA_PATH
-						+ "/barcode"+appid+".jpg",true);
+						+ "/barcode" + appid + ".jpg", true);
 			} catch (Exception e) {
 				return new BaseResultFailed("生成二维码失败");
 			}
-		}else {
+		} else {
 			try {
-				QRCodeUtil.encode(url, logopath, getContextPath() + "/" + DATA_PATH
-						+ "/barcode"+appid+".jpg",true);
+				QRCodeUtil.encode(url, logopath, getContextPath() + "/"
+						+ DATA_PATH + "/barcode" + appid + ".jpg", true);
 			} catch (Exception e) {
 				return new BaseResultFailed("生成二维码失败");
 			}
 		}
-		return new BaseResultOK(DATA_PATH + "/barcode"+appid+".jpg");
+		return new BaseResultOK(DATA_PATH + "/barcode" + appid + ".jpg");
 	}
-	
+
 	private boolean checkMd5(String filepath, String md5) {
 		if (filepath == null || md5 == null)
 			return false;
