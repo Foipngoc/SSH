@@ -1,18 +1,35 @@
 package com.model.appVersionCheck;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.CoreConnectionPNames;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * 下载最新版本
@@ -101,6 +118,11 @@ public abstract class VersionDownloadAsync extends
 			long size = 0;// 文件大小
 			for (Header h : headers) {
 				if ("Content-Disposition".equals(h.getName())) {
+					String fileString  = h.getValue();
+					fileString = fileString.substring(fileString.indexOf("filename=")+"filename=".length());
+					fileString = fileString.replaceAll("\"", "");
+					fileString = URLDecoder.decode(fileString, "UTF-8");
+					Log.d("Content-Disposition", fileString);
 				} else if ("Content-Length".equals(h.getName())) {
 					size = Long.valueOf(h.getValue());
 				}
