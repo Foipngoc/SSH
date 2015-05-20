@@ -1,6 +1,9 @@
 package com.module.appversioncheck.action;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +54,22 @@ public class AppVersionCheckAction extends BaseAction {
 	private String resultdesc;
 
 	private String url;
+
+	private long dlFilelength;
+	private InputStream dlFile;
+	private String dlFileName;
+
+	public InputStream getDlFile() {
+		return dlFile;
+	}
+
+	public long getDlFilelength() {
+		return dlFilelength;
+	}
+
+	public String getDlFileName() {
+		return dlFileName;
+	}
 
 	/**
 	 * 获得所有已发布的应用信息
@@ -105,8 +124,9 @@ public class AppVersionCheckAction extends BaseAction {
 	 * 更新已发布应用
 	 */
 	public String updateApp() {
-		result = this.appVersionCheckService.updateApp(appid, appname, appdesc,file == null ? null : file.get(0), fileFileName == null ? null
-				: fileFileName.get(0));
+		result = this.appVersionCheckService.updateApp(appid, appname, appdesc,
+				file == null ? null : file.get(0), fileFileName == null ? null
+						: fileFileName.get(0));
 		return SUCCESS;
 	}
 
@@ -186,24 +206,38 @@ public class AppVersionCheckAction extends BaseAction {
 
 	/**
 	 * 下载最新版本
+	 * 
+	 * @throws FileNotFoundException
 	 */
-	public String downloadNewestAppVersionRes() {
+	public String downloadNewestAppVersionRes() throws FileNotFoundException {
 		filename = this.appVersionCheckService.downloadNewestAppVersionRes(
 				appid, versioncode, clientinfo);
+
+		String filePath = getContextPath() + "/" + filename;
+		dlFile = new FileInputStream(filePath);
+		dlFileName = new File(filePath).getName();
+		dlFilelength = new File(filePath).length();
 
 		return "file";
 	}
 
 	public String genBarCode() {
-		result = this.appVersionCheckService.genBarCode(appid,url);
+		result = this.appVersionCheckService.genBarCode(appid, url);
 		return SUCCESS;
 	}
 
 	/**
 	 * 下载某版本版本资源
+	 * 
+	 * @throws FileNotFoundException
 	 */
-	public String downloadAppVersionRes() {
+	public String downloadAppVersionRes() throws FileNotFoundException {
 		filename = this.appVersionCheckService.downloadAppVersionRes(appvid);
+		String filePath = getContextPath() + "/" + filename;
+		dlFile = new FileInputStream(filePath);
+		dlFileName = new File(filePath).getName();
+		dlFilelength = new File(filePath).length();
+
 		return "file";
 	}
 
