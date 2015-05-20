@@ -76,64 +76,88 @@ public abstract class VersionDownloadAsync extends
 
 	@Override
 	protected Integer doInBackground(Void... p) {
-		URL u = null;
-		InputStream in = null;
-		FileOutputStream out = null;
-		HttpURLConnection conn = null;
-		try {
+		HttpClient httpClient = null;
+		InputStream is = null;
+		BufferedInputStream bis = null;
+		FileOutputStream fos = null;
+		BufferedOutputStream bos = null;
 
-			String fullurl = url + "?";
+		try {
+			httpClient = new DefaultHttpClient();
+			httpClient.getParams().setParameter(
+					CoreConnectionPNames.CONNECTION_TIMEOUT, 15 * 1000);// 连接时间
+			httpClient.getParams().setParameter(
+					CoreConnectionPNames.SO_TIMEOUT, 15 * 1000);// 数据传输时间
+			HttpPost httpRequest = new HttpPost(url);// 请求地址
+			List<NameValuePair> urlparams = new ArrayList<NameValuePair>();
 			for (Entry<String, Object> entry : params.entrySet()) {
 				String key = entry.getKey();
 				Object val = entry.getValue();
-				fullurl = fullurl + key + "=" + val + "&";
+				urlparams.add(new BasicNameValuePair(key, val.toString()));
 			}
-			fullurl = fullurl.substring(0, fullurl.length() - 1);
-
-			u = new URL(fullurl);
-			conn = (HttpURLConnection) u.openConnection();
-			conn.setConnectTimeout(30 * 1000);
-			conn.connect();
-			long fileLength = conn.getContentLength();
-			if (fileLength > 0) {
-				in = conn.getInputStream();
-				File filePath = new File(savepath);
-				if (!filePath.exists())
-					filePath.createNewFile();
-				out = new FileOutputStream(new File(savepath));
-				byte[] buffer = new byte[1024];
-				int len = 0;
-				long readedLength = 0l;
-
-				while ((len = in.read(buffer)) != -1 && !isCancelled()) {
-					out.write(buffer, 0, len);
-					readedLength += len;
-
-					int progress = (int) (readedLength * 100.0 / fileLength);
-					this.publishProgress(progress);
-
-					versionUpdateCallBack.callBack(
-							VersionUpdateCallBack.DOWNLOADING, progress);
-
-					if (readedLength >= fileLength)
-						break;
+			httpRequest.setEntity(new UrlEncodedFormEntity(urlparams));
+			HttpResponse response = httpClient.execute(httpRequest);
+			Header[] headers = response.getAllHeaders();
+			long size = 0;// 文件大小
+			for (Header h : headers) {
+				if ("Content-Disposition".equals(h.getName())) {
+				} else if ("Content-Length".equals(h.getName())) {
+					size = Long.valueOf(h.getValue());
 				}
-				out.flush();
-			} else {
+			}
+			if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
 				return -1;
 			}
+			if (size < 0) {
+				return -1;
+			}
+			HttpEntity resEntity = response.getEntity();
+			is = resEntity.getContent();// 获得文件的输入流
+			bis = new BufferedInputStream(is);
+			File newFile = new File(savepath);
+			fos = new FileOutputStream(newFile);
+			bos = new BufferedOutputStream(fos);
+
+			byte[] bytes = new byte[4096];
+			int len = 0;// 最后一次的长度可能不足4096
+
+			long readedLength = 0l;
+			while ((len = bis.read(bytes)) > 0) {
+				bos.write(bytes, 0, len);
+
+				readedLength += len;
+
+				int progress = (int) (readedLength * 100.0 / size);
+				this.publishProgress(progress);
+
+				versionUpdateCallBack.callBack(
+						VersionUpdateCallBack.DOWNLOADING, progress);
+			}
+			bos.flush();
 		} catch (Exception e) {
 			return -1;
 		} finally {
 			try {
-				if (out != null)
-					out.close();
-				if (in != null)
-					in.close();
-				if (conn != null)
-					conn.disconnect();
-			} catch (Exception e2) {
+				if (is != null)
+					is.close();
+			} catch (IOException e) {
 			}
+			try {
+				if (bis != null)
+					bis.close();
+			} catch (IOException e) {
+			}
+			try {
+				if (bos != null)
+					bos.close();
+			} catch (IOException e) {
+			}
+			try {
+				if (fos != null)
+					fos.close();
+			} catch (IOException e) {
+			}
+			httpClient.getConnectionManager().shutdown();
 		}
 		return 0;
 	}
