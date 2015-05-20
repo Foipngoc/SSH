@@ -9,7 +9,6 @@ $(document).ready(function(){
 		success : function(data) {
 			var appinfo = data.result.map.appinfo.appinfo;
 			var appname = appinfo.appname;
-			document.getElementById("apptitle").innerHTML = "查看<"+appname+"'";
 			$("#appname").val(appname);
 			$("#appname1").text(appname);
 			$.ajax({
@@ -30,8 +29,6 @@ $(document).ready(function(){
 					var respath = appvinfo.respath;
 					$("#appname2").text(versioncode);
 
-					document.getElementById("apptitle").innerHTML += versionname+"'>版本";
-					
 					$("#respath").val(getFileName(respath));
 					$("#versioncode").val(versioncode);
 					$("#versionname").val(versionname);
