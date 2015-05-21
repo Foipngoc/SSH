@@ -5,7 +5,15 @@ import java.util.List;
 import com.common.dao.BaseQueryRecords;
 import com.common.utils.tree.model.Tree;
 
-public interface TreeService<E> {
+/**
+ * @author DJ
+ * 
+ * @param <E>
+ *            节点实体
+ * @param <R>
+ *            节点实体关系
+ */
+public interface TreeService<E, R> {
 	/**
 	 * 判断两个节点是否相同
 	 */

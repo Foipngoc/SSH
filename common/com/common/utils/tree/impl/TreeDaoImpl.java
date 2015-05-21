@@ -13,8 +13,8 @@ import com.common.utils.tree.model.TreeNodeRelation;
  * @author DJ
  * 
  */
-public abstract class TreeDaoImpl extends BaseDaoDB implements
-		TreeDao<TreeNode> {
+public abstract class TreeDaoImpl<E extends TreeNode, R extends TreeNodeRelation>
+		extends BaseDaoDB implements TreeDao<E, R> {
 	public abstract Class<?> getEntryClass();
 
 	public abstract Class<?> getEntryRelationClass();
@@ -89,24 +89,23 @@ public abstract class TreeDaoImpl extends BaseDaoDB implements
 				page, rows);
 	}
 
-	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node) {
+	public BaseQueryRecords<?> _findChildrenNodes(E node) {
 		return _findChildrenNodes(node, -1, -1);
 	}
 
-	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node, int page,
-			int rows) {
+	public BaseQueryRecords<?> _findChildrenNodes(E node, int page, int rows) {
 		String hql = "select a from ? b,? a " + "where b.sid=a.id and b.pid=?";
 
 		return super.find(new HQL(hql, getEntryRelationClass().getSimpleName(),
 				getEntryClass().getSimpleName(), node.getId()));
 	}
 
-	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node, int type) {
+	public BaseQueryRecords<?> _findChildrenNodes(E node, int type) {
 		return _findChildrenNodes(node, type, -1, -1);
 	}
 
-	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node, int type,
-			int page, int rows) {
+	public BaseQueryRecords<?> _findChildrenNodes(E node, int type, int page,
+			int rows) {
 		String hql = "select a from ? b,? a "
 				+ "where b.sid=a.id and b.pid=? and a.type=?";
 
@@ -114,32 +113,33 @@ public abstract class TreeDaoImpl extends BaseDaoDB implements
 				getEntryClass().getSimpleName(), node.getId(), type));
 	}
 
-	public TreeNode _addNode(TreeNode node) {
+	public E _addNode(E node) {
 		super.save(node);
 		return node;
 	}
 
-	public boolean _delNode(TreeNode node) {
+	public boolean _delNode(E node) {
 		super.delete(new HQL("delete from ? where id=?", getEntryClass()
 				.getSimpleName(), node.getId()));
 		return true;
 	}
 
-	public TreeNode _updateNode(TreeNode node) {
+	public E _updateNode(E node) {
 		super.update(node);
 		return node;
 	}
 
-	public TreeNode _findNode(TreeNode node) {
-		return (TreeNode) super.findUnique(new HQL(
-				"select a from ? a where a.id=?", getEntryClass()
-						.getSimpleName(), node.getId()));
+	@SuppressWarnings("unchecked")
+	public E _findNode(E node) {
+		return (E) super.findUnique(new HQL("select a from ? a where a.id=?",
+				getEntryClass().getSimpleName(), node.getId()));
 	}
 
-	public boolean _bindTwoNode(TreeNode pnode, TreeNode snode) {
+	@SuppressWarnings("unchecked")
+	public boolean _bindTwoNode(E pnode, E snode) {
 		try {
-			TreeNodeRelation relation;
-			relation = (TreeNodeRelation) getEntryRelationClass().newInstance();
+			R relation;
+			relation = (R) getEntryRelationClass().newInstance();
 			relation.setPid(pnode.getId());
 			relation.setSid(snode.getId());
 			super.save(relation);
@@ -150,37 +150,42 @@ public abstract class TreeDaoImpl extends BaseDaoDB implements
 		return true;
 	}
 
-	public boolean _delbindTwoNode(TreeNode pnode, TreeNode snode) {
+	@Override
+	public boolean _ifNodeEqual(E nodea, E nodeb) {
+		return nodea.getId() == nodeb.getId();
+	}
+
+	public boolean _delbindTwoNode(E pnode, E snode) {
 		super.delete(new HQL("delete from ? where pid=? and sid=?",
 				getEntryRelationClass().getSimpleName(), pnode.getId(), snode
 						.getId()));
 		return true;
 	}
 
-	public boolean _delBindChildrenNodes(TreeNode node) {
+	public boolean _delBindChildrenNodes(E node) {
 		String hql = "delete from ? where pid=?";
 		super.delete(new HQL(hql, getEntryRelationClass().getSimpleName(), node
 				.getId()));
 		return true;
 	}
 
-	public boolean _delBindParentNodes(TreeNode node) {
+	public boolean _delBindParentNodes(E node) {
 		String hql = "delete from ? where sid=?";
 		super.delete(new HQL(hql, getEntryRelationClass().getSimpleName(), node
 				.getId()));
 		return true;
 	}
 
-	public boolean _ifTwoNodeHasRelation(TreeNode pnode, TreeNode snode) {
-		TreeNodeRelation relation = (TreeNodeRelation) super
-				.findUnique(new HQL(
-						"select a from ? a where a.pid=? and a.sid=?",
-						getEntryRelationClass().getSimpleName(), pnode.getId(),
-						snode.getId()));
+	public boolean _ifTwoNodeHasRelation(E pnode, E snode) {
+		@SuppressWarnings("unchecked")
+		R relation = (R) super.findUnique(new HQL(
+				"select a from ? a where a.pid=? and a.sid=?",
+				getEntryRelationClass().getSimpleName(), pnode.getId(), snode
+						.getId()));
 		return relation == null ? false : true;
 	}
 
-	public BaseQueryRecords<?> _findParentNodes(TreeNode node) {
+	public BaseQueryRecords<?> _findParentNodes(E node) {
 		String hql = "select a from ? b,? a " + "where b.pid=a.id and b.sid=?";
 
 		return super.find(new HQL(hql, getEntryRelationClass().getSimpleName(),
@@ -188,30 +193,22 @@ public abstract class TreeDaoImpl extends BaseDaoDB implements
 	}
 
 	@Override
-	public boolean _ifNodeEqual(TreeNode nodea, TreeNode nodeb) {
-		if (nodea == null || nodeb == null)
-			return false;
-		return nodea.getId() == nodeb.getId();
-	}
-
-	@Override
-	public void _modifyNode(TreeNode node) {
+	public void _modifyNode(E node) {
 		super.update(node);
 	}
 
 	@Override
-	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node, String name) {
+	public BaseQueryRecords<?> _findChildrenNodes(E node, String name) {
 		return _findChildrenNodes(node, name, -1, -1);
 	}
 
 	@Override
-	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node, String name,
-			int type) {
+	public BaseQueryRecords<?> _findChildrenNodes(E node, String name, int type) {
 		return _findChildrenNodes(node, name, type, -1, -1);
 	}
 
 	@Override
-	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node, String name,
+	public BaseQueryRecords<?> _findChildrenNodes(E node, String name,
 			int type, int page, int rows) {
 		String hql = "select a from ? b,? a "
 				+ "where b.sid=a.id and b.pid=? and a.name like '%?%' and a.type=?";
@@ -221,13 +218,14 @@ public abstract class TreeDaoImpl extends BaseDaoDB implements
 	}
 
 	@Override
-	public BaseQueryRecords<?> _findChildrenNodes(TreeNode node, String name,
+	public BaseQueryRecords<?> _findChildrenNodes(E node, String name,
 			int page, int rows) {
 		String hql = "select a from ? b,? a "
 				+ "where b.sid=a.id and b.pid=? and a.name like '%?%'";
 
-		BaseQueryRecords<?> result = super.find(new HQL(hql, getEntryRelationClass().getSimpleName(),
-				getEntryClass().getSimpleName(), node.getId(), name));
+		BaseQueryRecords<?> result = super.find(new HQL(hql,
+				getEntryRelationClass().getSimpleName(), getEntryClass()
+						.getSimpleName(), node.getId(), name));
 		return result;
 	}
 }

@@ -2,7 +2,13 @@ package com.common.utils.tree;
 
 import com.common.dao.BaseQueryRecords;
 
-public interface TreeDao<E> {
+/**
+ * @author DJ
+ *
+ * @param <E> 节点实体
+ * @param <R> 节点实体关系
+ */
+public interface TreeDao<E,R> {
 	public BaseQueryRecords<?> _findRootNodes();
 
 	public BaseQueryRecords<?> _findRootNodes(int page, int rows);

@@ -8,9 +8,17 @@ import com.common.service.BaseService;
 import com.common.utils.tree.TreeDao;
 import com.common.utils.tree.TreeService;
 import com.common.utils.tree.model.Tree;
+import com.common.utils.tree.model.TreeNode;
+import com.common.utils.tree.model.TreeNodeRelation;
 
-public abstract class TreeServiceImpl<E> extends BaseService implements
-		TreeService<E> {
+/**
+ * 以treenode/treenoderelation为模型的一种实现,支持treenode/treenoderelation的子类
+ * 
+ * @author DJ
+ * 
+ */
+public abstract class TreeServiceImpl<E extends TreeNode, R extends TreeNodeRelation>
+		extends BaseService implements TreeService<E, R> {
 
 	@Override
 	public E addBindChildrenNode(E pnode, E newnode) {
@@ -208,7 +216,7 @@ public abstract class TreeServiceImpl<E> extends BaseService implements
 	 * 获取treedao的实现
 	 * 
 	 */
-	public abstract TreeDao<E> getTreeDao();
+	public abstract TreeDao<E, R> getTreeDao();
 
 	@Override
 	public boolean ifNodeEqual(E nodea, E nodeb) {
@@ -258,7 +266,7 @@ public abstract class TreeServiceImpl<E> extends BaseService implements
 
 	@Override
 	public E findNode(E node) {
-		return getTreeDao()._findNode(node);
+		return (E) getTreeDao()._findNode(node);
 	}
 
 	@SuppressWarnings("unchecked")
