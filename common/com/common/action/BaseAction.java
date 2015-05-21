@@ -1,5 +1,6 @@
 package com.common.action;
 
+import java.net.URLEncoder;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -147,5 +148,53 @@ public class BaseAction extends ActionSupport implements SessionAware,
 	 */
 	public String getContextPath() {
 		return CXFFilter.contextPath;
+	}
+
+	/**
+	 * 中文文件名编码，解决常用浏览器下载时无法解决获得下载文件名中文问题
+	 * @param filename
+	 * @return
+	 */
+	public String filenameEncode(String filename) {
+		String userAgent = getHttpServletRequest().getHeader("User-Agent")
+				.toLowerCase();
+		String rtn = "";
+		try {
+			String new_filename = URLEncoder.encode(filename, "UTF8");
+
+			// 如果没有UA，则默认使用IE的方式进行编码，因为毕竟IE还是占多数的
+			rtn = "filename=\"" + new_filename + "\"";
+
+			if (userAgent != null) {
+				userAgent = userAgent.toLowerCase();
+				// IE浏览器，只能采用URLEncoder编码
+				if (userAgent.indexOf("msie") != -1) {
+					rtn = "filename=\"" + new_filename + "\"";
+				}
+				// Opera浏览器只能采用filename*
+				else if (userAgent.indexOf("opera") != -1) {
+					rtn = "filename*=UTF-8''" + new_filename;
+				}
+				// Safari浏览器，只能采用ISO编码的中文输出
+				else if (userAgent.indexOf("safari") != -1) {
+
+					rtn = "filename=\""
+							+ new String(filename.getBytes("UTF-8"),
+									"ISO8859-1") + "\"";
+				}
+				// Chrome浏览器，只能采用MimeUtility编码或ISO编码的中文输出
+				else if (userAgent.indexOf("applewebkit") != -1) {
+
+					rtn = "filename=\"" + new_filename + "\"";
+				}
+				// FireFox浏览器，可以使用MimeUtility或filename*或ISO编码的中文输出
+				else if (userAgent.indexOf("mozilla") != -1) {
+					rtn = "filename*=UTF-8''" + new_filename;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return rtn;
 	}
 }

@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -210,9 +209,10 @@ public class AppVersionCheckAction extends BaseAction {
 	 * 下载最新版本
 	 * 
 	 * @throws FileNotFoundException
-	 * @throws UnsupportedEncodingException 
+	 * @throws UnsupportedEncodingException
 	 */
-	public String downloadNewestAppVersionRes() throws FileNotFoundException, UnsupportedEncodingException {
+	public String downloadNewestAppVersionRes() throws FileNotFoundException,
+			UnsupportedEncodingException {
 		filename = this.appVersionCheckService.downloadNewestAppVersionRes(
 				appid, versioncode, clientinfo);
 
@@ -220,7 +220,7 @@ public class AppVersionCheckAction extends BaseAction {
 		dlFile = new FileInputStream(filePath);
 		dlFileName = new File(filePath).getName();
 		dlFilelength = new File(filePath).length();
-		dlFileName =URLEncoder.encode(dlFileName,"UTF-8");
+		dlFileName = filenameEncode(dlFileName);
 		return "file";
 	}
 
@@ -233,15 +233,16 @@ public class AppVersionCheckAction extends BaseAction {
 	 * 下载某版本版本资源
 	 * 
 	 * @throws FileNotFoundException
-	 * @throws UnsupportedEncodingException 
+	 * @throws UnsupportedEncodingException
 	 */
-	public String downloadAppVersionRes() throws FileNotFoundException, UnsupportedEncodingException {
+	public String downloadAppVersionRes() throws FileNotFoundException,
+			UnsupportedEncodingException {
 		filename = this.appVersionCheckService.downloadAppVersionRes(appvid);
 		String filePath = getContextPath() + "/" + filename;
 		dlFile = new FileInputStream(filePath);
 		dlFileName = new File(filePath).getName();
 		dlFilelength = new File(filePath).length();
-		dlFileName =URLEncoder.encode(dlFileName,"UTF-8");      
+		dlFileName = filenameEncode(dlFileName);
 		return "file";
 	}
 
