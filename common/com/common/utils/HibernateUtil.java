@@ -114,17 +114,6 @@ public class HibernateUtil {
 	}
 
 	/**
-	 * 从属性文件加载配置获取SessionFactory
-	 * 
-	 * @param propertiesFilename
-	 * @return
-	 */
-	public static SessionFactory getSessionFactory(String propertiesFilename) {
-		Properties properties = PropertyLoader.getProperties(propertiesFilename);
-		return getSessionFactory(properties);
-	}
-
-	/**
 	 * 使用hibernate原始的连接池获取SessionFactory
 	 * 
 	 * 不推荐使用

@@ -98,7 +98,7 @@ public class CustomStrutsConfigurationProvider extends XmlConfigurationProvider 
 		Resource[] resources = getAllResourcesUrl();
 		for (Resource resource : resources) {
 			if (LOG.isInfoEnabled()) {
-				LOG.info("Loading struts2 configuration url: \r\n"
+				LOG.info("Loading struts2 configuration url: "
 						+ resource.getURL());
 			}
 			urls.add(resource.getURL());
