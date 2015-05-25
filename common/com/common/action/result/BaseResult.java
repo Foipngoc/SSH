@@ -146,6 +146,17 @@ public class BaseResult {
 	}
 
 	/**
+	 * 从map中删除自定义数据
+	 * 
+	 * @param key
+	 */
+	public void removeFromMap(String key) {
+		if (map != null) {
+			map.remove(key);
+		}
+	}
+
+	/**
 	 * 从map中获得自定义数据
 	 * 
 	 * @param key
