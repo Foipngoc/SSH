@@ -11,7 +11,7 @@
 <head>
 <base href="<%=basePath%>">
 
-<title>发布应用</title>
+<title>发布新应用</title>
 
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="cache-control" content="no-cache">
@@ -26,6 +26,7 @@
 	href="<%=basePath%>module/appversioncheck/css/addappinfo.css">
 <script src="js/common/jquery-1.10.2.min.js"></script>
 <script src="js/common/ajaxfileupload.js"></script>
+<script src="js/common/common.js"></script>
 <script type="text/javascript"
 	src="<%=basePath%>module/appversioncheck/js/addappinfo.js"></script>
 <script type="text/javascript" src="js/common/paging.js"></script>
@@ -38,9 +39,9 @@
 <jsp:include page="top.jsp" flush="true" />
 <div class='firstplace'> <span style='color:#3984e5;cursor: pointer;' onclick="window.location.href='<%=basePath%>/module/appversioncheck/appinfo.jsp'" >所有应用     </span>>&nbsp;发布新应用</div>
 	<input id="basePath" name="basePath" type="hidden" value="<%=basePath%>">
-	<h2 style='	margin-top: 30px;'>应用名称&nbsp;&nbsp;<input type="text" id="appname" style=" height: 36px; width: 289px; border: solid 1px #e5ebf1;"></h2> <br>
+	<h2 style='	margin-top: 30px;'>应用名称&nbsp;&nbsp;<input type="text" id="appname" value="请输入应用名称" onfocus="TextFocus(this)" onblur="TextBlur(this)" style="color:#a3a3a3; height: 36px; width: 289px; border: solid 1px #e5ebf1;"></h2> <br>
 	<h2><span style='position: relative;top:-100px;'>应用描述&nbsp;&nbsp;</span><textarea rows="" cols="" id="appdesc" style=" height: 113px; width: 432px; border: solid 1px #e5ebf1;line-height: 20px;resize:none;"></textarea>    </h2><br>
-	<h2>应用LOGO&nbsp;&nbsp;<input type="file" id="file" name="file" > </h2><br>
+	<h2>应用LOGO&nbsp;&nbsp;<input type="file" id="file" name="file" accept="image/jpeg,image/png,image/x-ms-bmp, image/bmp"> </h2><br>
 	<div class='secondplace'>
 	<input type="button" onclick="addappinfo()" class='input' value="发布新应用">
 	<input type="button" class='input1' value="取消发布" onclick="window.location.href='<%=basePath%>/module/appversioncheck/appinfo.jsp'" >

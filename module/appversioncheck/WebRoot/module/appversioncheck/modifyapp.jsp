@@ -20,6 +20,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="stylesheet" type="text/css" href="<%=basePath%>css/common/table.css">	
 	<link rel="stylesheet" type="text/css" href="<%=basePath%>module/appversioncheck/css/modifyapp.css">
 	<script src="js/common/jquery-1.10.2.min.js"></script>
+	<script src="js/common/common.js"></script>
 	<script src="js/common/ajaxfileupload.js"></script>
 	<script type="text/javascript" src="<%=basePath%>module/appversioncheck/js/modifyapp.js"></script>
 	<script type="text/javascript" src="js/common/paging.js"></script>
@@ -35,18 +36,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <input id="basePath" name="basePath" type="hidden" value="<%=basePath%>">
   <input type="hidden" value="<%=request.getParameter("appid")%>" id="appid">
   <input type="hidden" value="" id="newestappvid">
-  	<h2 style='	margin-top: 30px;'>应用名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input style=" height: 36px; width: 289px; border: solid 1px #e5ebf1;font-size: 14px;" type="text" id="appname"></h2><br>
+  	<h2 style='	margin-top: 30px;'>应用名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input value="请输入应用名称" onfocus="TextFocus(this)" onblur="TextBlur(this)" style=" height: 36px; width: 289px; border: solid 1px #e5ebf1;font-size: 14px;" type="text" id="appname"></h2><br>
   	<h2><span style='position: relative;top:-100px;'>应用描述&nbsp;&nbsp;&nbsp;&nbsp;</span>
   	<textarea rows="" cols="" id="appdesc" style=" height: 113px; width: 432px; border: solid 1px #e5ebf1;line-height: 20px;resize:none;font-size: 14px;"></textarea>
   	</h2><br>
-  	<h2>应用LOGO&nbsp;&nbsp;<input type="file" id="file" name="file"> </h2><br>
+  	<h2>应用LOGO&nbsp;&nbsp;<input type="file" id="file" name="file" accept="image/jpeg,image/png,image/x-ms-bmp, image/bmp"> </h2><br>
   	<h2>最新版本&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input  style=" height: 36px; width: 289px; border: solid 1px #e5ebf1;font-size: 14px;" type="text" readonly=true id="newestversion"><input class='input1' type="button" id="selversion" value="选择最新版本" onclick="selversion()" style='height:36px;'></h2><br>
 	<div class='secondplace'>
 	<input type="button" onclick="modifyappinfo()" value="修改应用" class='input'>
 	<input type="button" class='input1' onclick="window.location.href='<%=basePath%>/module/appversioncheck/appinfo.jsp'" value="取消发布">
   	</div>
-  	<div id=win style="display:none;white; POSITION:absolute; left:80%; top:80%; width:600px; height:400px; margin-left:-300px; margin-top:-200px; border:1px solid #888; text-align:left">
-		<div class='win_1'>&nbsp;&nbsp;下载连接</div>
+  	<div id=win style="
+  	display:none;white; 
+  	POSITION:absolute; 
+  	left: 50%;
+	top: 50%; 
+  	width:600px; height:400px; 
+  	margin-left:-300px; 
+  	background-color:#ffffff;
+  	margin-top:-200px; 
+  	border:1px solid #888; 
+  	text-align:left">
+		<div class='win_1'>&nbsp;&nbsp;选择最新版本</div>
 		<table class="listTable" id="listTable" cellpadding="0" cellspacing="0" style='width:90%;margin-left: 5%;'>
 		<col width="20%" />
 		<col width="20%" />

@@ -26,6 +26,7 @@
 	href="<%=basePath%>module/appversioncheck/css/addappversioninfo.css">
 <script src="js/common/jquery-1.10.2.min.js"></script>
 <script src="js/common/ajaxfileupload.js"></script>
+<script src="js/common/common.js"></script>
 <script type="text/javascript"
 	src="<%=basePath%>module/appversioncheck/js/addappversioninfo.js"></script>
 <script type="text/javascript" src="js/common/paging.js"></script>
@@ -46,12 +47,12 @@
 	<div align="left" style="width: 80%">
 	<input type="hidden" value="<%=request.getParameter("appid")%>" name="appid" id="appid"/>
 	<h2 style='margin-top: 30px;'>应用名&nbsp;&nbsp;<input type="text" name="appname" id="appname" readonly="readonly" style="border: 0px; font-weight: bold;font-size: 14px;"></h2> <br>
-	<h2>版本号&nbsp;&nbsp;<input class='inputinfo' type="text" name="versioncode" id="versioncode"></h2> <br>
-	<h2>版本名&nbsp;&nbsp;<input class='inputinfo' type="text" name="versionname" id="versionname"> </h2><br>
-	<h2>更新日志&nbsp;</textarea><textarea rows="" cols="" name="updatelog" id="updatelog" style=" height: 113px; width: 432px; border: solid 1px #e5ebf1;line-height: 20px;resize:none;"></textarea></h2><br>
+	<h2>版本号&nbsp;&nbsp;<input class='inputinfo' value="请输入对应APP版本号，只能为数字" style="color:#a3a3a3" onfocus="TextFocus(this)" onblur="TextBlur(this)" type="text" name="versioncode" id="versioncode" onkeyup="value=value.replace(/\D/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/\D]/g,''))"></h2> <br>
+	<h2>版本名&nbsp;&nbsp;<input class='inputinfo' type="text" name="versionname" id="versionname" value="请输入版本名，如V1.0.1212" style="color:#a3a3a3" onfocus="TextFocus(this)" onblur="TextBlur(this)"> </h2><br>
+	<h2>更新日志&nbsp;<textarea rows="" cols="" name="updatelog" id="updatelog" style=" height: 113px; width: 432px; border: solid 1px #e5ebf1;line-height: 20px;resize:none;"></textarea></h2><br>
 	<h2>更新方式&nbsp;<select name="updatetype" id="updatetype" class='inputinfo'> <option value="0">强制更新</option><option value="1">用户选择</option><option value="2">不弹出更新</option></select> </h2><br>
 	<h2>选择APP&nbsp;&nbsp;<input type="file" name="file" id="file"></h2><br>
-	<h2>自动设置&nbsp;<select name="autoset" id="autoset" class='inputinfo'><option value="1">自动设置</option><option value="0">不自动设置</option></select></h2><br>
+	<h2>设为最新&nbsp;<select name="autoset" id="autoset" class='inputinfo'><option value="1">自动设置</option><option value="0">不自动设置</option></select></h2><br>
 	<h2>自动安装&nbsp;<select name="autoinstall" id="autoinstall" class='inputinfo'><option value="1">自动安装</option><option value="0">不自动安装</option></select> </h2><br>
 	<h2>下载路径&nbsp;<input type="text" name="downloadpath" id="downloadpath" class='inputinfo'> </h2><br>
 	<div class='secondplace'>

@@ -11,7 +11,7 @@
 <head>
 <base href="<%=basePath%>">
 
-<title>所有应用</title>
+<title>查看所有应用</title>
 
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="Cache-control" content="no-cache">
