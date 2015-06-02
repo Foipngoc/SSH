@@ -296,6 +296,33 @@ public abstract class TreeServiceImpl<E extends TreeNode, R extends TreeNodeRela
 
 	@SuppressWarnings("unchecked")
 	@Override
+	public BaseQueryRecords<E> findRootNodes(String name) {
+		return (BaseQueryRecords<E>) getTreeDao()._findRootNodes(name);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findRootNodes(String name, int page, int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findRootNodes(name, page,
+				rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findRootNodes(String name, int type) {
+		return (BaseQueryRecords<E>) getTreeDao()._findRootNodes(name, type);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findRootNodes(String name, int type, int page,
+			int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findRootNodes(name, type,
+				page, rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
 	public BaseQueryRecords<E> findLeafNodes() {
 		return (BaseQueryRecords<E>) getTreeDao()._findLeafNodes();
 	}
@@ -321,6 +348,33 @@ public abstract class TreeServiceImpl<E extends TreeNode, R extends TreeNodeRela
 
 	@SuppressWarnings("unchecked")
 	@Override
+	public BaseQueryRecords<E> findLeafNodes(String name) {
+		return (BaseQueryRecords<E>) getTreeDao()._findLeafNodes(name);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findLeafNodes(String name, int page, int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findLeafNodes(name, page,
+				rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findLeafNodes(String name, int type) {
+		return (BaseQueryRecords<E>) getTreeDao()._findLeafNodes(name, type);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findLeafNodes(String name, int type, int page,
+			int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findLeafNodes(name, type,
+				page, rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
 	public BaseQueryRecords<E> findNodes() {
 		return (BaseQueryRecords<E>) getTreeDao()._findNodes();
 	}
@@ -341,6 +395,32 @@ public abstract class TreeServiceImpl<E extends TreeNode, R extends TreeNodeRela
 	@Override
 	public BaseQueryRecords<E> findNodes(int type, int page, int rows) {
 		return (BaseQueryRecords<E>) getTreeDao()._findNodes(type, page, rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findNodes(String name) {
+		return (BaseQueryRecords<E>) getTreeDao()._findNodes(name);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findNodes(String name, int page, int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findNodes(name, page, rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findNodes(String name, int type) {
+		return (BaseQueryRecords<E>) getTreeDao()._findNodes(name, type);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findNodes(String name, int type, int page,
+			int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findNodes(name, type, page,
+				rows);
 	}
 
 	@SuppressWarnings("unchecked")

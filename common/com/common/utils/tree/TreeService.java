@@ -115,6 +115,27 @@ public interface TreeService<E, R> {
 	public BaseQueryRecords<E> findRootNodes(int type, int page, int rows);
 
 	/**
+	 * 查询所有根节点列表
+	 */
+	public BaseQueryRecords<E> findRootNodes(String name);
+
+	/**
+	 * 分页查询所有根节点列表
+	 */
+	public BaseQueryRecords<E> findRootNodes(String name, int page, int rows);
+
+	/**
+	 * 查询所有类型为type的根节点列表
+	 */
+	public BaseQueryRecords<E> findRootNodes(String name, int type);
+
+	/**
+	 * 分页查询所有类型为type的根节点列表
+	 */
+	public BaseQueryRecords<E> findRootNodes(String name, int type, int page,
+			int rows);
+
+	/**
 	 * 查询所有叶子节点列表
 	 */
 	public BaseQueryRecords<E> findLeafNodes();
@@ -135,6 +156,27 @@ public interface TreeService<E, R> {
 	public BaseQueryRecords<E> findLeafNodes(int type, int page, int rows);
 
 	/**
+	 * 查询所有叶子节点列表
+	 */
+	public BaseQueryRecords<E> findLeafNodes(String name);
+
+	/**
+	 * 分页查询所有叶子节点列表
+	 */
+	public BaseQueryRecords<E> findLeafNodes(String name, int page, int rows);
+
+	/**
+	 * 查询所有类型为type的叶子节点列表
+	 */
+	public BaseQueryRecords<E> findLeafNodes(String name, int type);
+
+	/**
+	 * 分页查询所有类型为type的叶子节点列表
+	 */
+	public BaseQueryRecords<E> findLeafNodes(String name, int type, int page,
+			int rows);
+
+	/**
 	 * 查询系统所有节点
 	 */
 	public BaseQueryRecords<E> findNodes();
@@ -153,6 +195,27 @@ public interface TreeService<E, R> {
 	 * 分页查询系统所有类型为type的节点
 	 */
 	public BaseQueryRecords<E> findNodes(int type, int page, int rows);
+
+	/**
+	 * 查询系统所有节点
+	 */
+	public BaseQueryRecords<E> findNodes(String name);
+
+	/**
+	 * 分页查询系统所有节点
+	 */
+	public BaseQueryRecords<E> findNodes(String name, int page, int rows);
+
+	/**
+	 * 查询系统所有类型为type的节点
+	 */
+	public BaseQueryRecords<E> findNodes(String name, int type);
+
+	/**
+	 * 分页查询系统所有类型为type的节点
+	 */
+	public BaseQueryRecords<E> findNodes(String name, int type, int page,
+			int rows);
 
 	/**
 	 * 查询节点id的子节点列表，不包括子节点下的子节点

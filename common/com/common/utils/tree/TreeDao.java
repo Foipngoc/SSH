@@ -17,6 +17,14 @@ public interface TreeDao<E,R> {
 
 	public BaseQueryRecords<?> _findRootNodes(int type, int page, int rows);
 
+	public BaseQueryRecords<?> _findRootNodes(String name);
+
+	public BaseQueryRecords<?> _findRootNodes(String name,int page, int rows);
+
+	public BaseQueryRecords<?> _findRootNodes(String name,int type);
+
+	public BaseQueryRecords<?> _findRootNodes(String name,int type, int page, int rows);
+	
 	public BaseQueryRecords<?> _findLeafNodes();
 
 	public BaseQueryRecords<?> _findLeafNodes(int page, int rows);
@@ -25,6 +33,14 @@ public interface TreeDao<E,R> {
 
 	public BaseQueryRecords<?> _findLeafNodes(int type, int page, int rows);
 
+	public BaseQueryRecords<?> _findLeafNodes(String name);
+
+	public BaseQueryRecords<?> _findLeafNodes(String name,int page, int rows);
+
+	public BaseQueryRecords<?> _findLeafNodes(String name,int type);
+
+	public BaseQueryRecords<?> _findLeafNodes(String name,int type, int page, int rows);
+	
 	public BaseQueryRecords<?> _findNodes();
 
 	public BaseQueryRecords<?> _findNodes(int page, int rows);
@@ -32,6 +48,14 @@ public interface TreeDao<E,R> {
 	public BaseQueryRecords<?> _findNodes(int type);
 
 	public BaseQueryRecords<?> _findNodes(int type, int page, int rows);
+	
+	public BaseQueryRecords<?> _findNodes(String name);
+
+	public BaseQueryRecords<?> _findNodes(String name,int page, int rows);
+
+	public BaseQueryRecords<?> _findNodes(String name,int type);
+
+	public BaseQueryRecords<?> _findNodes(String name,int type, int page, int rows);
 
 	public BaseQueryRecords<?> _findChildrenNodes(E node);
 
