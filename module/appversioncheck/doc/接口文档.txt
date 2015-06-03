@@ -157,8 +157,9 @@
 【必选参数】
 	appid //应用id
 	versioncode //原版本号
-	clientinfo //更新客户端信息
 【可选参数】
+	imei //手机端imei号
+	clientinfo //客户端信息,常用于自定义
 【输出】
 	如果成功，返回文件流，如果失败，返回空的流
 	

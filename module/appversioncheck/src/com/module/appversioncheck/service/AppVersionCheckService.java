@@ -36,7 +36,7 @@ public interface AppVersionCheckService {
 	 * 
 	 * @param appVersionCheckInfo
 	 */
-	public BaseResult publishApp(AppInfo appInfo,File logo,String logoname);
+	public BaseResult publishApp(AppInfo appInfo, File logo, String logoname);
 
 	/**
 	 * 删除已发布的应用
@@ -50,7 +50,8 @@ public interface AppVersionCheckService {
 	 * 
 	 * @param appInfo
 	 */
-	public BaseResult updateApp(int appid, String appname, String appdesc, File logo, String logoname);
+	public BaseResult updateApp(int appid, String appname, String appdesc,
+			File logo, String logoname);
 
 	/**
 	 * 发布应用新版本
@@ -131,7 +132,7 @@ public interface AppVersionCheckService {
 	 * @return
 	 */
 	public String downloadNewestAppVersionRes(int appid, int oldvesioncode,
-			String clientinfo);
+			String imei, String ipaddr, String macaddr, String clientinfo);
 
 	/**
 	 * 下载某版本资源

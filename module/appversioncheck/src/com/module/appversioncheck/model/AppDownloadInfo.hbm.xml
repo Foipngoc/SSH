@@ -12,7 +12,11 @@
 		<property name="oldappvid" column="oldappvid" type="integer" />
 		<property name="appvid" column="appvid" type="integer" />
 		<property name="updatedate" column="updatedate" type="timestamp" />
+		<property name="imei" column="imei" type="string" length="64" />
+		<property name="ipaddr" column="ipaddr" type="string" length="64" />
+		<property name="macaddr" column="macaddr" type="string"
+			length="64" />
 		<property name="clientinfo" column="clientinfo" type="string"
-			length="255" />
+			length="64" />
 	</class>
 </hibernate-mapping>

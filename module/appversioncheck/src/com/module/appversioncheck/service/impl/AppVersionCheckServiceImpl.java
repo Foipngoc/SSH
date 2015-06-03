@@ -812,7 +812,7 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 * @return
 	 */
 	public String downloadNewestAppVersionRes(int appid, int oldvesioncode,
-			String clientinfo) {
+			String imei, String ipaddr, String macaddr, String clientinfo) {
 
 		BaseResult checkResult = this.checkNewestAppVersion(appid,
 				oldvesioncode);
@@ -834,8 +834,9 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 			String filepath = newestAppVersionInfo.getRespath();
 			String filemd5 = FileMd5.getMd5ByFile(getContextPath() + "/"
 					+ filepath);
-			if (!filemd5.toLowerCase().equals(
-					newestAppVersionInfo.getResmd5().toLowerCase()))
+			if (filemd5 == null
+					|| !filemd5.toLowerCase().equals(
+							newestAppVersionInfo.getResmd5().toLowerCase()))
 				return null;
 			/**
 			 * 添加下载信息
@@ -848,7 +849,13 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 			else
 				appDownloadInfo.setOldappvid(-1);
 			appDownloadInfo.setUpdatedate(new Date());
-			if (clientinfo != null)
+			if (ipaddr != null && !ipaddr.equals(""))
+				appDownloadInfo.setIpaddr(ipaddr);
+			if (macaddr != null && !ipaddr.equals(""))
+				appDownloadInfo.setMacaddr(macaddr);
+			if (imei != null && !imei.equals(""))
+				appDownloadInfo.setImei(imei);
+			if (clientinfo != null && !clientinfo.equals(""))
 				appDownloadInfo.setClientinfo(clientinfo);
 			else
 				appDownloadInfo.setClientinfo("");

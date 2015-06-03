@@ -3,12 +3,16 @@ package com.module.appversioncheck.action;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 
@@ -37,6 +41,7 @@ public class AppVersionCheckAction extends BaseAction {
 	private String downloadpath; // APP下载到本地路径
 	private int autoinstall = -1; // 更新后是否自动安装
 
+	private String imei; // 手机端Imei号
 	private String clientinfo; // 更新客户端信息
 
 	private int autoset;// 更新完自动安装
@@ -205,6 +210,21 @@ public class AppVersionCheckAction extends BaseAction {
 		return SUCCESS;
 	}
 
+	private String getRemoteAddress() {
+		HttpServletRequest request = getHttpServletRequest();
+		String ip = request.getHeader("x-forwarded-for");
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+			ip = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {
+			ip = request.getRemoteAddr();
+		}
+		return ip;
+	}
+
 	/**
 	 * 下载最新版本
 	 * 
@@ -213,8 +233,12 @@ public class AppVersionCheckAction extends BaseAction {
 	 */
 	public String downloadNewestAppVersionRes() throws FileNotFoundException,
 			UnsupportedEncodingException {
+		String ipaddr = null;
+		String macaddr = null;
+		ipaddr = getRemoteAddress();
+		
 		filename = this.appVersionCheckService.downloadNewestAppVersionRes(
-				appid, versioncode, clientinfo);
+				appid, versioncode, imei, ipaddr, macaddr, clientinfo);
 
 		String filePath = getContextPath() + "/" + filename;
 		dlFile = new FileInputStream(filePath);
@@ -344,5 +368,9 @@ public class AppVersionCheckAction extends BaseAction {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public void setImei(String imei) {
+		this.imei = imei;
 	}
 }
