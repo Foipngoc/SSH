@@ -1,7 +1,10 @@
 package com.common.utils.tree.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.common.dao.BaseQueryRecords;
 import com.common.service.BaseService;
@@ -77,56 +80,68 @@ public abstract class TreeServiceImpl<E extends TreeNode, R extends TreeNodeRela
 	 * 以递归的方式所有子节点
 	 */
 	private List<E> _findChildrenNodes_r(E nd, String name) {
-		// 查询自己的子节点
-		List<E> lists = findChildrenNodes(nd, name).getData();
+		List<E> childs = new ArrayList<>();
+
+		// 添加符合条件的一级子节点
+		childs.addAll(findChildrenNodes(nd, name).getData());
 
 		// 查询子节点的所有子节点
-		for (int i = 0; i < lists.size(); i++) {
-			lists.addAll(_findChildrenNodes_r(lists.get(i), name));
+		List<E> listsall = findChildrenNodes(nd).getData();
+		for (int i = 0; i < listsall.size(); i++) {
+			childs.addAll(_findChildrenNodes_r(listsall.get(i), name));
 		}
-		return lists;
+		return childs;
 	}
 
 	/**
 	 * 以递归的方式所有子节点
 	 */
 	private List<E> _findChildrenNodes_r(E nd, String name, int type) {
-		// 查询自己的子节点
-		List<E> lists = findChildrenNodes(nd, name, type).getData();
+		List<E> childs = new ArrayList<>();
+
+		// 添加符合条件的一级子节点
+		childs.addAll(findChildrenNodes(nd, name, type).getData());
 
 		// 查询子节点的所有子节点
-		for (int i = 0; i < lists.size(); i++) {
-			lists.addAll(_findChildrenNodes_r(lists.get(i), name, type));
+		List<E> listsall = findChildrenNodes(nd).getData();
+		for (int i = 0; i < listsall.size(); i++) {
+			childs.addAll(_findChildrenNodes_r(listsall.get(i), name, type));
 		}
-		return lists;
+		return childs;
 	}
 
 	/**
 	 * 以递归的方式所有子节点
 	 */
 	private List<E> _findChildrenNodes_r(E nd) {
-		// 查询自己的子节点
+		List<E> childs = new ArrayList<>();
+
 		List<E> lists = findChildrenNodes(nd).getData();
 
+		// 添加符合条件的一级子节点
+		childs.addAll(lists);
 		// 查询子节点的所有子节点
 		for (int i = 0; i < lists.size(); i++) {
-			lists.addAll(_findChildrenNodes_r(lists.get(i)));
+			childs.addAll(_findChildrenNodes_r(lists.get(i)));
 		}
-		return lists;
+		return childs;
 	}
 
 	/**
 	 * 以递归的方式所有子节点
 	 */
 	private List<E> _findChildrenNodes_r(E nd, int type) {
-		// 查询自己的子节点
-		List<E> lists = findChildrenNodes(nd, type).getData();
+		List<E> childs = new ArrayList<>();
 
-		// 查询子节点的所有子节点
-		for (int i = 0; i < lists.size(); i++) {
-			lists.addAll(_findChildrenNodes_r(lists.get(i), type));
+		// 添加符合条件的一级子节点
+		childs.addAll(findChildrenNodes(nd, type).getData());
+
+		// 查询所有子节点的所有符合条件子节点
+		List<E> listsall = findChildrenNodes(nd).getData();
+		for (int i = 0; i < listsall.size(); i++) {
+			childs.addAll(_findChildrenNodes_r(listsall.get(i), type));
 		}
-		return lists;
+		return childs;
 	}
 
 	@Override
@@ -134,17 +149,15 @@ public abstract class TreeServiceImpl<E extends TreeNode, R extends TreeNodeRela
 		List<E> lists = _findChildrenNodes_r(nd);
 
 		// 去重复
+		Map<String, E> map = new HashMap<String, E>();
 		Iterator<E> it = lists.iterator();
 		while (it.hasNext()) {
 			E node = it.next();
 
-			Iterator<E> its = lists.iterator();
-			while (its.hasNext()) {
-				E nodep = it.next();
-				if (ifNodeEqual(node, nodep) == true) {
-					it.remove();
-					break;
-				}
+			if (map.containsKey("" + node.getId())) {
+				it.remove();
+			} else {
+				map.put("" + node.getId(), node);
 			}
 		}
 		return lists;
@@ -154,17 +167,51 @@ public abstract class TreeServiceImpl<E extends TreeNode, R extends TreeNodeRela
 	public List<E> findChildrenNodes_r(E nd, int type) {
 		List<E> lists = _findChildrenNodes_r(nd, type);
 		// 去重复
+		Map<String, E> map = new HashMap<String, E>();
 		Iterator<E> it = lists.iterator();
 		while (it.hasNext()) {
 			E node = it.next();
 
-			Iterator<E> its = lists.iterator();
-			while (its.hasNext()) {
-				E nodep = it.next();
-				if (ifNodeEqual(node, nodep) == true) {
-					it.remove();
-					break;
-				}
+			if (map.containsKey("" + node.getId())) {
+				it.remove();
+			} else {
+				map.put("" + node.getId(), node);
+			}
+		}
+		return lists;
+	}
+
+	@Override
+	public List<E> findChildrenNodes_r(E nd, String name) {
+		List<E> lists = _findChildrenNodes_r(nd, name);
+		// 去重复
+		Map<String, E> map = new HashMap<String, E>();
+		Iterator<E> it = lists.iterator();
+		while (it.hasNext()) {
+			E node = it.next();
+
+			if (map.containsKey("" + node.getId())) {
+				it.remove();
+			} else {
+				map.put("" + node.getId(), node);
+			}
+		}
+		return lists;
+	}
+
+	@Override
+	public List<E> findChildrenNodes_r(E nd, String name, int type) {
+		List<E> lists = _findChildrenNodes_r(nd, name, type);
+		// 去重复
+		Map<String, E> map = new HashMap<String, E>();
+		Iterator<E> it = lists.iterator();
+		while (it.hasNext()) {
+			E node = it.next();
+
+			if (map.containsKey("" + node.getId())) {
+				it.remove();
+			} else {
+				map.put("" + node.getId(), node);
 			}
 		}
 		return lists;
@@ -487,29 +534,5 @@ public abstract class TreeServiceImpl<E extends TreeNode, R extends TreeNodeRela
 			int rows) {
 		return (BaseQueryRecords<E>) getTreeDao()._findChildrenNodes(node,
 				name, page, rows);
-	}
-
-	@Override
-	public List<E> findChildrenNodes_r(E node, String name) {
-		// 查询自己的子节点
-		List<E> lists = findChildrenNodes(node, name).getData();
-
-		// 查询子节点的所有子节点
-		for (int i = 0; i < lists.size(); i++) {
-			lists.addAll(_findChildrenNodes_r(lists.get(i), name));
-		}
-		return lists;
-	}
-
-	@Override
-	public List<E> findChildrenNodes_r(E node, String name, int type) {
-		// 查询自己的子节点
-		List<E> lists = findChildrenNodes(node, name, type).getData();
-
-		// 查询子节点的所有子节点
-		for (int i = 0; i < lists.size(); i++) {
-			lists.addAll(_findChildrenNodes_r(lists.get(i), name, type));
-		}
-		return lists;
 	}
 }
