@@ -17,14 +17,14 @@ import android.net.Uri;
 import android.view.View;
 
 /**
- * APP更新类。
- * 通过回调函数可以在各个更新节点实现更多功能
+ * APP更新类。 通过回调函数可以在各个更新节点实现更多功能
  * 
  * @author DJ
  * 
  */
 public abstract class VersionManager {
 	private int appid = 1;
+	private String clientinfo;
 	private String serverUrl = "";
 	private static final String CHECK_URL = "/module/appversioncheck/checkNewestAppVersion";
 	private static final String DOWNLOAD_URL = "/module/appversioncheck/downloadNewestAppVersionRes";
@@ -42,10 +42,11 @@ public abstract class VersionManager {
 	 * @param callback
 	 */
 	public VersionManager(Context context, String serverURL, int appid,
-			VersionUpdateCallBack callback) {
+			String clientinfo, VersionUpdateCallBack callback) {
 		this.appid = appid;
 		this.context = context;
 		this.serverUrl = serverURL;
+		this.clientinfo = clientinfo;
 		if (callback != null)
 			versionUpdateCallBack = callback;
 		else
@@ -236,14 +237,15 @@ public abstract class VersionManager {
 	}
 
 	/**
-	 * 只检查APP更新，不做任何其它弹窗等功能， 其它功能调用者需在回调函数中进行实现。
-	 * 回调函数支持以下几种结果的回调
+	 * 只检查APP更新，不做任何其它弹窗等功能， 其它功能调用者需在回调函数中进行实现。 回调函数支持以下几种结果的回调
 	 * 
-	 * VersionUpdateCallBack.CHECK_RESULT_ERROR  检查更新出错,或无此APP的信息时 
-	 * VersionUpdateCallBack.CHECK_RESULT_NOTING_UPDATE  检查没有发现更新
-	 * VersionUpdateCallBack.CHECK_RESULT_UPDATE_TYPE_POP_FORCE  检查到有更新，且类型为强制更新
-	 * VersionUpdateCallBack.CHECK_RESULT_UPDATE_TYPE_POP_AUTO  检查到有更新，且类型为自动弹出更新通知，允许用户选择更新或不更新，可以继续使用
-	 * VersionUpdateCallBack.CHECK_RESULT_UPDATE_TYPE_MANUAL_MANUAL 检查到有更新，且类型为不自动弹出更新通知
+	 * VersionUpdateCallBack.CHECK_RESULT_ERROR 检查更新出错,或无此APP的信息时
+	 * VersionUpdateCallBack.CHECK_RESULT_NOTING_UPDATE 检查没有发现更新
+	 * VersionUpdateCallBack.CHECK_RESULT_UPDATE_TYPE_POP_FORCE 检查到有更新，且类型为强制更新
+	 * VersionUpdateCallBack.CHECK_RESULT_UPDATE_TYPE_POP_AUTO
+	 * 检查到有更新，且类型为自动弹出更新通知，允许用户选择更新或不更新，可以继续使用
+	 * VersionUpdateCallBack.CHECK_RESULT_UPDATE_TYPE_MANUAL_MANUAL
+	 * 检查到有更新，且类型为不自动弹出更新通知
 	 * 
 	 * 回调函数中通过参数params[0] 获得更新信息AppVersionInfo appVersionInfo
 	 */
@@ -299,7 +301,7 @@ public abstract class VersionManager {
 	/**
 	 * 安装apk
 	 */
-	private void installAPK(String APKPath, Context context) {
+	public void installAPK(String APKPath, Context context) {
 		File appFile = new File(APKPath);
 		if (!appFile.exists()) {
 			return;
@@ -338,6 +340,7 @@ public abstract class VersionManager {
 				Map<String, Object> param = new HashMap<String, Object>();
 				param.put("appid", appid);
 				param.put("versioncode", getVersionCode());
+				param.put("imei", getImei());
 				param.put("clientinfo", getClientInfo());
 
 				new VersionDownloadAsync(context, serverUrl + DOWNLOAD_URL,
@@ -424,7 +427,7 @@ public abstract class VersionManager {
 	 * 
 	 * @return
 	 */
-	private int getVersionCode() {
+	public int getVersionCode() {
 		PackageManager manager = context.getPackageManager();
 		PackageInfo info = null;
 		int versionCode = -1;
@@ -438,13 +441,19 @@ public abstract class VersionManager {
 		return versionCode;
 	}
 
+	public String getImei() {
+		TelephonyManager tm = (TelephonyManager) this.context
+				.getSystemService(Context.TELEPHONY_SERVICE);
+		return tm.getDeviceId();
+	}
+
 	/**
 	 * 获取客户端信息
 	 * 
 	 * @return
 	 */
-	private String getClientInfo() {
-		return "";
+	public String getClientInfo() {
+		return this.clientinfo;
 	}
 
 	/**

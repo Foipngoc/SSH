@@ -81,6 +81,8 @@ public abstract class VersionDownloadAsync extends
 	protected void onProgressUpdate(Integer... values) {
 		super.onProgressUpdate(values);
 		dialog.setProgress(values[0]);
+		versionUpdateCallBack.callBack(VersionUpdateCallBack.DOWNLOADING,
+				values[0]);
 	}
 
 	@Override
@@ -118,8 +120,9 @@ public abstract class VersionDownloadAsync extends
 			long size = 0;// 文件大小
 			for (Header h : headers) {
 				if ("Content-Disposition".equals(h.getName())) {
-					String fileString  = h.getValue();
-					fileString = fileString.substring(fileString.indexOf("filename=")+"filename=".length());
+					String fileString = h.getValue();
+					fileString = fileString.substring(fileString
+							.indexOf("filename=") + "filename=".length());
 					fileString = fileString.replaceAll("\"", "");
 					fileString = URLDecoder.decode(fileString, "UTF-8");
 					Log.d("Content-Disposition", fileString);
@@ -151,12 +154,10 @@ public abstract class VersionDownloadAsync extends
 
 				int progress = (int) (readedLength * 100.0 / size);
 				this.publishProgress(progress);
-
-				versionUpdateCallBack.callBack(
-						VersionUpdateCallBack.DOWNLOADING, progress);
 			}
 			bos.flush();
 		} catch (Exception e) {
+			e.printStackTrace();
 			return -1;
 		} finally {
 			try {

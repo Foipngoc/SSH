@@ -71,7 +71,8 @@ public class VersionCheckAsync extends AsyncTask<Void, Void, AppVersionInfo> {
 					int resultcode = resultJson.getInt("resultcode");
 					String resultdesc = resultJson.getString("resultdesc");
 					/**
-					 * BaseResult(0, "不存在该应用");BaseResult(1, "已为最新版本"); BaseResult(2, "有新版本可以升级");
+					 * BaseResult(0, "不存在该应用");BaseResult(1, "已为最新版本");
+					 * BaseResult(2, "有新版本可以升级");
 					 * result.setObj(newestAppVersionInfo); BaseResult(0,
 					 * "不存在该应用");
 					 */
@@ -117,6 +118,7 @@ public class VersionCheckAsync extends AsyncTask<Void, Void, AppVersionInfo> {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			appVersionInfo.setResultcode(AppVersionInfo.RESULT_ERROR);
 			appVersionInfo.setAppdesc("从服务器获取数据失败");
 		}
