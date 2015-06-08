@@ -310,6 +310,15 @@ public abstract class TreeServiceImpl<E extends TreeNode, R extends TreeNodeRela
 		getTreeDao()._delNode(node);
 		delBindNodes(node);
 	}
+	
+	@Override
+	public void delNode_r(E node) {
+		List<E> chiledsall = findChildrenNodes_r(node);
+		for (int i = 0; i < chiledsall.size(); i++) {
+			delNode(chiledsall.get(i));
+		}
+		delNode(node);
+	}
 
 	@Override
 	public E findNode(E node) {

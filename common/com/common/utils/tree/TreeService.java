@@ -90,6 +90,11 @@ public interface TreeService<E, R> {
 	public void delNode(E node);
 
 	/**
+	 * 删除节点，同时删除所有的子节点及关联关系
+	 */
+	public void delNode_r(E node);
+
+	/**
 	 * 查询某一节点
 	 */
 	public E findNode(E node);
