@@ -25,6 +25,9 @@ CREATE TABLE `appdownloadinfo` (
   `oldappvid` int(11) DEFAULT NULL,
   `appvid` int(11) DEFAULT NULL,
   `updatedate` datetime DEFAULT NULL,
+  `ipaddr` varchar(64) DEFAULT NULL,
+  `macaddr` varchar(64) DEFAULT NULL,
+  `imei` varchar(64) DEFAULT NULL,
   `clientinfo` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
