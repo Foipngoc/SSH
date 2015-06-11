@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 
 import com.common.action.BaseAction;
 import com.common.action.result.BaseResult;
+import com.common.action.result.BaseResultOK;
 import com.common.utils.LogUtils;
 import com.example.model.Student;
 import com.example.service.ExampleService;
@@ -53,8 +54,8 @@ public class ExampleAction extends BaseAction {
 			int age = example.getAge();
 		}
 		if (input != null && input != "") {
-			this.result = new BaseResult(1, "examples",
-					this.exampleService.getExamples(page, rows));
+			this.result = new BaseResultOK(this.exampleService.getExamples(
+					page, rows));
 		}
 		return "json";
 	}
