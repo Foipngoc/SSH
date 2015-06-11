@@ -10,12 +10,13 @@
 	<package name="example" extends="cement-interceptor" namespace="/example">
 		<action name="doaction" method="doAction"
 			class="com.example.action.ExampleAction">
-			<result name="json" type="json"></result>
-			<!-- root 属性定义了只返回result变量为json数据 -->
-			<param name="root">result</param>
-			<!-- ignoreHierarchy定义了返回的对象是否忽略同时返回其父类型属性，如返回结果为BaseResultOK时，就需要将此值设置为false，否则不会返回 
-				BaseResultOK的父属性，而BaseResultOK自己的属性为空，因此会返回{}的json数据 -->
-			<param name="ignoreHierarchy">false</param>
+			<result name="json" type="json">
+				<!-- root 属性定义了只返回result变量为json数据 -->
+				<param name="root">result</param>
+				<!-- ignoreHierarchy定义了返回的对象是否忽略同时返回其父类型属性，如返回结果为BaseResultOK时，就需要将此值设置为false，否则不会返回 
+					BaseResultOK的父属性，而BaseResultOK自己的属性为空，因此会返回{}的json数据 -->
+				<param name="ignoreHierarchy">false</param>
+			</result>
 		</action>
 
 		<action name="doaction2" method="doAction2"
