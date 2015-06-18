@@ -4,9 +4,9 @@ $(document).ready(function(){
 		if(e && e.keyCode==27){ // 按 Esc 
 			document.getElementById("win").style.display="none";
 		}
-		}
+	};
 	$.ajax({
-		url : 'module/appversioncheck/queryApp',
+		url : 'queryApp',
 		type : 'post',
 		dataType : 'json',
 		data : {
@@ -49,7 +49,7 @@ function modifyappinfo(){
 	}
 	
 	$.ajaxFileUpload({
-		url : 'module/appversioncheck/updateApp',
+		url : 'updateApp',
 		secureuri : false, // 是否需要安全协议，一般设置为false
 		fileElementId : 'file', // 文件上传域的ID
 		dataType : 'json',
@@ -72,7 +72,7 @@ function modifyappinfo(){
 
 function selversion(){
 	$.ajax({
-		url : 'module/appversioncheck/queryAppVersions',
+		url : 'queryAppVersions',
 		type : 'post',
 		dataType : 'json',
 		data : {
@@ -126,7 +126,7 @@ function setsel() {
 	}
 	if (selid != $("#newestappvid").val()){
 		$.ajax({
-			url : 'module/appversioncheck/updateNewestAppVersion',
+			url : 'updateNewestAppVersion',
 			type : 'post',
 			dataType : 'json',
 			data : {

@@ -5,7 +5,7 @@
 <struts>
 
 	<package name="appversioncheck" extends="cement-interceptor"
-		namespace="/module/appversioncheck">
+		namespace="/">
 		<action name="queryApps"
 			class="com.module.appversioncheck.action.AppVersionCheckAction"
 			method="queryApps">
@@ -78,7 +78,7 @@
 			<result name="success" type="json"></result>
 		</action>
 
-		<action name="downloadNewestAppVersionRes"
+		<action name="downloadNewest"
 			class="com.module.appversioncheck.action.AppVersionCheckAction"
 			method="downloadNewestAppVersionRes">
 			<result name="file" type="stream">

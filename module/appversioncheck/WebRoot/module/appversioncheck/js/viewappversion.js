@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	$.ajax({
-		url : 'module/appversioncheck/queryApp',
+		url : 'queryApp',
 		type : 'post',
 		dataType : 'json',
 		data : {
@@ -12,7 +12,7 @@ $(document).ready(function(){
 			$("#appname").val(appname);
 			$("#appname1").text(appname);
 			$.ajax({
-				url : 'module/appversioncheck/queryAppVersion',
+				url : 'queryAppVersion',
 				type : 'post',
 				dataType : 'json',
 				data : {

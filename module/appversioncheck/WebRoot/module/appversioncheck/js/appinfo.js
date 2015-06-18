@@ -4,14 +4,14 @@ $(document).ready(function() {
 	var e = event || window.event || arguments.callee.caller.arguments[0];
 	if(e && e.keyCode==27){ // 按 Esc 
 		hideUrlBar();
-	}
-	}
+	};
+	};
 });
 
 function showAppList() {
 	$
 			.ajax({
-				url : 'module/appversioncheck/queryApps',
+				url : 'queryApps',
 				type : 'post',
 				dataType : 'json',
 				data : {
@@ -62,7 +62,7 @@ function modifyApp(appid) {
 function delApp(id) {
 	if (confirm("你确定要删除该应用吗？")) {
 		$.ajax({
-			url : 'module/appversioncheck/delApp',
+			url : 'delApp',
 			type : 'post',
 			dataType : 'json',
 			data : {
@@ -77,16 +77,16 @@ function delApp(id) {
 
 function showAppDownLink(id) {
 	var url = $("#basePath").val()
-			+ "module/appversioncheck/downloadNewestAppVersionRes?clientinfo=browser&versioncode=-1&appid="
+			+ "downloadNewest?clientinfo=browser&versioncode=-1&appid="
 			+ id;
 	document.getElementById("win").style.display = "";
 	$("#newdlurl").val(url);
 
 	var urlbarcode = $("#basePath").val()
-			+ "module/appversioncheck/downloadNewestAppVersionRes?clientinfo=barcode&versioncode=-1&appid="
+			+ "downloadNewest?clientinfo=barcode&versioncode=-1&appid="
 			+ id;
 	$.ajax({
-		url : 'module/appversioncheck/genBarCode',
+		url : 'genBarCode',
 		type : 'post',
 		dataType : 'json',
 		data : {

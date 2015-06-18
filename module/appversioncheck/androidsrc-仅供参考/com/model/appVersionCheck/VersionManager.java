@@ -26,8 +26,8 @@ public abstract class VersionManager {
 	private int appid = 1;
 	private String clientinfo;
 	private String serverUrl = "";
-	private static final String CHECK_URL = "/module/appversioncheck/checkNewestAppVersion";
-	private static final String DOWNLOAD_URL = "/module/appversioncheck/downloadNewestAppVersionRes";
+	private static final String CHECK_URL = "/checkNewestAppVersion";
+	private static final String DOWNLOAD_URL = "/downloadNewest";
 	private Context context;
 	private VersionUpdateCallBack versionUpdateCallBack;
 

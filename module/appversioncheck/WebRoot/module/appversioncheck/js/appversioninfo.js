@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	var appid = $("#appid").val();
 	$.ajax({
-		url : 'module/appversioncheck/queryApp',
+		url : 'queryApp',
 		type : 'post',
 		dataType : 'json',
 		data : {
@@ -41,7 +41,7 @@ function getFileName(url){
 
 function showAppVersionList(appid,newestappvid){
 	$.ajax({
-		url : 'module/appversioncheck/queryAppVersions',
+		url : 'queryAppVersions',
 		type : 'post',
 		dataType : 'json',
 		data : {
@@ -80,7 +80,7 @@ function showAppVersionList(appid,newestappvid){
 function delAppVersion(appvid) {
 	if (confirm("你确定要删除该应用吗？")) {
 		$.ajax({
-			url : 'module/appversioncheck/deleteAppVersion',
+			url : 'deleteAppVersion',
 			type : 'post',
 			dataType : 'json',
 			data : {
@@ -107,7 +107,7 @@ function addAppVersion() {
 
 function settonewest(appvid) {
 	$.ajax({
-		url : 'module/appversioncheck/updateNewestAppVersion',
+		url : 'updateNewestAppVersion',
 		type : 'post',
 		dataType : 'json',
 		data : {
