@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.common.dao.BaseDao;
 import com.common.dao.BaseQueryRecords;
 import com.common.framework.CXFFilter;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
 // 默认声明baseDao Bean.
@@ -134,16 +135,16 @@ public class BaseDaoDB implements BaseDao {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public BaseQueryRecords<?> find(Object o, int page, int rows) {
+	public BaseQueryRecords<?> find(Object o, long page, long rows) {
 		try {
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());
 
 			// page和rows 都 >0 时返回分页数据
 			if (page > 0 && rows > 0) {
-				int total = criteria.list().size();
-				criteria.setFirstResult((page - 1) * rows);
-				criteria.setMaxResults(rows);
+				long total = count(o);
+				criteria.setFirstResult((int) ((page - 1) * rows));
+				criteria.setMaxResults((int) rows);
 				return new BaseQueryRecords(criteria.list(), total, page, rows);
 			} else {
 				return new BaseQueryRecords(criteria.list());
@@ -167,7 +168,7 @@ public class BaseDaoDB implements BaseDao {
 	 */
 	@Override
 	public BaseQueryRecords<?> find(Object o, String key, Object value) {
-		return this.find(o, Restrictions.eq(key, value));
+		return this.find(o, key, value, -1, -1);
 	}
 
 	/**
@@ -185,10 +186,28 @@ public class BaseDaoDB implements BaseDao {
 	 *            : 每页行数
 	 * @return： 对象集
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public BaseQueryRecords<?> find(Object o, String key, Object value,
-			int page, int rows) {
-		return this.find(o, page, rows, Restrictions.eq(key, value));
+			long page, long rows) {
+		try {
+			Criteria criteria = getCurrentSession()
+					.createCriteria(o.getClass());
+
+			criteria.add(Restrictions.eq(key, value));
+
+			if (page > 0 && rows > 0) {
+				long total = count(o, key, value);
+				criteria.setFirstResult((int) ((page - 1) * rows));
+				criteria.setMaxResults((int) rows);
+				return new BaseQueryRecords(criteria.list(), total, page, rows);
+			} else {
+				return new BaseQueryRecords(criteria.list());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 
 	/**
@@ -204,8 +223,7 @@ public class BaseDaoDB implements BaseDao {
 	 */
 	@Override
 	public Object findUnique(Object o, String key, Object value) {
-		List<?> lists = this.find(o, 1, 1, Restrictions.eq(key, value))
-				.getData();
+		List<?> lists = this.find(o, key, value, 1, 1).getData();
 		if (lists.size() > 0) {
 			return lists.get(0);
 		}
@@ -220,7 +238,7 @@ public class BaseDaoDB implements BaseDao {
 	 * @return： 对象的数量
 	 */
 	@Override
-	public Long count(Object o) {
+	public long count(Object o) {
 		try {
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());
@@ -244,12 +262,14 @@ public class BaseDaoDB implements BaseDao {
 	 * @return ： 对象数量
 	 */
 	@Override
-	public Long count(Object o, String key, Object value) {
+	public long count(Object o, String key, Object value) {
 		try {
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());
 			criteria.setProjection(Projections.rowCount());
+
 			criteria.add(Restrictions.eq(key, value));
+
 			return (long) criteria.uniqueResult();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -290,7 +310,7 @@ public class BaseDaoDB implements BaseDao {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public BaseQueryRecords<?> findOrderBy(Object o, String orderby,
-			boolean ifdesc, int page, int rows) {
+			boolean ifdesc, long page, long rows) {
 		try {
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());
@@ -302,9 +322,9 @@ public class BaseDaoDB implements BaseDao {
 			}
 			// page和rows 都 >0 时返回分页数据
 			if (page > 0 && rows > 0) {
-				int total = criteria.list().size();
-				criteria.setFirstResult((page - 1) * rows);
-				criteria.setMaxResults(rows);
+				long total = count(o);
+				criteria.setFirstResult((int) ((page - 1) * rows));
+				criteria.setMaxResults((int) rows);
 				return new BaseQueryRecords(criteria.list(), total, page, rows);
 			} else {
 				return new BaseQueryRecords(criteria.list());
@@ -356,7 +376,7 @@ public class BaseDaoDB implements BaseDao {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public BaseQueryRecords<?> findOrderBy(Object o, String key, Object value,
-			String orderby, boolean ifdesc, int page, int rows) {
+			String orderby, boolean ifdesc, long page, long rows) {
 		try {
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());
@@ -371,57 +391,9 @@ public class BaseDaoDB implements BaseDao {
 			criteria.add(Restrictions.eq(key, value));
 
 			if (page > 0 && rows > 0) {
-				int total = criteria.list().size();
-				criteria.setFirstResult((page - 1) * rows);
-				criteria.setMaxResults(rows);
-				return new BaseQueryRecords(criteria.list(), total, page, rows);
-			} else {
-				return new BaseQueryRecords(criteria.list());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
-	}
-
-	/**
-	 * 获取Criteria,通过此方法，用户可以实现更多的自定义查询
-	 * 
-	 * @param o
-	 *            ： 待查找的类型
-	 * @return 获得查寻条件
-	 */
-	protected Criteria getCriteria(Object o) {
-		return getCurrentSession().createCriteria(o.getClass());
-	}
-
-	/**
-	 * 使用Criteria查寻数据
-	 * 
-	 * @param criteria
-	 * @return
-	 */
-	protected BaseQueryRecords<?> find(Criteria criteria) {
-		return find(criteria, -1, -1);
-	}
-
-	/**
-	 * 使用Criteria查寻数据,带分页
-	 * 
-	 * @param criteria
-	 * @param page
-	 *            ： 页码
-	 * @param rows
-	 *            : 每页数
-	 * @return
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected BaseQueryRecords<?> find(Criteria criteria, int page, int rows) {
-		try {
-			if (page > 0 && rows > 0) {
-				int total = criteria.list().size();
-				criteria.setFirstResult((page - 1) * rows);
-				criteria.setMaxResults(rows);
+				long total = count(o, key, value);
+				criteria.setFirstResult((int) ((page - 1) * rows));
+				criteria.setMaxResults((int) rows);
 				return new BaseQueryRecords(criteria.list(), total, page, rows);
 			} else {
 				return new BaseQueryRecords(criteria.list());
@@ -446,7 +418,7 @@ public class BaseDaoDB implements BaseDao {
 	 * @return: 对象集
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected BaseQueryRecords<?> find(Object o, int page, int rows,
+	protected BaseQueryRecords<?> find(Object o, long page, long rows,
 			Criterion... contidions) {
 		try {
 			Criteria criteria = getCurrentSession()
@@ -457,9 +429,9 @@ public class BaseDaoDB implements BaseDao {
 			}
 
 			if (page > 0 && rows > 0) {
-				int total = criteria.list().size();
-				criteria.setFirstResult((page - 1) * rows);
-				criteria.setMaxResults(rows);
+				long total = count(o, contidions);
+				criteria.setFirstResult((int) ((page - 1) * rows));
+				criteria.setMaxResults((int) rows);
 				return new BaseQueryRecords(criteria.list(), total, page, rows);
 			} else {
 				return new BaseQueryRecords(criteria.list());
@@ -509,7 +481,7 @@ public class BaseDaoDB implements BaseDao {
 	 *            ： 条件
 	 * @return： 记录数
 	 */
-	protected Long count(Object o, Criterion... conditions) {
+	protected long count(Object o, Criterion... conditions) {
 		try {
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());
@@ -531,7 +503,7 @@ public class BaseDaoDB implements BaseDao {
 	 *            ： sql语句
 	 * @return: 响应数目
 	 */
-	protected Integer delete(SQL sql) {
+	protected int delete(SQL sql) {
 		try {
 			return this.executeSql(sql);
 		} catch (Exception e) {
@@ -547,7 +519,7 @@ public class BaseDaoDB implements BaseDao {
 	 *            : hql语句
 	 * @return: 响应数目
 	 */
-	protected Integer delete(HQL hql) {
+	protected int delete(HQL hql) {
 		try {
 			return this.executeHql(hql);
 		} catch (Exception e) {
@@ -563,7 +535,7 @@ public class BaseDaoDB implements BaseDao {
 	 *            : sql语句
 	 * @return: 响应数目
 	 */
-	protected Integer update(SQL sql) {
+	protected int update(SQL sql) {
 		try {
 			return this.executeSql(sql);
 		} catch (Exception e) {
@@ -579,7 +551,7 @@ public class BaseDaoDB implements BaseDao {
 	 *            ： hql语句
 	 * @return: 响应数目
 	 */
-	protected Integer update(HQL hql) {
+	protected int update(HQL hql) {
 		try {
 			return this.executeHql(hql);
 		} catch (Exception e) {
@@ -626,15 +598,15 @@ public class BaseDaoDB implements BaseDao {
 	 * @return： 数据集
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected BaseQueryRecords<?> find(HQL hql, int page, int rows) {
+	protected BaseQueryRecords<?> find(HQL hql, long page, long rows) {
 		try {
 			Query q = getCurrentSession().createQuery(hql.toString());
 
 			// page和rows 都 >0 时返回分页数据
 			if (page > 0 && rows > 0) {
-				int total = q.list().size();
-				q.setFirstResult((page - 1) * rows);
-				q.setMaxResults(rows);
+				long total = count(hql.toCountHQL());
+				q.setFirstResult((int) ((page - 1) * rows));
+				q.setMaxResults((int) rows);
 				return new BaseQueryRecords(q.list(), total, page, rows);
 			} else {
 				return new BaseQueryRecords(q.list());
@@ -683,15 +655,15 @@ public class BaseDaoDB implements BaseDao {
 	 * @return: 数据集
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected BaseQueryRecords<?> find(SQL sql, int page, int rows) {
+	protected BaseQueryRecords<?> find(SQL sql, long page, long rows) {
 		try {
 			Query q = getCurrentSession().createSQLQuery(sql.toString());
 
 			// page和rows 都 >0 时返回分页数据
 			if (page > 0 && rows > 0) {
-				int total = q.list().size();
-				q.setFirstResult((page - 1) * rows);
-				q.setMaxResults(rows);
+				long total = count(sql.toCountSQL());
+				q.setFirstResult((int) ((page - 1) * rows));
+				q.setMaxResults((int) rows);
 				return new BaseQueryRecords(q.list(), total, page, rows);
 			} else {
 				return new BaseQueryRecords(q.list());
@@ -709,7 +681,7 @@ public class BaseDaoDB implements BaseDao {
 	 *            : hql语句
 	 * @return: 记录数
 	 */
-	protected Long count(HQL hql) {
+	protected long count(HQL hql) {
 		try {
 			Long cnt = 0L;
 			Query q = getCurrentSession().createQuery(hql.toString());
@@ -728,7 +700,7 @@ public class BaseDaoDB implements BaseDao {
 	 *            ： sql语句
 	 * @return: 记录数
 	 */
-	protected Long count(SQL sql) {
+	protected long count(SQL sql) {
 		try {
 			Long cnt = 0L;
 			Query q = getCurrentSession().createSQLQuery(sql.toString());
@@ -747,7 +719,7 @@ public class BaseDaoDB implements BaseDao {
 	 *            ：sql语句
 	 * @return: 响应数量
 	 */
-	protected Integer executeSql(SQL sql) {
+	protected int executeSql(SQL sql) {
 		int ret = 0;
 		Query q = getCurrentSession().createSQLQuery(sql.toString());
 		ret = q.executeUpdate();
@@ -761,7 +733,7 @@ public class BaseDaoDB implements BaseDao {
 	 *            : hql语句
 	 * @return: 响应数量
 	 */
-	protected Integer executeHql(HQL hql) {
+	protected int executeHql(HQL hql) {
 		int ret = 0;
 		Query q = getCurrentSession().createQuery(hql.toString());
 		ret = q.executeUpdate();

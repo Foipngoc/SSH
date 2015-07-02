@@ -48,4 +48,18 @@ public class SQL implements BaseExpression {
 		}
 		return ret;
 	}
+
+	/**
+	 * 将查询语句转换成获取数据数量的SQL
+	 */
+	public SQL toCountSQL() {
+		String countsql = new String(this.sql);
+		if (countsql.toLowerCase().startsWith("select")) {
+			int idx = countsql.toLowerCase().indexOf("from");
+			return new SQL("select count(*) " + countsql.substring(idx),
+					this.mparams);
+		} else {
+			return null;
+		}
+	}
 }

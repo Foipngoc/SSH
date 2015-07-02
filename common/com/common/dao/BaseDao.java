@@ -43,13 +43,13 @@ public interface BaseDao {
 	/**
 	 * 查找所有对象 带分页
 	 */
-	public BaseQueryRecords<?> find(Object o, int page, int rows);
+	public BaseQueryRecords<?> find(Object o, long page, long rows);
 
 	/**
 	 * 查找所有对象 带分页, 并排序
 	 */
 	public BaseQueryRecords<?> findOrderBy(Object o, String orderby,
-			boolean ifdesc, int page, int rows);
+			boolean ifdesc, long page, long rows);
 
 	/**
 	 * 查找满足某一条件的所有对象
@@ -66,13 +66,13 @@ public interface BaseDao {
 	 * 查找满足某一条件的所有对象 带分布
 	 */
 	public BaseQueryRecords<?> find(Object o, String key, Object value,
-			int page, int rows);
+			long page, long rows);
 
 	/**
 	 * 查找满足某一条件的所有对象 带分布,并排序
 	 */
 	public BaseQueryRecords<?> findOrderBy(Object o, String key, Object value,
-			String orderby, boolean ifdesc, int page, int rows);
+			String orderby, boolean ifdesc, long page, long rows);
 
 	/**
 	 * 查找唯一对象，如果对象不存在，返回NULL
@@ -82,10 +82,10 @@ public interface BaseDao {
 	/**
 	 * 获得记录数
 	 */
-	public Long count(Object o);
+	public long count(Object o);
 
 	/**
 	 * 获得记录数
 	 */
-	public Long count(Object o, String key, Object value);
+	public long count(Object o, String key, Object value);
 }

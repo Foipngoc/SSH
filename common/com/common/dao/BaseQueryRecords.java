@@ -10,10 +10,10 @@ import java.util.List;
  */
 public class BaseQueryRecords<T> {
 	private List<T> data;// 返回数据
-	private int total;// 记录总数
-	private int page;// 页码
-	private int rows;// 每页记录行数
-	private int pages;// 总页数
+	private long total;// 记录总数
+	private long page;// 页码
+	private long rows;// 每页记录行数
+	private long pages;// 总页数
 
 	/**
 	 * 默认构造
@@ -30,7 +30,7 @@ public class BaseQueryRecords<T> {
 	 * @param page
 	 * @param rows
 	 */
-	public BaseQueryRecords(List<T> data, int total, int page, int rows) {
+	public BaseQueryRecords(List<T> data, long total, long page, long rows) {
 		this.data = data;
 		this.total = total;
 		this.page = page;
@@ -55,35 +55,35 @@ public class BaseQueryRecords<T> {
 		this.pages = generatePages(this.total, this.rows);
 	}
 
-	public int getTotal() {
+	public long getTotal() {
 		return total;
 	}
 
-	public void setTotal(int total) {
+	public void setTotal(long total) {
 		this.total = total;
 	}
 
-	public int getPage() {
+	public long getPage() {
 		return page;
 	}
 
-	public void setPage(int page) {
+	public void setPage(long page) {
 		this.page = page;
 	}
 
-	public int getRows() {
+	public long getRows() {
 		return rows;
 	}
 
-	public void setRows(int rows) {
+	public void setRows(long rows) {
 		this.rows = rows;
 	}
 
-	public int getPages() {
+	public long getPages() {
 		return pages;
 	}
 
-	public void setPages(int pages) {
+	public void setPages(long pages) {
 		this.pages = pages;
 	}
 
@@ -94,8 +94,8 @@ public class BaseQueryRecords<T> {
 	 * @param rows
 	 * @return
 	 */
-	private int generatePages(int total, int rows) {
-		int pages = total / rows;
+	private long generatePages(long total, long rows) {
+		long pages = total / rows;
 		if (total % rows != 0) {
 			pages++;
 		}

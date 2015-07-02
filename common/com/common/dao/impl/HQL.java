@@ -48,4 +48,19 @@ public class HQL implements BaseExpression {
 		}
 		return ret;
 	}
+	
+	/**
+	 * 将查询语句转换成获取数据数量的HQL
+	 */
+	public HQL toCountHQL() {
+		String counthql = new String(this.hql);
+		if (counthql.toLowerCase().startsWith("select")){
+			int idx = counthql.toLowerCase().indexOf("from");
+			return new HQL("select count(*) "+counthql.substring(idx), this.mparams);
+		}else if (counthql.toLowerCase().startsWith("from")){
+			return new HQL("select count(*) "+counthql, this.mparams);
+		}else {
+			return null;
+		}
+	}
 }
