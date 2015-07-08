@@ -568,7 +568,7 @@ public class BaseDaoDB implements BaseDao {
 	 * @return: 记录集
 	 */
 	protected BaseQueryRecords<?> find(HQL hql) {
-		return this.find(hql, -1, -1);
+		return this.find(hql, null, -1, -1);
 	}
 
 	/**
@@ -579,7 +579,7 @@ public class BaseDaoDB implements BaseDao {
 	 * @return： 记录
 	 */
 	protected Object findUnique(HQL hql) {
-		List<?> lists = find(hql, 1, 1).getData();
+		List<?> lists = find(hql, null, 1, 1).getData();
 		if (lists.size() > 0) {
 			return lists.get(0);
 		}
@@ -587,7 +587,9 @@ public class BaseDaoDB implements BaseDao {
 	}
 
 	/**
-	 * 使用hql语句查询数据集，带分页
+	 * 使用hql语句查询数据集，当page和rows同时>0时,搜索结果会自动分页.
+	 * 
+	 * 注： 分页时， 查询总记录数的hql语句只是将select ** 转换成select count(*)
 	 * 
 	 * @param hql
 	 *            ： hql语句
@@ -597,18 +599,38 @@ public class BaseDaoDB implements BaseDao {
 	 *            ： 每页行数
 	 * @return： 数据集
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected BaseQueryRecords<?> find(HQL hql, long page, long rows) {
+		return find(hql, hql.toCountHQL(), page, rows);
+	}
+
+	/**
+	 * 使用hql语句查询数据集，当page和rows同时>0时,搜索结果会自动分页 分页时， 如果需要返回页数，请传入counthql，否则传入null
+	 * 
+	 * @param hql
+	 *            ： hql语句
+	 * @param counthql
+	 *            : 计数hql语句
+	 * @param page
+	 *            ： 页码
+	 * @param rows
+	 *            ： 每页行数
+	 * @return： 数据集
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected BaseQueryRecords<?> find(HQL hql, HQL counthql, long page,
+			long rows) {
 		try {
 			Query q = getCurrentSession().createQuery(hql.toString());
 
-			// page和rows 都 >0 时返回分页数据
-			if (page > 0 && rows > 0) {
-				long total = count(hql.toCountHQL());
+			if (page > 0 && rows > 0) { // 分页
+				long total = 0;
+				if (counthql != null)
+					total = count(counthql); // 获得总记录数
 				q.setFirstResult((int) ((page - 1) * rows));
 				q.setMaxResults((int) rows);
 				return new BaseQueryRecords(q.list(), total, page, rows);
 			} else {
+				// 不分页
 				return new BaseQueryRecords(q.list());
 			}
 		} catch (Exception e) {
@@ -625,7 +647,7 @@ public class BaseDaoDB implements BaseDao {
 	 * @return: 数据集
 	 */
 	protected BaseQueryRecords<?> find(SQL sql) {
-		return find(sql, -1, -1);
+		return find(sql, null, -1, -1);
 	}
 
 	/**
@@ -636,7 +658,7 @@ public class BaseDaoDB implements BaseDao {
 	 * @return: 数据
 	 */
 	protected Object findUnique(SQL sql) {
-		List<?> lists = find(sql, 1, 1).getData();
+		List<?> lists = find(sql, null, 1, 1).getData();
 		if (lists.size() > 0) {
 			return lists.get(0);
 		}
@@ -644,7 +666,9 @@ public class BaseDaoDB implements BaseDao {
 	}
 
 	/**
-	 * 使用sql语句查询数据 集，带分页
+	 * 使用sql语句查询数据 集，当page和rows同时>0时，搜索结果会自动分页
+	 * 
+	 * 注： 分页时，查询总记录数的sql语句只是将select ** 转换成select count(*)
 	 * 
 	 * @param sql
 	 *            ： sql语句
@@ -654,18 +678,39 @@ public class BaseDaoDB implements BaseDao {
 	 *            ： 每页行数
 	 * @return: 数据集
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected BaseQueryRecords<?> find(SQL sql, long page, long rows) {
+		return find(sql, sql.toCountSQL(), page, rows);
+	}
+
+	/**
+	 * 使用sql语句查询数据 集, 当page和rows同时>0时，搜索结果会自动分页,
+	 * 分页时，如果需要返回页数，请传入countsql，否则传入null
+	 * 
+	 * @param sql
+	 *            ： sql语句
+	 * @param countsql
+	 *            : 获得记录总数sql
+	 * @param page
+	 *            ： 页码
+	 * @param rows
+	 *            ： 每页行数
+	 * @return: 数据集
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected BaseQueryRecords<?> find(SQL sql, SQL countsql, long page,
+			long rows) {
 		try {
 			Query q = getCurrentSession().createSQLQuery(sql.toString());
 
-			// page和rows 都 >0 时返回分页数据
-			if (page > 0 && rows > 0) {
-				long total = count(sql.toCountSQL());
+			if (page > 0 && rows > 0) { // 分页
+				long total = 0;
+				if (countsql != null)
+					total = count(countsql); // 获得记录总数
 				q.setFirstResult((int) ((page - 1) * rows));
 				q.setMaxResults((int) rows);
 				return new BaseQueryRecords(q.list(), total, page, rows);
 			} else {
+				// 查询全部
 				return new BaseQueryRecords(q.list());
 			}
 		} catch (Exception e) {
