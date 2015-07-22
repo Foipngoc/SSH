@@ -28,6 +28,20 @@ public class HQL implements BaseExpression {
 			mparams.add(params[i]);
 		}
 	}
+	
+	/**
+	 * 适配带可变参数的hql语句,参数用?通配符替换
+	 * 
+	 * @param hql
+	 * @param params
+	 */
+	public HQL(String hql, List<Object> params) {
+		this.hql = hql;
+		this.mparams = new ArrayList<>();
+		for (int i = 0; i < params.size(); i++) {
+			mparams.add(params.get(i));
+		}
+	}
 
 	/**
 	 * 转换成hql语句

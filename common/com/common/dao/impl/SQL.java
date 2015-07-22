@@ -28,6 +28,20 @@ public class SQL implements BaseExpression {
 			mparams.add(params[i]);
 		}
 	}
+	
+	/**
+	 * 适配带可变参数的sql语句,参数用?通配符替换
+	 * 
+	 * @param sql
+	 * @param params
+	 */
+	public SQL(String sql, List<Object> params) {
+		this.sql = sql;
+		this.mparams = new ArrayList<>();
+		for (int i = 0; i < params.size(); i++) {
+			mparams.add(params.get(i));
+		}
+	}
 
 	/**
 	 * 转换成sql语句
