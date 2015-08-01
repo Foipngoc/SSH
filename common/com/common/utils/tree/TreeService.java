@@ -269,7 +269,30 @@ public interface TreeService<E, R> {
 	 * 查找节点的父节点
 	 */
 	public BaseQueryRecords<E> findParentNodes(E node);
+	
+	public BaseQueryRecords<E> findParentNodes(E node,int page,int rows);
+	
+	public BaseQueryRecords<E> findParentNodes(E node,int type);
+	
+	public BaseQueryRecords<E> findParentNodes(E node,int type, int page,int rows);
+	
+	public BaseQueryRecords<E> findParentNodes(E node,String name);
+	
+	public BaseQueryRecords<E> findParentNodes(E node,String name, int type);
 
+	public BaseQueryRecords<E> findParentNodes(E node,String name, int page,int rows);
+	
+	public BaseQueryRecords<E> findParentNodes(E node,String name, int type, int page,int rows);
+	
+	public List<E> findParentNodes_r(E nd);
+
+	/**
+	 * 查找从根节点到当前节点的唯一路径
+	 * 
+	 * 只有当节点到根节点有唯一路径时才返回数据，否则返回null
+	 */
+	public Tree<E> findOnlyParentPath(E node);
+	
 	/**
 	 * 递归查询节点id的子节点列表，包括子节点下的子节点，无法作分页
 	 */

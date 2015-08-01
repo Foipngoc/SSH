@@ -128,6 +128,24 @@ public abstract class TreeServiceImpl<E extends TreeNode, R extends TreeNodeRela
 	}
 
 	/**
+	 * 以递归的方式所有父节点
+	 */
+	private List<E> _findParentNodes_r(E nd) {
+		List<E> parents = new ArrayList<>();
+
+		// 查询子节点的所有父节点
+		List<E> listsall = findParentNodes(nd).getData();
+
+		// 添加符合条件的一级父节点
+		parents.addAll(listsall);
+
+		for (int i = 0; i < listsall.size(); i++) {
+			parents.addAll(_findParentNodes_r(listsall.get(i)));
+		}
+		return parents;
+	}
+
+	/**
 	 * 以递归的方式所有子节点
 	 */
 	private List<E> _findChildrenNodes_r(E nd, int type) {
@@ -250,7 +268,7 @@ public abstract class TreeServiceImpl<E extends TreeNode, R extends TreeNodeRela
 
 	@Override
 	public boolean ifNodeRoot(E node) {
-		BaseQueryRecords<E> parent = this.findChildrenNodes(node);
+		BaseQueryRecords<E> parent = this.findParentNodes(node);
 		if (parent == null || parent.getData() == null
 				|| parent.getData().size() <= 0)
 			return true;
@@ -310,7 +328,7 @@ public abstract class TreeServiceImpl<E extends TreeNode, R extends TreeNodeRela
 		getTreeDao()._delNode(node);
 		delBindNodes(node);
 	}
-	
+
 	@Override
 	public void delNode_r(E node) {
 		List<E> chiledsall = findChildrenNodes_r(node);
@@ -515,6 +533,98 @@ public abstract class TreeServiceImpl<E extends TreeNode, R extends TreeNodeRela
 
 	@SuppressWarnings("unchecked")
 	@Override
+	public BaseQueryRecords<E> findParentNodes(E node, int page, int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findParentNodes(node, page,
+				rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findParentNodes(E node, int type) {
+		return (BaseQueryRecords<E>) getTreeDao()._findParentNodes(node, type);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findParentNodes(E node, int type, int page,
+			int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findParentNodes(node, type,
+				page, rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findParentNodes(E node, String name) {
+		return (BaseQueryRecords<E>) getTreeDao()._findParentNodes(node, name);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findParentNodes(E node, String name, int type) {
+		return (BaseQueryRecords<E>) getTreeDao()._findParentNodes(node, name,
+				type);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findParentNodes(E node, String name, int page,
+			int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findParentNodes(node, name,
+				page, rows);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public BaseQueryRecords<E> findParentNodes(E node, String name, int type,
+			int page, int rows) {
+		return (BaseQueryRecords<E>) getTreeDao()._findParentNodes(node, name,
+				type, page, rows);
+	}
+
+	@Override
+	public List<E> findParentNodes_r(E nd) {
+		List<E> lists = _findParentNodes_r(nd);
+
+		// 去重复
+		Map<String, E> map = new HashMap<String, E>();
+		Iterator<E> it = lists.iterator();
+		while (it.hasNext()) {
+			E node = it.next();
+
+			if (map.containsKey("" + node.getId())) {
+				it.remove();
+			} else {
+				map.put("" + node.getId(), node);
+			}
+		}
+		return lists;
+	}
+
+	@Override
+	public Tree<E> findOnlyParentPath(E node) {
+		Tree<E> tree = new Tree<>();
+		tree.setNode(node);
+
+		Tree<E> current = tree;
+		while (true) {
+			List<E> parents = findParentNodes(current.getNode()).getData();
+			if (parents.size() > 0) {
+				Tree<E> parentTree = new Tree<E>();
+				parentTree.setNode(parents.get(0));
+				List<Tree<E>> childTreeList = new ArrayList<>();
+				childTreeList.add(current);
+				parentTree.setChildren(childTreeList);
+				current = parentTree;
+				continue;
+			} else {
+				break;
+			}
+		}
+		return current;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
 	public BaseQueryRecords<E> findChildrenNodes(E node, String name) {
 		BaseQueryRecords<E> result = (BaseQueryRecords<E>) getTreeDao()
 				._findChildrenNodes(node, name);
@@ -544,4 +654,5 @@ public abstract class TreeServiceImpl<E extends TreeNode, R extends TreeNodeRela
 		return (BaseQueryRecords<E>) getTreeDao()._findChildrenNodes(node,
 				name, page, rows);
 	}
+
 }

@@ -96,7 +96,23 @@ public interface TreeDao<E,R> {
 
 	public BaseQueryRecords<?> _findParentNodes(E node);
 
+	public BaseQueryRecords<?> _findParentNodes(E node,int page,int rows);
+	
+	public BaseQueryRecords<?> _findParentNodes(E node,int type);
+	
+	public BaseQueryRecords<?> _findParentNodes(E node,int type, int page,int rows);
+	
+	public BaseQueryRecords<?> _findParentNodes(E node,String name);
+	
+	public BaseQueryRecords<?> _findParentNodes(E node,String name, int type);
+
+	public BaseQueryRecords<?> _findParentNodes(E node,String name, int page,int rows);
+	
+	public BaseQueryRecords<?> _findParentNodes(E node,String name, int type, int page,int rows);
+	
+	
 	public boolean _ifNodeEqual(E nodea, E nodeb);
 
 	public void _modifyNode(E node);
+
 }
