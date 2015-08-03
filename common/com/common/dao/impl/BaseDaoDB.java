@@ -1,5 +1,6 @@
 package com.common.dao.impl;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -243,7 +244,15 @@ public class BaseDaoDB implements BaseDao {
 			Criteria criteria = getCurrentSession()
 					.createCriteria(o.getClass());
 			criteria.setProjection(Projections.rowCount());
-			return (long) criteria.uniqueResult();
+			Object cntObj = criteria.uniqueResult();
+			if (cntObj != null) {
+				if (cntObj instanceof BigInteger)
+					return ((BigInteger) cntObj).longValue();
+				else
+					return (long) cntObj;
+			} else {
+				return 0;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -270,7 +279,15 @@ public class BaseDaoDB implements BaseDao {
 
 			criteria.add(Restrictions.eq(key, value));
 
-			return (long) criteria.uniqueResult();
+			Object cntObj = criteria.uniqueResult();
+			if (cntObj != null) {
+				if (cntObj instanceof BigInteger)
+					return ((BigInteger) cntObj).longValue();
+				else
+					return (long) cntObj;
+			} else {
+				return 0;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -489,7 +506,15 @@ public class BaseDaoDB implements BaseDao {
 			for (int i = 0; i < conditions.length; i++) {
 				criteria.add(conditions[i]);
 			}
-			return (long) criteria.uniqueResult();
+			Object cntObj = criteria.uniqueResult();
+			if (cntObj != null) {
+				if (cntObj instanceof BigInteger)
+					return ((BigInteger) cntObj).longValue();
+				else
+					return (long) cntObj;
+			} else {
+				return 0;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -728,10 +753,17 @@ public class BaseDaoDB implements BaseDao {
 	 */
 	protected long count(HQL hql) {
 		try {
-			Long cnt = 0L;
 			Query q = getCurrentSession().createQuery(hql.toString());
-			cnt = (Long) q.uniqueResult();
-			return cnt;
+
+			Object cntObj = q.uniqueResult();
+			if (cntObj != null) {
+				if (cntObj instanceof BigInteger)
+					return ((BigInteger) cntObj).longValue();
+				else
+					return (long) cntObj;
+			} else {
+				return 0;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -747,10 +779,17 @@ public class BaseDaoDB implements BaseDao {
 	 */
 	protected long count(SQL sql) {
 		try {
-			Long cnt = 0L;
 			Query q = getCurrentSession().createSQLQuery(sql.toString());
-			cnt = (Long) q.uniqueResult();
-			return cnt;
+
+			Object cntObj = q.uniqueResult();
+			if (cntObj != null) {
+				if (cntObj instanceof BigInteger)
+					return ((BigInteger) cntObj).longValue();
+				else
+					return (long) cntObj;
+			} else {
+				return 0;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
