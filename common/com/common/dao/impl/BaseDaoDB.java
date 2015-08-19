@@ -825,6 +825,72 @@ public class BaseDaoDB implements BaseDao {
 	}
 
 	/**
+	 * 获得某对象的关联查询配置
+	 * 
+	 * @param modelClz
+	 * @return
+	 */
+	protected Criteria getCriteria(Class<?> modelClz) {
+		return getCurrentSession().createCriteria(modelClz);
+	}
+
+	/**
+	 * 通过关联查询配置查询记录计数
+	 * 
+	 * @param criteria
+	 * @return
+	 */
+	protected long count(Criteria criteria) {
+		Object cntObj = criteria.setProjection(Projections.rowCount())
+				.uniqueResult();
+		if (cntObj != null) {
+			if (cntObj instanceof BigInteger)
+				return ((BigInteger) cntObj).longValue();
+			else
+				return (long) cntObj;
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * 通过关联查询配置查询记录,带分页
+	 * 
+	 * @param criteria
+	 * @param page
+	 * @param rows
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected BaseQueryRecords<?> find(Criteria criteria, long page, long rows) {
+		try {
+			if (page > 0 && rows > 0) { // 分页
+				long total = 0;
+				total = count(criteria); // 获得总记录数
+				criteria.setFirstResult((int) ((page - 1) * rows));
+				criteria.setMaxResults((int) rows);
+				return new BaseQueryRecords(criteria.list(), total, page, rows);
+			} else {
+				// 不分页
+				return new BaseQueryRecords(criteria.list());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	/**
+	 * 通过关联查询配置查询记录
+	 * 
+	 * @param criteria
+	 * @return
+	 */
+	protected BaseQueryRecords<?> find(Criteria criteria) {
+		return this.find(criteria, -1, -1);
+	}
+
+	/**
 	 * 获得当前项目上下文路径
 	 * 
 	 * @return
