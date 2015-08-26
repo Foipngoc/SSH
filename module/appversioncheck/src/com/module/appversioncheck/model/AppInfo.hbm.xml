@@ -21,5 +21,8 @@
 			length="128" />
 		<property name="barcodemd5" column="barcodemd5" type="string"
 			length="255" />
+		<property name="weixindlpg" column="weixindlpg" type="string"
+			length="255" />
+
 	</class>
 </hibernate-mapping>

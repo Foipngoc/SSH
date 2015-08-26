@@ -88,6 +88,7 @@
 				<param name="contentDisposition">attachment;${dlFileName}</param>
 				<param name="bufferSize">4096</param>
 			</result>
+			<result name="weixin" type="redirect">${weixinpage}</result>
 		</action>
 
 		<action name="downloadAppVersionRes"

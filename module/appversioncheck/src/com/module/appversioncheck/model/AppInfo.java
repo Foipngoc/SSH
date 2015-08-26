@@ -14,6 +14,7 @@ public class AppInfo {
 	private String applogomd5; // 应用logoMD5
 	private String barcode; // 二维码图片
 	private String barcodemd5; // 二维码图片MD5
+	private String weixindlpg; // 微信页下载地址，解决微信扫描无法下载问题
 
 	public int getId() {
 		return id;
@@ -86,5 +87,13 @@ public class AppInfo {
 
 	public void setBarcodemd5(String barcodemd5) {
 		this.barcodemd5 = barcodemd5;
+	}
+
+	public String getWeixindlpg() {
+		return weixindlpg;
+	}
+
+	public void setWeixindlpg(String weixindlpg) {
+		this.weixindlpg = weixindlpg;
 	}
 }

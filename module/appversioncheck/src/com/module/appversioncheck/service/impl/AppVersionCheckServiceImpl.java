@@ -234,7 +234,7 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 * @param appInfo
 	 */
 	public BaseResult updateApp(int appid, String appname, String appdesc,
-			File logo, String logoname) {
+			String weixinpage, File logo, String logoname) {
 
 		AppInfo appInfo = this.queryApp(appid);
 
@@ -246,6 +246,11 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 				return new BaseResult(1, "应用名已存在");
 			}
 			appInfo.setAppname(appname);
+		}
+		if (weixinpage != null && !weixinpage.equals("")) {
+			appInfo.setWeixindlpg(weixinpage);
+		}else{
+			appInfo.setWeixindlpg(null);
 		}
 
 		if (appdesc != null) {
@@ -749,6 +754,10 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 			return null;
 		}
 		logopath = getLogo_folder() + "/" + appInfo.getApplogo();
+
+		if (!FileUtils.checkFileMd5(logopath, appInfo.getApplogomd5())) {
+			return null;
+		}
 		return new File(logopath);
 	}
 

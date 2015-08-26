@@ -37,6 +37,7 @@ public class AppVersionCheckAction extends BaseAction {
 	private int updatetype; // 该版本相对上一版本的更新方式
 	private String downloadpath; // APP下载到本地路径
 	private int autoinstall = -1; // 更新后是否自动安装
+	private String weixinpage;
 
 	private String imei; // 手机端Imei号
 	private String clientinfo; // 更新客户端信息
@@ -107,6 +108,9 @@ public class AppVersionCheckAction extends BaseAction {
 		AppInfo appInfo = new AppInfo();
 		appInfo.setAppname(appname);
 		appInfo.setAppdesc(appdesc);
+		if (weixinpage != null && !weixinpage.equals("")) {
+			appInfo.setWeixindlpg(weixinpage);
+		}
 		result = this.appVersionCheckService.publishApp(appInfo,
 				file == null ? null : file.get(0), fileFileName == null ? null
 						: fileFileName.get(0));
@@ -128,8 +132,8 @@ public class AppVersionCheckAction extends BaseAction {
 	 */
 	public String updateApp() {
 		result = this.appVersionCheckService.updateApp(appid, appname, appdesc,
-				file == null ? null : file.get(0), fileFileName == null ? null
-						: fileFileName.get(0));
+				weixinpage, file == null ? null : file.get(0),
+				fileFileName == null ? null : fileFileName.get(0));
 		return SUCCESS;
 	}
 
@@ -230,6 +234,24 @@ public class AppVersionCheckAction extends BaseAction {
 	 */
 	public String downloadNewestAppVersionRes() throws FileNotFoundException,
 			UnsupportedEncodingException {
+		String useragent = super.getHttpServletRequest()
+				.getHeader("User-Agent");
+
+		// 如果是微信，则自动重定向到下载页面
+		if (useragent.contains("MicroMessenger")) {
+			AppInfo appInfo = this.appVersionCheckService.queryApp(appid);
+			weixinpage = "module/appversioncheck/weixindl.jsp";
+			if (appInfo != null) {
+				if (appInfo.getWeixindlpg() != null
+						&& !appInfo.getWeixindlpg().equals("")) {
+					weixinpage = appInfo.getWeixindlpg();
+				}
+			}
+
+			weixinpage = weixinpage + "?appid=" + appid;
+			return "weixin";
+		}
+
 		String ipaddr = null;
 		String macaddr = null;
 		ipaddr = getRemoteAddress();
@@ -257,7 +279,7 @@ public class AppVersionCheckAction extends BaseAction {
 		result = this.appVersionCheckService.genBarCode(appid, url);
 		return SUCCESS;
 	}
-	
+
 	public String downloadBarCode() throws FileNotFoundException {
 		File file = this.appVersionCheckService.downloadBarCode(appid);
 		dlFile = new FileInputStream(file);
@@ -385,5 +407,13 @@ public class AppVersionCheckAction extends BaseAction {
 
 	public void setImei(String imei) {
 		this.imei = imei;
+	}
+
+	public String getWeixinpage() {
+		return weixinpage;
+	}
+
+	public void setWeixinpage(String weixinpage) {
+		this.weixinpage = weixinpage;
 	}
 }

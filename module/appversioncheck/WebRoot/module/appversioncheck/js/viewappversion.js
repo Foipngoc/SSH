@@ -1,10 +1,10 @@
-$(document).ready(function(){
+$(document).ready(function() {
 	$.ajax({
 		url : 'queryApp',
 		type : 'post',
 		dataType : 'json',
 		data : {
-			'appid': $("#appid").val()
+			'appid' : $("#appid").val()
 		},
 		success : function(data) {
 			var appinfo = data.result.map.appinfo.appinfo;
@@ -16,7 +16,7 @@ $(document).ready(function(){
 				type : 'post',
 				dataType : 'json',
 				data : {
-					'appvid': $("#appvid").val()
+					'appvid' : $("#appvid").val()
 				},
 				success : function(data) {
 					var appvinfo = data.result.map.appVersionInfo;
@@ -45,19 +45,22 @@ $(document).ready(function(){
 	});
 });
 
-function getFileName(url){
+function getFileName(url) {
 	var pos = url.lastIndexOf("/");
-	if(pos == -1){
-	   pos = url.lastIndexOf("\\");
+	if (pos == -1) {
+		pos = url.lastIndexOf("\\");
 	}
-	var filename = url.substr(pos +1);
+	var filename = url.substr(pos + 1);
 	return filename;
 }
 
 function closeview() {
-	window.location.href=$("#basePath").val()+"module/appversioncheck/appversioninfo.jsp?appid="+$("#appid").val();
+	window.location.href = $("#basePath").val()
+			+ "module/appversioncheck/appversioninfo.jsp?appid="
+			+ $("#appid").val();
 }
 
 function downloadfile() {
-	window.location.href=$("#basePath").val()+"module/appversioncheck/downloadAppVersionRes?appvid="+$("#appvid").val();
+	window.location.href = $("#basePath").val()
+			+ "downloadAppVersionRes?appvid=" + $("#appvid").val();
 }

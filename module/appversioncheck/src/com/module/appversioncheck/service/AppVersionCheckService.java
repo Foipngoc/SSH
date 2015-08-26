@@ -51,7 +51,7 @@ public interface AppVersionCheckService {
 	 * @param appInfo
 	 */
 	public BaseResult updateApp(int appid, String appname, String appdesc,
-			File logo, String logoname);
+			String weixinpage, File logo, String logoname);
 
 	/**
 	 * 发布应用新版本
