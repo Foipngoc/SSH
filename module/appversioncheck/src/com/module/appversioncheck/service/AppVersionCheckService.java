@@ -131,7 +131,7 @@ public interface AppVersionCheckService {
 	 * @param appid
 	 * @return
 	 */
-	public String downloadNewestAppVersionRes(int appid, int oldvesioncode,
+	public File downloadNewestAppVersionRes(int appid, int oldvesioncode,
 			String imei, String ipaddr, String macaddr, String clientinfo);
 
 	/**
@@ -140,7 +140,15 @@ public interface AppVersionCheckService {
 	 * @param appid
 	 * @return
 	 */
-	public String downloadAppVersionRes(int appvid);
+	public File downloadAppVersionRes(int appvid);
+
+	/**
+	 * 下载应用logo
+	 * 
+	 * @param appid
+	 * @return
+	 */
+	public File downloadAppLogo(int appid);
 
 	/**
 	 * 生成APP最新版本的二维码
@@ -150,4 +158,12 @@ public interface AppVersionCheckService {
 	 * @return
 	 */
 	public BaseResult genBarCode(int appid, String url);
+
+	/**
+	 * 下载应用的二维码
+	 * 
+	 * @param appid
+	 * @return
+	 */
+	public File downloadBarCode(int appid);
 }

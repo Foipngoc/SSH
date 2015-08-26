@@ -12,10 +12,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.common.action.result.BaseResult;
@@ -24,6 +26,9 @@ import com.common.action.result.BaseResultOK;
 import com.common.service.BaseService;
 import com.common.utils.DateTimeUtil;
 import com.common.utils.FileMd5;
+import com.common.utils.FileUtils;
+import com.common.utils.LogUtils;
+import com.common.utils.PropertyLoader;
 import com.common.utils.barcode.QRCodeUtil;
 import com.module.appversioncheck.dao.AppDownloadInfoDao;
 import com.module.appversioncheck.dao.AppInfoDao;
@@ -37,8 +42,10 @@ import com.module.appversioncheck.service.AppVersionCheckService;
 @SuppressWarnings("all")
 public class AppVersionCheckServiceImpl extends BaseService implements
 		AppVersionCheckService {
+	private Logger logger = LogUtils
+			.getLogger(AppVersionCheckServiceImpl.class);
 
-	public static String DATA_PATH = "data/appversioncheck";
+	private String base_folder = null; // 更新模块数据路径
 
 	@Resource
 	private AppDownloadInfoDao appDownloadInfoDao;
@@ -48,6 +55,49 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 
 	@Resource
 	private AppVersionInfoDao appVersionInfoDao;
+
+	private String getDefaultBase_folder() {
+		return getContextPath() + "/data/appversioncheck";
+	}
+
+	private String getRes_folder() {
+		if (base_folder == null || base_folder.equals("")) {
+			base_folder = getDefaultBase_folder();
+		}
+
+		FileUtils.mkdir(base_folder + "/res");
+		return base_folder + "/res";
+	}
+
+	private String getLogo_folder() {
+		if (base_folder == null || base_folder.equals("")) {
+			base_folder = getDefaultBase_folder();
+		}
+		FileUtils.mkdir(base_folder + "/logo");
+		return base_folder + "/logo";
+	}
+
+	private String getBarcode_folder() {
+		if (base_folder == null || base_folder.equals("")) {
+			base_folder = getDefaultBase_folder();
+		}
+		FileUtils.mkdir(base_folder + "/barcode");
+		return base_folder + "/barcode";
+	}
+
+	@PostConstruct
+	public void init() {
+		Properties properties = PropertyLoader.getPropertiesFromClassPath(
+				"appversioncheck.properties", "UTF-8");
+
+		if (properties != null) {
+			String folder = properties.getProperty("base_folder");
+			if (folder != null && !folder.equals("")) {
+				base_folder = folder;
+			}
+		}
+		logger.debug("APP更新模块数据地址为" + base_folder);
+	}
 
 	/**
 	 * 获得所有已发布的应用信息
@@ -140,72 +190,22 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 
 		appInfo.setCreatedate(DateTimeUtil.getCurrDate());
 		appInfo.setNewestappvid(-1);
-		this.appInfoDao.save(appInfo);
 
-		if (logo != null) {
-			String logodir = getContextPath() + "/" + DATA_PATH + "/logo";
-			File logodirfile = new File(logodir);
-			if (!logodirfile.exists() && !logodirfile.isDirectory()) {
-				logodirfile.mkdirs();
-			}
+		if (logo != null && logoname != null) {
+			String logomd5 = FileMd5.getMd5ByFile(logo);
+
 			logoname = "logo" + appInfo.getId() + "."
-					+ getFileExtension(logoname);
-			String logofilepath = logodir + "/" + logoname;
-			// 检查目录 上否已经存在同名文件，如果存在改名
-			File checklogoFile = new File(logofilepath);
-			if (checklogoFile.exists() && checklogoFile.isFile()) {// 同名文件存在
-				if (logoname == null || logoname.equals("")) {
-					logoname = "/logo_"
-							+ DateTimeUtil
-									.getCurrTimeFmt("yyyy-MM-dd_HH-mm-ss")
-							+ ".jpg";
-					logofilepath = logodir + "/" + logoname;
-				} else {
-					logoname = getFileNoExtension(logoname)
-							+ "_"
-							+ DateTimeUtil
-									.getCurrTimeFmt("yyyy-MM-dd_HH-mm-ss")
-							+ "." + getFileExtension(logoname);
-					logofilepath = logodir + "/" + logoname;
-				}
-			}
+					+ FileUtils.getFileExtension(logoname);
+			logoname = FileUtils.writeToFile(logo, logomd5, getLogo_folder()
+					+ "/" + logoname);
+			if (logoname == null)
+				return new BaseResult(4, "LOGO保存失败");
 
-			// 保存Logo
-			// 写入文件
-			InputStream in = null;
-			OutputStream out = null;
-			try {
-				in = new FileInputStream(logo);
-				File uploadFile = new File(logofilepath);
-				out = new FileOutputStream(uploadFile);
-				byte[] buffer = new byte[1024 * 1024];
-				int length;
-				while ((length = in.read(buffer)) > 0) {
-					out.write(buffer, 0, length);
-				}
-			} catch (Exception e) {
-				return new BaseResult(4, "logo文件保存失败");
-			} finally {
-				try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				try {
-					out.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-			String md5 = FileMd5.getMd5ByFile(logo);
-			appInfo.setApplogomd5(md5);
-			appInfo.setApplogo(DATA_PATH + "/logo/" + logoname);
-			this.appInfoDao.update(appInfo);
+			appInfo.setApplogomd5(logomd5);
+			appInfo.setApplogo(logoname);
 		}
 
+		this.appInfoDao.save(appInfo);
 		BaseResult result = new BaseResult(0, "发布成功");
 		return result;
 	}
@@ -251,72 +251,21 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 		if (appdesc != null) {
 			appInfo.setAppdesc(appdesc);
 		}
-		this.appInfoDao.update(appInfo);
 
-		if (logo != null) {
-			String logodir = getContextPath() + "/" + DATA_PATH + "/logo";
-			File logodirfile = new File(logodir);
-			if (!logodirfile.exists() && !logodirfile.isDirectory()) {
-				logodirfile.mkdirs();
-			}
+		if (logo != null && logoname != null) {
+			String logomd5 = FileMd5.getMd5ByFile(logo);
 			logoname = "logo" + appInfo.getId() + "."
-					+ getFileExtension(logoname);
-			String logofilepath = logodir + "/" + logoname;
-			// 检查目录 上否已经存在同名文件，如果存在改名
-			File checklogoFile = new File(logofilepath);
-			if (checklogoFile.exists() && checklogoFile.isFile()) {// 同名文件存在
-				if (logoname == null || logoname.equals("")) {
-					logoname = "/logo_"
-							+ DateTimeUtil
-									.getCurrTimeFmt("yyyy-MM-dd_HH-mm-ss")
-							+ ".jpg";
-					logofilepath = logodir + "/" + logoname;
-				} else {
-					logoname = getFileNoExtension(logoname)
-							+ "_"
-							+ DateTimeUtil
-									.getCurrTimeFmt("yyyy-MM-dd_HH-mm-ss")
-							+ "." + getFileExtension(logoname);
-					logofilepath = logodir + "/" + logoname;
-				}
-			}
+					+ FileUtils.getFileExtension(logoname);
 
-			// 保存Logo
-			// 写入文件
-			InputStream in = null;
-			OutputStream out = null;
-			try {
-				in = new FileInputStream(logo);
-				File uploadFile = new File(logofilepath);
-				out = new FileOutputStream(uploadFile);
-				byte[] buffer = new byte[1024 * 1024];
-				int length;
-				while ((length = in.read(buffer)) > 0) {
-					out.write(buffer, 0, length);
-				}
-			} catch (Exception e) {
-				return new BaseResult(4, "logo文件保存失败");
-			} finally {
-				try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				try {
-					out.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-			String md5 = FileMd5.getMd5ByFile(logo);
-			appInfo.setApplogomd5(md5);
-			appInfo.setApplogo(DATA_PATH + "/logo/" + logoname);
-			this.appInfoDao.update(appInfo);
+			logoname = FileUtils.writeToFile(logo, logomd5, getLogo_folder()
+					+ "/" + logoname);
+			if (logoname == null)
+				return new BaseResult(4, "LOGO保存失败");
+			appInfo.setApplogomd5(logomd5);
+			appInfo.setApplogo(logoname);
 		}
 
+		this.appInfoDao.update(appInfo);
 		BaseResult result = new BaseResult(0, "更新成功");
 		return result;
 	}
@@ -359,77 +308,28 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 			return new BaseResult(2, "APP上传失败");
 		}
 
-		File DATA_PATH_FOLDER = new File(getContextPath() + "/" + DATA_PATH
-				+ "/res");
-		if (!DATA_PATH_FOLDER.exists() && !DATA_PATH_FOLDER.isDirectory()) {
-			DATA_PATH_FOLDER.mkdirs();
-		}
-
-		String md5 = FileMd5.getMd5ByFile(file);
-		if (md5 == null || md5.equals("")) {
+		String apkmd5 = FileMd5.getMd5ByFile(file);
+		if (apkmd5 == null || apkmd5.equals("")) {
 			return new BaseResult(5, "MD5校验失败");
 		}
 
 		// 获得res目录 ，如果不存在，创建
-		String resfolder = DATA_PATH + "/res/" + appid;
-		File folder = new File(getContextPath() + "/" + resfolder);
-		if (!folder.exists() && !folder.isDirectory()) {
-			folder.mkdirs();
-		}
+		FileUtils.mkdir(getRes_folder() + "/" + appid);
 
 		// 获得res文件路径，如果没有filename，默认为app.dl,如果文件已存在，则删除之
-		String respath = "";
 		if (filename == null || filename.equals(""))
-			respath = resfolder + "/app.dl";
-		else
-			respath = resfolder + "/" + filename;
+			filename = "app.dl";
 
-		// 检查目录 上否已经存在同名文件，如果存在改名
-		File checkResFile = new File(getContextPath() + "/" + respath);
-		if (checkResFile.exists() && checkResFile.isFile()) {// 同名文件存在
-			if (filename == null || filename.equals(""))
-				respath = resfolder + "/app_"
-						+ DateTimeUtil.getCurrTimeFmt("yyyy-MM-dd_HH-mm-ss")
-						+ ".dl";
-			else
-				respath = resfolder + "/" + getFileNoExtension(filename) + "_"
-						+ DateTimeUtil.getCurrTimeFmt("yyyy-MM-dd_HH-mm-ss")
-						+ "." + getFileExtension(filename);
-		}
-
-		// 写入文件
-		InputStream in = null;
-		OutputStream out = null;
-		try {
-			in = new FileInputStream(file);
-			File uploadFile = new File(getContextPath() + "/" + respath);
-			out = new FileOutputStream(uploadFile);
-			byte[] buffer = new byte[1024 * 1024];
-			int length;
-			while ((length = in.read(buffer)) > 0) {
-				out.write(buffer, 0, length);
-			}
-		} catch (Exception e) {
+		filename = FileUtils.writeToFile(file, apkmd5, getRes_folder() + "/"
+				+ appid + "/" + filename);
+		if (filename == null)
 			return new BaseResult(4, "文件保存失败");
-		} finally {
-			try {
-				in.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
-				out.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 
 		AppVersionInfo appVersionInfo = new AppVersionInfo();
 
 		appVersionInfo.setAppid(appid);
-		appVersionInfo.setRespath(respath);
-		appVersionInfo.setResmd5(md5);
+		appVersionInfo.setRespath(filename);
+		appVersionInfo.setResmd5(apkmd5);
 		appVersionInfo.setUpdatelog(updatelog);
 		appVersionInfo.setUpdatetype(updatetype);
 		appVersionInfo.setVersioncode(versioncode);
@@ -471,25 +371,6 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 		return new BaseResult(0, "设置成功");
 	}
 
-	private String getFileExtension(String fileName) {
-		if (fileName != null && fileName.lastIndexOf(".") != -1
-				&& fileName.lastIndexOf(".") != 0) {
-			return fileName.substring(fileName.lastIndexOf(".") + 1);
-		} else {
-			return "";
-		}
-	}
-
-	private String getFileNoExtension(String filename) {
-		if ((filename != null) && (filename.length() > 0)) {
-			int dot = filename.lastIndexOf('.');
-			if ((dot > -1) && (dot < (filename.length()))) {
-				return filename.substring(0, dot);
-			}
-		}
-		return filename;
-	}
-
 	/**
 	 * 更新应用已发布版本信息
 	 * 
@@ -521,86 +402,21 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 			appVersionInfodb.setAutoinstall(autoinstall);
 
 		if (file != null) {
-			File DATA_PATH_FOLDER = new File(getContextPath() + "/" + DATA_PATH
-					+ "/res");
-			if (!DATA_PATH_FOLDER.exists() && !DATA_PATH_FOLDER.isDirectory()) {
-				DATA_PATH_FOLDER.mkdirs();
-			}
-
-			String md5 = FileMd5.getMd5ByFile(file);
-			if (md5 == null || md5.equals("")) {
+			String apkmd5 = FileMd5.getMd5ByFile(file);
+			if (apkmd5 == null || apkmd5.equals("")) {
 				return new BaseResult(5, "MD5校验失败");
 			}
 
-			// 获得res目录 ，如果不存在，创建
-			String resfolder = DATA_PATH + "/res/"
-					+ appVersionInfodb.getAppid();
-			File folder = new File(getContextPath() + "/" + resfolder);
-			if (!folder.exists() && !folder.isDirectory()) {
-				folder.mkdirs();
-			}
-
-			// 获得res文件路径，如果没有filename，默认为app.dl,如果文件已存在，则删除之
-			String respath = "";
 			if (filename == null || filename.equals(""))
-				respath = resfolder + "/app.dl";
-			else
-				respath = resfolder + "/" + filename;
+				filename = filename + "/app.dl";
 
-			// 删除原资源文件
-			if (appVersionInfodb.getRespath() != null
-					&& appVersionInfodb.getRespath().contains(DATA_PATH))
-				FileUtils.deleteQuietly(new File(getContextPath() + "/"
-						+ appVersionInfodb.getRespath()));
-
-			File checkResFile = new File(getContextPath() + "/" + respath);
-			if (checkResFile.exists() && checkResFile.isFile()) {// 目录中存在同名文件
-				if (filename == null || filename.equals(""))
-					respath = resfolder
-							+ "/app_"
-							+ DateTimeUtil
-									.getCurrTimeFmt("yyyy-MM-dd_HH-mm-ss")
-							+ ".dl";
-				else
-					respath = resfolder
-							+ "/"
-							+ getFileNoExtension(filename)
-							+ "_"
-							+ DateTimeUtil
-									.getCurrTimeFmt("yyyy-MM-dd_HH-mm-ss")
-							+ "." + getFileExtension(filename);
-			}
-
-			// 写入文件
-			InputStream in = null;
-			OutputStream out = null;
-			try {
-				in = new FileInputStream(file);
-				File uploadFile = new File(getContextPath() + "/" + respath);
-				out = new FileOutputStream(uploadFile);
-				byte[] buffer = new byte[1024 * 1024];
-				int length;
-				while ((length = in.read(buffer)) > 0) {
-					out.write(buffer, 0, length);
-				}
-			} catch (Exception e) {
+			filename = FileUtils.writeToFile(file, apkmd5, getRes_folder()
+					+ "/" + appVersionInfodb.getAppid() + "/" + filename);
+			if (filename == null)
 				return new BaseResult(4, "文件保存失败");
-			} finally {
-				try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 
-				try {
-					out.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			appVersionInfodb.setResmd5(md5);
-			appVersionInfodb.setRespath(respath);
+			appVersionInfodb.setResmd5(apkmd5);
+			appVersionInfodb.setRespath(filename);
 		}
 
 		this.appVersionInfoDao.update(appVersionInfodb);
@@ -633,10 +449,6 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 					}
 					this.appInfoDao.update(appInfo);
 				}
-				String respath = appVersionInfo.getRespath();
-				if (respath != null && respath.contains(DATA_PATH))
-					// 删除资源
-					new File(getContextPath() + "/" + respath).delete();
 				this.appVersionInfoDao.delete(appVersionInfo);
 			}
 		}
@@ -811,7 +623,7 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 * @param appid
 	 * @return
 	 */
-	public String downloadNewestAppVersionRes(int appid, int oldvesioncode,
+	public File downloadNewestAppVersionRes(int appid, int oldvesioncode,
 			String imei, String ipaddr, String macaddr, String clientinfo) {
 
 		BaseResult checkResult = this.checkNewestAppVersion(appid,
@@ -831,13 +643,14 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 				return null;
 			}
 
-			String filepath = newestAppVersionInfo.getRespath();
-			String filemd5 = FileMd5.getMd5ByFile(getContextPath() + "/"
-					+ filepath);
+			String filename = newestAppVersionInfo.getRespath();
+			String filemd5 = FileMd5.getMd5ByFile(getRes_folder() + "/"
+					+ appInfo.getId() + "/" + filename);
 			if (filemd5 == null
 					|| !filemd5.toLowerCase().equals(
 							newestAppVersionInfo.getResmd5().toLowerCase()))
 				return null;
+
 			/**
 			 * 添加下载信息
 			 */
@@ -861,7 +674,8 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 				appDownloadInfo.setClientinfo("");
 			this.appDownloadInfoDao.save(appDownloadInfo);
 
-			return filepath;
+			return new File(getRes_folder() + "/" + appInfo.getId() + "/"
+					+ filename);
 		} else {
 			return null;
 		}
@@ -873,16 +687,17 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	 * @param appid
 	 * @return
 	 */
-	public String downloadAppVersionRes(int appvid) {
+	public File downloadAppVersionRes(int appvid) {
 		AppVersionInfo appVersionInfo = this.queryAppVersion(appvid);
 		if (appVersionInfo != null) {
-			String filepath = appVersionInfo.getRespath();
-			String filemd5 = FileMd5.getMd5ByFile(getContextPath() + "/"
-					+ filepath);
+			String filename = appVersionInfo.getRespath();
+			String filemd5 = FileMd5.getMd5ByFile(getRes_folder() + "/"
+					+ appVersionInfo.getAppid() + "/" + filename);
 			if (!filemd5.toLowerCase().equals(
 					appVersionInfo.getResmd5().toLowerCase()))
 				return null;
-			return filepath;
+			return new File(getRes_folder() + "/" + appVersionInfo.getAppid()
+					+ "/" + filename);
 		}
 		return null;
 	}
@@ -890,46 +705,63 @@ public class AppVersionCheckServiceImpl extends BaseService implements
 	@Override
 	public BaseResult genBarCode(int appid, String url) {
 		if (url == null)
-			return new BaseResultFailed("URL不能为空");
+			return new BaseResult(-1, "URL为空");
+		String logopath = null;
+		String barcodename = "barcode" + appid + ".jpg";
+		String barcodepath = getBarcode_folder() + "/" + barcodename;
+		AppInfo appInfo = this.queryApp(appid);
+
+		if (appInfo == null) {
+			return new BaseResult(-1, "应用不存在");
+		}
+		logopath = getLogo_folder() + "/" + appInfo.getApplogo();
+
+		if (!FileUtils.checkFileMd5(logopath, appInfo.getApplogomd5())) {
+			logopath = null;
+		}
+
+		if (logopath == null) {
+			new File(barcodepath).delete();
+			try {
+				QRCodeUtil.encode(url, barcodepath, true);
+			} catch (Exception e) {
+				return new BaseResult(-1, "生成二维码失败");
+			}
+		} else {
+			try {
+				QRCodeUtil.encode(url, logopath, barcodepath, true);
+			} catch (Exception e) {
+				return new BaseResult(-1, "生成二维码失败");
+			}
+		}
+		appInfo.setBarcode(barcodename);
+		appInfo.setBarcodemd5(FileMd5.getMd5ByFile(barcodepath));
+		return new BaseResult(0, "生成二维码成功");
+	}
+
+	@Override
+	public File downloadAppLogo(int appid) {
 		String logopath = null;
 
 		AppInfo appInfo = this.queryApp(appid);
 
 		if (appInfo == null) {
-			return new BaseResultFailed("不存在该应用");
+			return null;
 		}
-		logopath = getContextPath() + "/" + appInfo.getApplogo();
-
-		if (!checkMd5(logopath, appInfo.getApplogomd5())) {
-			logopath = null;
-		}
-
-		if (logopath == null) {
-			try {
-				QRCodeUtil.encode(url, getContextPath() + "/" + DATA_PATH
-						+ "/barcode" + appid + ".jpg", true);
-			} catch (Exception e) {
-				return new BaseResultFailed("生成二维码失败");
-			}
-		} else {
-			try {
-				QRCodeUtil.encode(url, logopath, getContextPath() + "/"
-						+ DATA_PATH + "/barcode" + appid + ".jpg", true);
-			} catch (Exception e) {
-				return new BaseResultFailed("生成二维码失败");
-			}
-		}
-		return new BaseResultOK(DATA_PATH + "/barcode" + appid + ".jpg");
+		logopath = getLogo_folder() + "/" + appInfo.getApplogo();
+		return new File(logopath);
 	}
 
-	private boolean checkMd5(String filepath, String md5) {
-		if (filepath == null || md5 == null)
-			return false;
-		String filemd5 = FileMd5.getMd5ByFile(filepath);
-		if (filemd5 != null
-				&& filemd5.toLowerCase(Locale.getDefault()).equals(
-						md5.toLowerCase(Locale.getDefault())))
-			return true;
-		return false;
+	@Override
+	public File downloadBarCode(int appid) {
+		AppInfo appInfo = this.queryApp(appid);
+
+		if (appInfo == null) {
+			return null;
+		}
+		String barcodename = appInfo.getBarcode();
+		String barcodepath = getBarcode_folder() + "/" + barcodename;
+
+		return new File(barcodepath);
 	}
 }

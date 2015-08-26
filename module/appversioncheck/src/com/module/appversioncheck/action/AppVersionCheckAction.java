@@ -3,10 +3,7 @@ package com.module.appversioncheck.action;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
@@ -236,21 +233,38 @@ public class AppVersionCheckAction extends BaseAction {
 		String ipaddr = null;
 		String macaddr = null;
 		ipaddr = getRemoteAddress();
-		
-		filename = this.appVersionCheckService.downloadNewestAppVersionRes(
+
+		File file = this.appVersionCheckService.downloadNewestAppVersionRes(
 				appid, versioncode, imei, ipaddr, macaddr, clientinfo);
 
-		String filePath = getContextPath() + "/" + filename;
-		dlFile = new FileInputStream(filePath);
-		dlFileName = new File(filePath).getName();
-		dlFilelength = new File(filePath).length();
+		dlFile = new FileInputStream(file);
+		dlFileName = file.getName();
+		dlFilelength = file.length();
 		dlFileName = filenameEncode(dlFileName);
 		return "file";
 	}
 
-	public String genBarCode() {
+	public String downloadAppLogo() throws FileNotFoundException {
+		File file = this.appVersionCheckService.downloadAppLogo(appid);
+		dlFile = new FileInputStream(file);
+		dlFileName = file.getName();
+		dlFilelength = file.length();
+		dlFileName = filenameEncode(dlFileName);
+		return "file";
+	}
+
+	public String genBarCode() throws FileNotFoundException {
 		result = this.appVersionCheckService.genBarCode(appid, url);
 		return SUCCESS;
+	}
+	
+	public String downloadBarCode() throws FileNotFoundException {
+		File file = this.appVersionCheckService.downloadBarCode(appid);
+		dlFile = new FileInputStream(file);
+		dlFileName = file.getName();
+		dlFilelength = file.length();
+		dlFileName = filenameEncode(dlFileName);
+		return "file";
 	}
 
 	/**
@@ -261,11 +275,10 @@ public class AppVersionCheckAction extends BaseAction {
 	 */
 	public String downloadAppVersionRes() throws FileNotFoundException,
 			UnsupportedEncodingException {
-		filename = this.appVersionCheckService.downloadAppVersionRes(appvid);
-		String filePath = getContextPath() + "/" + filename;
-		dlFile = new FileInputStream(filePath);
-		dlFileName = new File(filePath).getName();
-		dlFilelength = new File(filePath).length();
+		File file = this.appVersionCheckService.downloadAppVersionRes(appvid);
+		dlFile = new FileInputStream(file);
+		dlFileName = file.getName();
+		dlFilelength = file.length();
 		dlFileName = filenameEncode(dlFileName);
 		return "file";
 	}

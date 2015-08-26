@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50619
 File Encoding         : 65001
 
-Date: 2015-04-02 11:15:17
+Date: 2015-08-26 20:13:11
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,12 +25,12 @@ CREATE TABLE `appdownloadinfo` (
   `oldappvid` int(11) DEFAULT NULL,
   `appvid` int(11) DEFAULT NULL,
   `updatedate` datetime DEFAULT NULL,
+  `imei` varchar(64) DEFAULT NULL,
   `ipaddr` varchar(64) DEFAULT NULL,
   `macaddr` varchar(64) DEFAULT NULL,
-  `imei` varchar(64) DEFAULT NULL,
-  `clientinfo` varchar(255) DEFAULT NULL,
+  `clientinfo` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for appinfo
@@ -44,8 +44,10 @@ CREATE TABLE `appinfo` (
   `newestappvid` int(11) DEFAULT NULL,
   `applogo` varchar(128) DEFAULT NULL,
   `applogomd5` varchar(255) DEFAULT NULL,
+  `barcode` varchar(128) DEFAULT NULL,
+  `barcodemd5` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for appversioninfo
@@ -64,4 +66,4 @@ CREATE TABLE `appversioninfo` (
   `downloadpath` varchar(255) DEFAULT NULL,
   `autoinstall` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;

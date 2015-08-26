@@ -17,5 +17,9 @@
 			length="128" />
 		<property name="applogomd5" column="applogomd5" type="string"
 			length="255" />
+		<property name="barcode" column="barcode" type="string"
+			length="128" />
+		<property name="barcodemd5" column="barcodemd5" type="string"
+			length="255" />
 	</class>
 </hibernate-mapping>

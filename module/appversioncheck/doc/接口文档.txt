@@ -1,5 +1,5 @@
 【功能】发布新的应用
-【接口】http://ip/project/module/AppVersionCheck/publishApp
+【接口】http://ip/project/publishApp
 【必选参数】
 	appname //应用名
 	appdesc //应用描述
@@ -11,7 +11,7 @@
 	
 	
 【功能】获得所有已发布的应用信息
-【接口】http://ip/project/module/AppVersionCheck/queryApps
+【接口】http://ip/project/queryApps
 【必选参数】
 【可选参数】
 【输出】
@@ -19,7 +19,7 @@
 	
 	
 【功能】获得所有已发布的应用信息
-【接口】http://ip/project/module/AppVersionCheck/queryApp
+【接口】http://ip/project/queryApp
 【必选参数】
 	appid
 【可选参数】
@@ -28,7 +28,7 @@
 	
 	
 【功能】删除已发布的应用
-【接口】http://ip/project/module/AppVersionCheck/delApp
+【接口】http://ip/project/delApp
 【必选参数】
 	appid //应用id
 【可选参数】
@@ -36,7 +36,7 @@
 
 
 【功能】更新已发布应用
-【接口】http://ip/project/module/AppVersionCheck/updateApp
+【接口】http://ip/project/updateApp
 【必选参数】
 	appid //应用id
 【可选参数】
@@ -49,7 +49,7 @@
 
 
 【功能】发布应用新版本
-【接口】http://ip/project/module/AppVersionCheck/publishAppVersion
+【接口】http://ip/project/publishAppVersion
 【必选参数】
 	appid //应用id
 	autogenvcode //是否自动生成版本号 1/0
@@ -72,7 +72,7 @@
 
 
 【功能】应用版本资源
-【接口】http://ip/project/module/AppVersionCheck/downloadAppVersionRes
+【接口】http://ip/project/downloadAppVersionRes
 【必选参数】
 	appvid //版本id
 	file //资源文件流
@@ -86,7 +86,7 @@
 
 
 【功能】设置APP最新的版本为哪个
-【接口】http://ip/project/module/AppVersionCheck/updateNewestAppVersion
+【接口】http://ip/project/updateNewestAppVersion
 【必选参数】
 	appid //应用id
 	appvid //版本id
@@ -98,7 +98,7 @@
 
 
 【功能】更新应用已发布版本信息
-【接口】http://ip/project/module/AppVersionCheck/updateAppVersion
+【接口】http://ip/project/updateAppVersion
 【必选参数】
 	appvid //版本id
 【可选参数】
@@ -115,7 +115,7 @@
 	
 	
 【功能】删除应用已发布的版本
-【接口】http://ip/project/module/AppVersionCheck/deleteAppVersion
+【接口】http://ip/project/deleteAppVersion
 【必选参数】
 	appvid //版本id
 【可选参数】
@@ -123,7 +123,7 @@
 	
 	
 【功能】获取某应用发布的所有版本信息
-【接口】http://ip/project/module/AppVersionCheck/queryAppVersions
+【接口】http://ip/project/queryAppVersions
 【必选参数】
 	appid //应用id
 【可选参数】
@@ -132,7 +132,7 @@
 	
 
 【功能】获取某应用的某版本信息
-【接口】http://ip/project/module/AppVersionCheck/queryAppVersion
+【接口】http://ip/project/queryAppVersion
 【必选参数】
 	appvid //版本id
 【可选参数】
@@ -141,7 +141,7 @@
 	
 	
 【功能】检查新版本信息
-【接口】http://ip/project/module/AppVersionCheck/checkNewestAppVersion
+【接口】http://ip/project/checkNewestAppVersion
 【必选参数】
 	appid //应用id
 	versioncode //原版本号
@@ -153,7 +153,7 @@
 	
 	
 【功能】下载最新版本
-【接口】http://ip/project/module/AppVersionCheck/downloadNewestAppVersionRes
+【接口】http://ip/project/downloadNewestAppVersionRes
 【必选参数】
 	appid //应用id
 	versioncode //原版本号
@@ -164,14 +164,34 @@
 	如果成功，返回文件流，如果失败，返回空的流
 	
 
-【功能】获取二维码
-【接口】http://ip/project/module/AppVersionCheck/genBarCode
+【功能】生成二维码
+【接口】http://ip/project/genBarCode
 【必选参数】
 	appid //应用id
 	url //加密的url
 【可选参数】
 	file //logo文件
 【输出】
-	BaseResultFailed("URL不能为空")
-	BaseResultFailed("生成二维码失败");
-	BaseResultOK(RES_PATH+"/barcode.jpg"); //result.obj 包含logo的路径 
+	BaseResult(-1, "URL为空")
+	BaseResult(-1, "应用不存在")
+	BaseResult(-1, "生成二维码失败")
+	BaseResult(0, "生成二维码成功")
+	
+	
+【功能】下载APPLOGO图片
+【接口】http://ip/project/downloadAppLogo
+【必选参数】
+	appid //应用id
+【输出】
+	如果成功，返回文件流，如果失败，返回空的流
+	
+	
+	
+【功能】下载APP下载二维码图片
+【接口】http://ip/project/downloadBarCode
+【必选参数】
+	appid //应用id
+【输出】
+	如果成功，返回文件流，如果失败，返回空的流
+	
+	

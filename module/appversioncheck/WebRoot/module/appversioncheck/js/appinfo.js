@@ -1,10 +1,11 @@
 $(document).ready(function() {
 	showAppList();
-	document.onkeydown=function(event){
-	var e = event || window.event || arguments.callee.caller.arguments[0];
-	if(e && e.keyCode==27){ // 按 Esc 
-		hideUrlBar();
-	};
+	document.onkeydown = function(event) {
+		var e = event || window.event || arguments.callee.caller.arguments[0];
+		if (e && e.keyCode == 27) { // 按 Esc
+			hideUrlBar();
+		}
+		;
 	};
 });
 
@@ -23,14 +24,20 @@ function showAppList() {
 						var newTr = $("<tr class='addTr'></tr>");
 						newTr.append($("<td>" + list[i].appinfo.id + "</td>"));
 						if (list[i].appinfo.applogo != null)
-							newTr.append($("<td><img width='50' height='50' src='"+$("#basePath").val()+"/"+ list[i].appinfo.applogo +"'></img></td>"));
+							newTr
+									.append($("<td><img width='50' height='50' src='"
+											+ $("#basePath").val()
+											+ "/downloadAppLogo?appid="
+											+ list[i].appinfo.id
+											+ "'></img></td>"));
 						else
 							newTr.append($("<td>暂无LOGO</td>"));
 						newTr
 								.append($("<td><a style='color:blue;text-decoration:underline' href='"
 										+ $("#basePath").val()
 										+ "module/appversioncheck/appversioninfo.jsp?appid="
-										+ list[i].appinfo.id+"'>"
+										+ list[i].appinfo.id
+										+ "'>"
 										+ list[i].appinfo.appname + "</a></td>"));
 						newTr.append($("<td>" + list[i].appinfo.appdesc
 								+ "</td>"));
@@ -77,27 +84,26 @@ function delApp(id) {
 
 function showAppDownLink(id) {
 	var url = $("#basePath").val()
-			+ "downloadNewest?clientinfo=browser&versioncode=-1&appid="
-			+ id;
+			+ "downloadNewest?clientinfo=browser&versioncode=-1&appid=" + id;
 	document.getElementById("win").style.display = "";
 	$("#newdlurl").val(url);
 
 	var urlbarcode = $("#basePath").val()
-			+ "downloadNewest?clientinfo=barcode&versioncode=-1&appid="
-			+ id;
+			+ "downloadNewest?clientinfo=barcode&versioncode=-1&appid=" + id;
 	$.ajax({
 		url : 'genBarCode',
 		type : 'post',
 		dataType : 'json',
 		data : {
-			'appid':id,
+			'appid' : id,
 			'url' : urlbarcode,
-			'timestamp': new Date().getTime()
+			'timestamp' : new Date().getTime()
 		},
 		success : function(data) {
 			var resultcode = data.result.resultcode;
 			if (resultcode == 0) {
-				$("#newdlurlbarcode").attr("src", data.result.obj);
+				$("#newdlurlbarcode").attr("src",
+						$("#basePath").val() + "/downloadBarCode?appid=" + id);
 			} else {
 				alert(data.result.resultdesc);
 			}

@@ -83,9 +83,9 @@
 			method="downloadNewestAppVersionRes">
 			<result name="file" type="stream">
 				<param name="contentType">application/octet-stream</param>
-				<param name="contentLength">${dlFilelength}</param>  
-        		<param name="inputName">dlFile</param>  
-        		<param name="contentDisposition">attachment;${dlFileName}</param>
+				<param name="contentLength">${dlFilelength}</param>
+				<param name="inputName">dlFile</param>
+				<param name="contentDisposition">attachment;${dlFileName}</param>
 				<param name="bufferSize">4096</param>
 			</result>
 		</action>
@@ -95,17 +95,41 @@
 			method="downloadAppVersionRes">
 			<result name="file" type="stream">
 				<param name="contentType">application/octet-stream</param>
-				<param name="contentLength">${dlFilelength}</param>  
-        		<param name="inputName">dlFile</param>  
-        		<param name="contentDisposition">attachment;${dlFileName}</param>
+				<param name="contentLength">${dlFilelength}</param>
+				<param name="inputName">dlFile</param>
+				<param name="contentDisposition">attachment;${dlFileName}</param>
 				<param name="bufferSize">4096</param>
 			</result>
 		</action>
-		
+
+		<action name="downloadAppLogo"
+			class="com.module.appversioncheck.action.AppVersionCheckAction"
+			method="downloadAppLogo">
+			<result name="file" type="stream">
+				<param name="contentType">application/octet-stream</param>
+				<param name="contentLength">${dlFilelength}</param>
+				<param name="inputName">dlFile</param>
+				<param name="contentDisposition">attachment;${dlFileName}</param>
+				<param name="bufferSize">4096</param>
+			</result>
+		</action>
+
 		<action name="genBarCode"
 			class="com.module.appversioncheck.action.AppVersionCheckAction"
 			method="genBarCode">
 			<result name="success" type="json"></result>
+		</action>
+
+		<action name="downloadBarCode"
+			class="com.module.appversioncheck.action.AppVersionCheckAction"
+			method="downloadBarCode">
+			<result name="file" type="stream">
+				<param name="contentType">application/octet-stream</param>
+				<param name="contentLength">${dlFilelength}</param>
+				<param name="inputName">dlFile</param>
+				<param name="contentDisposition">attachment;${dlFileName}</param>
+				<param name="bufferSize">4096</param>
+			</result>
 		</action>
 	</package>
 </struts>
